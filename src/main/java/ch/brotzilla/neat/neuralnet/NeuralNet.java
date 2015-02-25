@@ -63,6 +63,20 @@ public class NeuralNet {
         return outputNeurons.get(index);
     }
     
+    public void updateIncomingConnections() {
+        for (final BasicNeuron neuron : hiddenNeurons) {
+            neuron.getIncomingConnections().clear();
+        }
+        for (final BasicNeuron neuron : outputNeurons) {
+            neuron.getIncomingConnections().clear();
+        }
+        for (final Connection connection : connections) {
+            if (connection.getSynapse() < connection.getOutputNeuron().getActivationFunction().getNumberOfParameters()) {
+                connection.getOutputNeuron().getIncomingConnections().add(connection);
+            }
+        }
+    }
+    
     public void compute(double[] input) {
         Preconditions.checkNotNull(input, "The parameter 'input' must not be null");
         Preconditions.checkArgument(input.length == inputNeurons.size(), "The length of the parameter 'input' (" + input.length + ") has to be equal to the number of input neurons (" + inputNeurons.size() + ")");

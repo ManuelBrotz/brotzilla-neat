@@ -13,8 +13,8 @@ public class InputNeuron extends Neuron {
         this.activation = activation;
     }
     
-    public void setActivation(double activation) {
-        this.activation = activation;
+    public void setActivation(double value) {
+        activation = value;
     }
     
     @Override

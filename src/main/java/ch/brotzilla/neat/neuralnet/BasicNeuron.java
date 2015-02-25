@@ -1,6 +1,6 @@
 package ch.brotzilla.neat.neuralnet;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -9,7 +9,7 @@ import ch.brotzilla.neat.math.ActivationFunction;
 
 public class BasicNeuron extends Neuron {
 
-    private final LinkedList<Connection> incomingConnections;
+    private final List<Connection> incomingConnections;
     private ActivationFunction activationFunction;
     private double[] inputSynapses;
     private double activation;
@@ -17,16 +17,22 @@ public class BasicNeuron extends Neuron {
     public BasicNeuron(NeuralNet owner, ActivationFunction activationFunction) {
         super(owner);
         Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
-        this.incomingConnections = Lists.newLinkedList();
-        this.activationFunction = activationFunction;
+        incomingConnections = Lists.newArrayList();
+        setActivationFunction(activationFunction);
     }
     
-    public LinkedList<Connection> getIncomingConnections() {
+    public List<Connection> getIncomingConnections() {
         return incomingConnections;
     }
 
     public ActivationFunction getActivationFunction() {
         return activationFunction;
+    }
+    
+    public void setActivationFunction(ActivationFunction value) {
+        Preconditions.checkNotNull(value, "The parameter 'value' must not be null");
+        activationFunction = value;
+        inputSynapses = new double[value.getNumberOfParameters()];
     }
     
     @Override
