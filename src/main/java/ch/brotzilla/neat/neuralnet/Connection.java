@@ -4,51 +4,29 @@ import com.google.common.base.Preconditions;
 
 public class Connection {
 
-    private final NeuralNet owner;
-    private int innovationNumber;
-    private Neuron inputNeuron;
-    private BasicNeuron outputNeuron;
+    private final int innovationNumber, inputNode, outputNode;
     private int synapse;
     private double weight;
 
-    public Connection(NeuralNet owner, Neuron inputNeuron, BasicNeuron outputNeuron) {
-        Preconditions.checkNotNull(owner, "The parameter 'owner' must not be null");
-        Preconditions.checkNotNull(inputNeuron, "The parameter 'inputNeuron' must not be null");
-        Preconditions.checkNotNull(outputNeuron, "The parameter 'outputNeuron' must not be null");
-        this.owner = owner;
-        this.inputNeuron = inputNeuron;
-        this.outputNeuron = outputNeuron;
+    public Connection(int innovationNumber, int inputNode, int outputNode) {
+        Preconditions.checkArgument(innovationNumber > 0, "The parameter 'innovationNumber' has to be greater than zero");
+        Preconditions.checkArgument(inputNode > 0, "The parameter 'inputNode' has to be greater than zero");
+        Preconditions.checkArgument(outputNode > 0, "The parameter 'outputNode' has to be greater than zero");
+        this.innovationNumber = innovationNumber;
+        this.inputNode = inputNode;
+        this.outputNode = outputNode;
     }
     
-    public NeuralNet getOwner() {
-        return owner;
-    }
-
     public int getInnovationNumber() {
         return innovationNumber;
     }
-    
-    public void setInnovationNumber(int value) {
-        Preconditions.checkArgument(value >= 0, "The parameter 'value' has to be greater than or equal to zero");
-        innovationNumber = value;
+
+    public int getInputNode() {
+        return inputNode;
     }
     
-    public Neuron getInputNeuron() {
-        return inputNeuron;
-    }
-    
-    public void setInputNeuron(Neuron value) {
-        Preconditions.checkNotNull(value, "The parameter 'value' must not be null");
-        inputNeuron = value;
-    }
-   
-    public BasicNeuron getOutputNeuron() {
-        return outputNeuron;
-    }
-    
-    public void setOutputNeuron(BasicNeuron value) {
-        Preconditions.checkNotNull(value, "The parameter 'value' must not be null");
-        outputNeuron = value;
+    public int getOutputNode() {
+        return outputNode;
     }
    
     public int getSynapse() {
@@ -67,5 +45,5 @@ public class Connection {
     public void setWeight(double value) {
         weight = value;
     }
-
+    
 }

@@ -1,30 +1,39 @@
 package ch.brotzilla.neat.neuralnet;
 
+import ch.brotzilla.neat.math.ActivationFunction;
+
 import com.google.common.base.Preconditions;
 
 public abstract class Neuron {
 
-    private final NeuralNet owner;
-    private int innovationNumber;
+    private final NodeType type;
+    private final int innovationNumber;
+    private ActivationFunction activationFunction;
 
-    protected Neuron(NeuralNet owner) {
-        Preconditions.checkNotNull(owner, "The parameter 'owner' must not be null");
-        this.owner = owner;
+    protected Neuron(NodeType type, int innovationNumber, ActivationFunction activationFunction) {
+        Preconditions.checkNotNull(type, "The parameter 'type' must not be null");
+        Preconditions.checkArgument(innovationNumber > 0, "The parameter 'innovationNumber' has to be greater than zero");
+        Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
+        this.type = type;
+        this.innovationNumber = innovationNumber;
+        this.activationFunction = activationFunction;
     }
     
-    public NeuralNet getOwner() {
-        return owner;
+    public NodeType getType() {
+        return type;
     }
     
     public int getInnovationNumber() {
         return innovationNumber;
     }
-    
-    public void setInnovationNumber(int value) {
-        Preconditions.checkArgument(value >= 0, "The parameter 'value' has to be greater than or equal to zero");
-        innovationNumber = value;
+
+    public ActivationFunction getActivationFunction() {
+        return activationFunction;
     }
     
-    public abstract double getActivation();
-
+    public void setActivationFunction(ActivationFunction value) {
+        Preconditions.checkNotNull(value, "The parameter 'value' must not be null");
+        activationFunction = value;
+    }
+    
 }
