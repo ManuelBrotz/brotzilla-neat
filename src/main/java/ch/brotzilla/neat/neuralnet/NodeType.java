@@ -4,7 +4,7 @@ public enum NodeType {
     
     Bias, Input, Output, Hidden;
     
-    public boolean isSourceNode() {
+    public boolean isInputNode() {
         return this == Bias || this == Input;
     }
     
