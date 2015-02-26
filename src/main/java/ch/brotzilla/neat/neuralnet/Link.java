@@ -4,29 +4,29 @@ import com.google.common.base.Preconditions;
 
 public class Link {
 
-    private final int innovationNumber, inputNode, outputNode;
+    private final int innovationNumber, sourceNode, targetNode;
     private int synapse;
     private double weight;
 
-    public Link(int innovationNumber, int inputNode, int outputNode) {
+    public Link(int innovationNumber, int sourceNode, int targetNode) {
         Preconditions.checkArgument(innovationNumber > 0, "The parameter 'innovationNumber' has to be greater than zero");
-        Preconditions.checkArgument(inputNode > 0, "The parameter 'inputNode' has to be greater than zero");
-        Preconditions.checkArgument(outputNode > 0, "The parameter 'outputNode' has to be greater than zero");
+        Preconditions.checkArgument(sourceNode > 0, "The parameter 'sourceNode' has to be greater than zero");
+        Preconditions.checkArgument(targetNode > 0, "The parameter 'targetNode' has to be greater than zero");
         this.innovationNumber = innovationNumber;
-        this.inputNode = inputNode;
-        this.outputNode = outputNode;
+        this.sourceNode = sourceNode;
+        this.targetNode = targetNode;
     }
     
     public int getInnovationNumber() {
         return innovationNumber;
     }
 
-    public int getInputNode() {
-        return inputNode;
+    public int getSourceNode() {
+        return sourceNode;
     }
     
-    public int getOutputNode() {
-        return outputNode;
+    public int getTargetNode() {
+        return targetNode;
     }
    
     public int getSynapse() {
