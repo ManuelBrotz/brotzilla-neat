@@ -13,7 +13,11 @@ public abstract class Node {
     protected Node(NodeType type, int innovationNumber, ActivationFunction activationFunction) {
         Preconditions.checkNotNull(type, "The parameter 'type' must not be null");
         Preconditions.checkArgument(innovationNumber > 0, "The parameter 'innovationNumber' has to be greater than zero");
-        Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
+        if (type.isTargetNode()) {
+            Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
+        } else {
+            Preconditions.checkArgument(activationFunction == null, "The parameter 'activationFunction' has to be null for input nodes");
+        }
         this.type = type;
         this.innovationNumber = innovationNumber;
         this.activationFunction = activationFunction;
@@ -32,7 +36,11 @@ public abstract class Node {
     }
     
     public void setActivationFunction(ActivationFunction value) {
-        Preconditions.checkNotNull(value, "The parameter 'value' must not be null");
+        if (type.isTargetNode()) {
+            Preconditions.checkNotNull(value, "The parameter 'value' must not be null");
+        } else {
+            throw new IllegalArgumentException("Input nodes cannot have activation functions");
+        }
         activationFunction = value;
     }
     
