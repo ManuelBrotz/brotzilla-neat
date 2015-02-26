@@ -2,13 +2,13 @@ package ch.brotzilla.neat.neuralnet;
 
 import com.google.common.base.Preconditions;
 
-public class Connection {
+public class Link {
 
     private final int innovationNumber, inputNode, outputNode;
     private int synapse;
     private double weight;
 
-    public Connection(int innovationNumber, int inputNode, int outputNode) {
+    public Link(int innovationNumber, int inputNode, int outputNode) {
         Preconditions.checkArgument(innovationNumber > 0, "The parameter 'innovationNumber' has to be greater than zero");
         Preconditions.checkArgument(inputNode > 0, "The parameter 'inputNode' has to be greater than zero");
         Preconditions.checkArgument(outputNode > 0, "The parameter 'outputNode' has to be greater than zero");

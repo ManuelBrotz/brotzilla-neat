@@ -5,23 +5,23 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-public class NeuralNet {
+public class Genome {
 
-    private final List<Neuron> nodes, nodesWrapper;
-    private final List<Connection> links, linksWrapper;
+    private final List<Node> nodes, nodesWrapper;
+    private final List<Link> links, linksWrapper;
     
-    public NeuralNet() {
+    public Genome() {
         nodes = Lists.newArrayList();
         nodesWrapper = Collections.unmodifiableList(nodes);
         links = Lists.newArrayList();
         linksWrapper = Collections.unmodifiableList(links);
     }
 
-    public List<Neuron> getNodes() {
+    public List<Node> getNodes() {
         return nodesWrapper;
     }
     
-    public List<Connection> getLinks() {
+    public List<Link> getLinks() {
         return linksWrapper;
     }
     
