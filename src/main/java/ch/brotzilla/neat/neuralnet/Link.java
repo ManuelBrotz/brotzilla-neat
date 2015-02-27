@@ -5,13 +5,14 @@ import com.google.common.base.Preconditions;
 public class Link {
 
     private final int innovationNumber, sourceNode, targetNode;
-    private int synapse;
+    private int targetSynapse;
     private double weight;
 
-    public Link(int innovationNumber, int sourceNode, int targetNode) {
+    public Link(int innovationNumber, int sourceNode, int targetNode, int targetSynapse) {
         Preconditions.checkArgument(innovationNumber > 0, "The parameter 'innovationNumber' has to be greater than zero");
         Preconditions.checkArgument(sourceNode > 0, "The parameter 'sourceNode' has to be greater than zero");
         Preconditions.checkArgument(targetNode > 0, "The parameter 'targetNode' has to be greater than zero");
+        Preconditions.checkArgument(targetSynapse >= 0, "The parameter 'targetSynapse' has to be greater than or equal to zero");
         this.innovationNumber = innovationNumber;
         this.sourceNode = sourceNode;
         this.targetNode = targetNode;
@@ -29,15 +30,10 @@ public class Link {
         return targetNode;
     }
    
-    public int getSynapse() {
-        return synapse;
+    public int getTargetSynapse() {
+        return targetSynapse;
     }
     
-    public void setSynapse(int value) {
-        Preconditions.checkArgument(value >= 0, "The parameter 'value' has to be greater than or equal to zero");
-        synapse = value;
-    }
-   
     public double getWeight() {
         return weight;
     }
