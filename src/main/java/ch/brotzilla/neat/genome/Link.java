@@ -1,4 +1,4 @@
-package ch.brotzilla.neat.neuralnet;
+package ch.brotzilla.neat.genome;
 
 import com.google.common.base.Preconditions;
 
