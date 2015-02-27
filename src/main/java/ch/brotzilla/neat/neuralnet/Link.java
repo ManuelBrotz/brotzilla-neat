@@ -46,4 +46,9 @@ public class Link {
         weight = value;
     }
     
+    @Override
+    public int hashCode() {
+        return innovationNumber;
+    }
+    
 }

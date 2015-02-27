@@ -44,4 +44,9 @@ public abstract class Node {
         activationFunction = value;
     }
     
+    @Override
+    public int hashCode() {
+        return innovationNumber;
+    }
+
 }
