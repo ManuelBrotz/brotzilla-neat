@@ -2,7 +2,6 @@ package ch.brotzilla.neat.genome;
 
 import java.util.Arrays;
 
-import ch.brotzilla.neat.evolution.NodeHistoryKey;
 import ch.brotzilla.neat.math.ActivationFunction;
 
 import com.google.common.base.Preconditions;
@@ -10,20 +9,12 @@ import com.google.common.base.Preconditions;
 public class Node {
 
     private final NodeType type;
-    private final NodeHistoryKey historyKey; 
     private final int innovationNumber;
     private ActivationFunction activationFunction;
     private double[] defaultParameters;
 
-    public Node(NodeType type, NodeHistoryKey historyKey, int innovationNumber, ActivationFunction activationFunction, double[] defaultParameters) {
+    public Node(NodeType type, int innovationNumber, ActivationFunction activationFunction, double[] defaultParameters) {
         Preconditions.checkNotNull(type, "The parameter 'type' must not be null");
-        if (type == NodeType.Hidden) {
-            Preconditions.checkNotNull(historyKey, "The parameter 'historyKey' must not be null since hidden nodes require a history key");
-            this.historyKey = historyKey;
-        } else {
-            Preconditions.checkArgument(historyKey == null, "The parameter 'historyKey' has to be null since only hidden nodes can have a history key");
-            this.historyKey = null;
-        }
         Preconditions.checkArgument(innovationNumber > 0, "The parameter 'innovationNumber' has to be greater than zero");
         this.type = type;
         this.innovationNumber = innovationNumber;
@@ -44,26 +35,14 @@ public class Node {
         }
     }
     
-    public Node(NodeType type, int innovationNumber, ActivationFunction activationFunction, double[] defaultParameters) {
-        this(type, null, innovationNumber, activationFunction, defaultParameters);
-    }
-
-    public Node(NodeType type, NodeHistoryKey historyKey, int innovationNumber, ActivationFunction activationFunction) {
-        this(type, historyKey, innovationNumber, activationFunction, null);
-    }
-    
     public Node(NodeType type, int innovationNumber, ActivationFunction activationFunction) {
-        this(type, null, innovationNumber, activationFunction, null);
+        this(type, innovationNumber, activationFunction, null);
     }
     
     public NodeType getType() {
         return type;
     }
 
-    public NodeHistoryKey getHistoryKey() {
-        return historyKey;
-    }
-    
     public int getInnovationNumber() {
         return innovationNumber;
     }
