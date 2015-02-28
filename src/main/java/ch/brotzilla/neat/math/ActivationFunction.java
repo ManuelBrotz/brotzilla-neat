@@ -7,20 +7,30 @@ import com.google.common.base.Preconditions;
 public abstract class ActivationFunction {
 
     private final int numberOfParameters;
+    private final String id, name, description;
     private final String[] names, descriptions;
     private final double[] defaults, lowerBounds, upperBounds;
     
-    protected abstract double _compute(double value, double[] parameters);
+    protected abstract double _compute(double activation, double[] parameters);
     
-    public ActivationFunction(int numberOfParameters, String[] names, String[] descriptions, double[] defaults, double[] lowerBounds, double[] upperBounds) {
+    public ActivationFunction(String id, String name, String description, int numberOfParameters, String[] parameterNames, String[] parameterDescriptions, double[] defaults, double[] lowerBounds, double[] upperBounds) {
+        Preconditions.checkNotNull(id, "The parameter 'id' must not be null");
+        Preconditions.checkArgument(!id.trim().isEmpty(), "The parameter 'id' must not be empty");
+        Preconditions.checkNotNull(name, "The parameter 'name' must not be null");
+        Preconditions.checkArgument(!name.trim().isEmpty(), "The parameter 'name' must not be empty");
+        Preconditions.checkNotNull(description, "The parameter 'description' must not be null");
+        Preconditions.checkArgument(!description.trim().isEmpty(), "The parameter 'description' must not be empty");
         Preconditions.checkArgument(numberOfParameters >= 0, "The parameter 'numberOfParameters' has to be greater than or equal to zero");
-        Preconditions.checkNotNull(names, "The parameter 'names' must not be null");
-        Preconditions.checkArgument(names.length == 1 + numberOfParameters, "The length of the parameter 'names' has to be equal to " + (1 + numberOfParameters));
-        Preconditions.checkNotNull(descriptions, "The parameter 'descriptions' must not be null");
-        Preconditions.checkArgument(descriptions.length == 1 + numberOfParameters, "The length of the parameter 'descriptions' has to be equal to " + (1 + numberOfParameters));
+        Preconditions.checkNotNull(parameterNames, "The parameter 'parameterNames' must not be null");
+        Preconditions.checkArgument(parameterNames.length == numberOfParameters, "The length of the parameter 'parameterNames' has to be equal to " + numberOfParameters);
+        Preconditions.checkNotNull(parameterDescriptions, "The parameter 'parameterDescriptions' must not be null");
+        Preconditions.checkArgument(parameterDescriptions.length == numberOfParameters, "The length of the parameter 'parameterDescriptions' has to be equal to " + numberOfParameters);
+        this.id = id;
+        this.name = name;
+        this.description = description;
         this.numberOfParameters = numberOfParameters;
-        this.names = Arrays.copyOf(names, names.length);
-        this.descriptions = Arrays.copyOf(descriptions, descriptions.length);
+        this.names = Arrays.copyOf(parameterNames, parameterNames.length);
+        this.descriptions = Arrays.copyOf(parameterDescriptions, parameterDescriptions.length);
         if (numberOfParameters > 0) {
             Preconditions.checkNotNull(defaults, "The parameter 'defaults' must not be null");
             Preconditions.checkArgument(defaults.length == numberOfParameters, "The length of the parameter 'defaults' has to be equal to " + numberOfParameters);
@@ -45,20 +55,24 @@ public abstract class ActivationFunction {
         return numberOfParameters;
     }
     
+    public final String getID() {
+        return id;
+    }
+    
     public final String getName() {
-        return names[0];
+        return name;
     }
     
     public final String getDescription() {
-        return descriptions[0];
+        return description;
     }
     
     public final String getName(int index) {
-        return names[index + 1];
+        return names[index];
     }
     
     public final String getDescription(int index) {
-        return descriptions[index + 1];
+        return descriptions[index];
     }
     
     public final double[] copyDefaults() {
@@ -97,16 +111,16 @@ public abstract class ActivationFunction {
         return upperBounds[index];
     }
 
-    public final double compute(double value, double[] parameters) {
+    public final double compute(double activation, double[] parameters) {
         if (numberOfParameters > 0) {
             Preconditions.checkNotNull(parameters, "The parameter 'parameters' must not be null");
             Preconditions.checkArgument(parameters.length == numberOfParameters, "The length of the parameter 'parameters' has to be equal to " + numberOfParameters);
         }
-        return _compute(value, parameters);
+        return _compute(activation, parameters);
     }
 
-    public final double compute(double value) {
-        return compute(value, defaults);
+    public final double compute(double activation) {
+        return compute(activation, defaults);
     }
     
 }
