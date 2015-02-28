@@ -10,7 +10,7 @@ public class NodeHistoryKey extends HistoryKey {
     
     @Override
     protected int computeHash() {
-        return InnovationList.hashFunction.newHasher()
+        return HistoryList.hashFunction.newHasher()
                 .putInt(sourceNode).putInt(targetNode).putInt(targetSynapse)
                 .putString(activationFunctionID, Charset.defaultCharset())
                 .hash().asInt();

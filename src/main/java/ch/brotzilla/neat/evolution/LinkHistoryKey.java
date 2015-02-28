@@ -4,7 +4,7 @@ public class LinkHistoryKey extends HistoryKey {
     
     @Override
     protected int computeHash() {
-        return InnovationList.hashFunction.newHasher().putInt(sourceNode).putInt(targetNode).putInt(targetSynapse).hash().asInt();
+        return HistoryList.hashFunction.newHasher().putInt(sourceNode).putInt(targetNode).putInt(targetSynapse).hash().asInt();
     }
     
     public LinkHistoryKey(int sourceNode, int targetNode, int targetSynapse) {
