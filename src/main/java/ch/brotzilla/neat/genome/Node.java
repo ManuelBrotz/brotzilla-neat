@@ -39,6 +39,10 @@ public class Node {
         this(type, innovationNumber, activationFunction, null);
     }
     
+    public Node(NodeType type, int innovationNumber) {
+        this(type, innovationNumber, null, null);
+    }
+    
     public NodeType getType() {
         return type;
     }

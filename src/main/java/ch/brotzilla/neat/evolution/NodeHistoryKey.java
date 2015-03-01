@@ -26,7 +26,7 @@ public class NodeHistoryKey extends HistoryKey {
     public String getActivationFunctionID() {
         return activationFunctionID;
     }
-
+    
     @Override
     public boolean equals(Object other) {
         if (other instanceof NodeHistoryKey) {
