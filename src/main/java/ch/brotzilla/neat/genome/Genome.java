@@ -10,6 +10,8 @@ import com.google.common.collect.Maps;
 
 public class Genome {
 
+    private static final boolean CheckIntegrityOnAddLink = true;
+    
     private Node biasNode;
     private final List<Node> inputNodes, hiddenNodes, outputNodes, inputWrapper, hiddenWrapper, outputWrapper;
     private final List<Link> links, linksWrapper;
@@ -143,6 +145,13 @@ public class Genome {
     public final void add(Link link) {
         Preconditions.checkNotNull(link, "The parameter 'link' must not be null");
         Preconditions.checkArgument(!linksMap.containsKey(link.getInnovationNumber()), "The genome already contains a link with the innovation number " + link.getInnovationNumber());
+        if (CheckIntegrityOnAddLink) {
+            final Node sourceNode = nodesMap.get(link.getSourceNode());
+            Preconditions.checkArgument(sourceNode != null, "The genome does not contain a source node with the innovation number " + link.getSourceNode());
+            final Node targetNode = nodesMap.get(link.getTargetNode());
+            Preconditions.checkArgument(targetNode != null, "The genome does not contain a target node with the innovation number " + link.getTargetNode());
+            Preconditions.checkArgument(targetNode.getType().isTargetNode(), "The node with the innovation number " + targetNode.getInnovationNumber() + " has to be of type Output or Hidden");
+        }
         links.add(link);
         linksMap.put(link.getInnovationNumber(), link);
     }
