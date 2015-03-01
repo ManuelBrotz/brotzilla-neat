@@ -1,6 +1,7 @@
 package ch.brotzilla.neat.history;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 import com.google.common.base.Preconditions;
@@ -41,18 +42,8 @@ public class HistoryList {
         return result;
     }
     
-    public NodeInnovation[] getNodeInnovations(NodeHistoryKey key) {
-        final Collection<NodeInnovation> innovations = nodeHistory.get(key);
-        final int numInnovations = innovations.size();
-        if (numInnovations == 0) {
-            return null;
-        }
-        final NodeInnovation[] result = new NodeInnovation[numInnovations];
-        int index = 0;
-        for (final NodeInnovation innovation : innovations) {
-            result[index++] = innovation; 
-        }
-        return result;
+    public Collection<NodeInnovation> getNodeInnovations(NodeHistoryKey key) {
+        return Collections.unmodifiableCollection(nodeHistory.get(key));
     }
     
     public NodeInnovation newNodeInnovation(NodeHistoryKey key) {
