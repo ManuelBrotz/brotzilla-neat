@@ -1,4 +1,4 @@
-package ch.brotzilla.neat.evolution;
+package ch.brotzilla.neat.history;
 
 import java.util.Collection;
 import java.util.HashMap;

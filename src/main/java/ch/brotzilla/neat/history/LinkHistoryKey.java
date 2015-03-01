@@ -1,4 +1,4 @@
-package ch.brotzilla.neat.evolution;
+package ch.brotzilla.neat.history;
 
 public class LinkHistoryKey extends HistoryKey {
     

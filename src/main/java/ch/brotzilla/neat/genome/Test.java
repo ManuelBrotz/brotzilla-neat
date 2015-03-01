@@ -1,10 +1,10 @@
 package ch.brotzilla.neat.genome;
 
-import ch.brotzilla.neat.evolution.HistoryList;
-import ch.brotzilla.neat.evolution.LinkHistoryKey;
-import ch.brotzilla.neat.evolution.LinkInnovation;
-import ch.brotzilla.neat.evolution.NodeHistoryKey;
-import ch.brotzilla.neat.evolution.NodeInnovation;
+import ch.brotzilla.neat.history.HistoryList;
+import ch.brotzilla.neat.history.LinkHistoryKey;
+import ch.brotzilla.neat.history.LinkInnovation;
+import ch.brotzilla.neat.history.NodeHistoryKey;
+import ch.brotzilla.neat.history.NodeInnovation;
 import ch.brotzilla.neat.math.ActivationFunction;
 
 public class Test {
