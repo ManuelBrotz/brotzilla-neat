@@ -18,6 +18,15 @@ public class Link {
         this.targetSynapse = targetSynapse;
     }
     
+    public Link(Link source) {
+        Preconditions.checkNotNull(source, "The parameter 'source' must not be null");
+        innovationNumber = source.innovationNumber;
+        sourceNode = source.sourceNode;
+        targetNode = source.targetNode;
+        targetSynapse = source.targetSynapse;
+        weight = source.weight;
+    }
+    
     public int getInnovationNumber() {
         return innovationNumber;
     }
@@ -40,6 +49,27 @@ public class Link {
     
     public void setWeight(double value) {
         weight = value;
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof Link) {
+            final Link link = (Link) other;
+            return innovationNumber == link.innovationNumber
+                    && sourceNode == link.sourceNode
+                    && targetNode == link.targetNode
+                    && targetSynapse == link.targetSynapse
+                    && weight == link.weight;
+        }
+        return false;
+    }
+    
+    @Override
+    public Link clone() {
+        return new Link(this);
     }
     
 }

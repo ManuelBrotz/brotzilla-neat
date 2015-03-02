@@ -43,6 +43,14 @@ public class Node {
         this(type, innovationNumber, null, null);
     }
     
+    public Node(Node source) {
+        Preconditions.checkNotNull(source, "The parameter 'source' must not be null");
+        type = source.type;
+        innovationNumber = source.innovationNumber;
+        activationFunction = source.activationFunction;
+        defaultParameters = (source.defaultParameters == null ? null : Arrays.copyOf(source.defaultParameters, source.defaultParameters.length));
+    }
+    
     public NodeType getType() {
         return type;
     }
@@ -68,4 +76,23 @@ public class Node {
         return defaultParameters;
     }
     
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof Node) {
+            final Node node = (Node) other;
+            return type == node.type
+                    && innovationNumber == node.innovationNumber
+                    && activationFunction == node.activationFunction
+                    && Arrays.equals(defaultParameters, node.defaultParameters);
+        }
+        return false;
+    }
+    
+    @Override
+    public Node clone() {
+        return new Node(this);
+    }
 }

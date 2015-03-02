@@ -107,11 +107,28 @@ public class Test {
             System.out.println("Link " + link.getInnovationNumber() + " from " + sourceNode.getType() + "" + link.getSourceNode() + " to " + targetNode.getType() + "" + link.getTargetNode());
         }
         
+        System.out.println();
+        
+        return genome;
+    }
+    
+    public static Genome testEquals(Genome genome) {
+        final Genome clone = genome.clone();
+        
+        System.out.println("Equals Test:");
+        System.out.println("Original equals clone: " + genome.equals(clone));
+        
+//        clone.add(new Link(history.newInnovationNumber(), clone.getInputNodes().get(0).getInnovationNumber(), clone.getHiddenNodes().get(0).getInnovationNumber(), 0));
+        clone.getLinkByIndex(0).setWeight(10);
+        System.out.println("Original equals modified clone: " + genome.equals(clone));
+        
+        System.out.println();
+        
         return genome;
     }
     
     public static void main(String[] args) {
-        printGenome(testAddHiddenNodes(testCreateGenome(2, 2)));
+        testEquals(printGenome(testAddHiddenNodes(testCreateGenome(2, 2))));
     }
 
 }

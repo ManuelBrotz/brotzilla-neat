@@ -71,6 +71,35 @@ public class Genome {
         nodesMap = Maps.newHashMap();
         linksMap = Maps.newHashMap();
     }
+    
+    public Genome(Genome source) {
+        this();
+        Preconditions.checkNotNull(source, "The parameter 'source' must not be null");
+        biasNode = (source.biasNode == null ? null : source.biasNode.clone());
+        for (final Node node : source.inputNodes) {
+            final Node clone = node.clone();
+            inputNodes.add(clone);
+            nodesMap.put(clone.getInnovationNumber(), clone);
+        }
+        for (final Node node : source.hiddenNodes) {
+            final Node clone = node.clone();
+            hiddenNodes.add(clone);
+            nodesMap.put(clone.getInnovationNumber(), clone);
+        }
+        for (final Node node : source.outputNodes) {
+            final Node clone = node.clone();
+            outputNodes.add(clone);
+            nodesMap.put(clone.getInnovationNumber(), clone);
+        }
+        for (final Link link : source.links) {
+            final Link clone = link.clone();
+            links.add(clone);
+            linksMap.put(clone.getInnovationNumber(), clone);
+        }
+        inputSize = source.inputSize;
+        hiddenSize = source.hiddenSize;
+        totalSize = source.totalSize;
+    }
 
     public final int getNumberOfNodes() {
         return totalSize;
@@ -204,6 +233,44 @@ public class Genome {
         final Link link = linksMap.remove(innovationNumber);
         Preconditions.checkArgument(link != null, "The genome does not contain a link with the innovation number " + innovationNumber);
         links.remove(link);
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof Genome) {
+            final Genome genome = (Genome) other;
+            if (inputNodes.size() != genome.inputNodes.size() || hiddenNodes.size() != genome.hiddenNodes.size() || outputNodes.size() != genome.outputNodes.size()) {
+                return false;
+            }
+            if (links.size() != genome.links.size()) {
+                return false;
+            }
+            if (!(biasNode == null ? genome.biasNode == null : biasNode.equals(genome.biasNode))) {
+                return false;
+            }
+            if (!inputNodes.equals(genome.inputNodes)) {
+                return false;
+            }
+            if (!hiddenNodes.equals(genome.hiddenNodes)) {
+                return false;
+            }
+            if (!outputNodes.equals(genome.outputNodes)) {
+                return false;
+            }
+            if (!links.equals(genome.links)) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
+    public Genome clone() {
+        return new Genome(this);
     }
     
 }
