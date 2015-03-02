@@ -14,7 +14,7 @@ public class Test {
     public static class TestFunction extends ActivationFunction {
 
         public TestFunction() {
-            super("neat.core.testFunction", "TestFunction", "For testing purposes");
+            super("neat.core.testFunction", "TestFunction", "For testing purposes", 0, 0);
         }
 
         @Override
