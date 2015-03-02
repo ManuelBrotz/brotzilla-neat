@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 
 public abstract class ActivationFunction {
 
+    public static final double TwoPi = 2 * Math.PI;
+
     private final ActivationFunctionInfo info;
     
     protected abstract double _compute(double activation, double[] parameters);

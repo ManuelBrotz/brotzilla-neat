@@ -6,7 +6,7 @@ public class SymmetricGaussianFunction extends ActivationFunction {
         super("neat.math.symmetric.gaussian(x, i)", "Symmetric Gaussian", "Computes the gaussian function for the argument.", 
                 -1.0d, 1.0d, 1,
                 new String[] {"i"}, new String[] {"Input scaling"},
-                new double[] {1.0d}, new double[] {Double.NEGATIVE_INFINITY}, new double[] {Double.POSITIVE_INFINITY});
+                new double[] {2.5d}, new double[] {Double.NEGATIVE_INFINITY}, new double[] {Double.POSITIVE_INFINITY});
     }
 
     @Override

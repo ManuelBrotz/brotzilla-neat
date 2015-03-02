@@ -6,7 +6,7 @@ public class SymmetricSinFunction extends ActivationFunction {
         super("neat.math.symmetric.sin(x, i)", "Symmetric Sine", "Returns the trigonometric sine of an angle in radians.", 
                 -1.0d, 1.0d, 1,
                 new String[] {"i"}, new String[] {"Input scaling"},
-                new double[] {1.0d}, new double[] {Double.NEGATIVE_INFINITY}, new double[] {Double.POSITIVE_INFINITY});
+                new double[] {TwoPi}, new double[] {Double.NEGATIVE_INFINITY}, new double[] {Double.POSITIVE_INFINITY});
     }
 
     @Override
