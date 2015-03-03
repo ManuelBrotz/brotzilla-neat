@@ -15,48 +15,81 @@ public class ActivationFunctionRenderer {
 
     private static final BasicStroke Stroke1 = new BasicStroke(1), Stroke2 = new BasicStroke(2);
     
+    private final Screen screen;
     private BufferedImage buffer;
     private Graphics2D g;
-    private Screen screen;
-    private double zoomFactor = 1.05;
+    
+    private double trunc(double v, double p) {
+        double tmp = v * (1.0 / p);
+        if (tmp > 0) {
+            return Math.floor(tmp) * p;
+        }
+        if (tmp < 0) {
+            return Math.ceil(tmp) * p;
+        }
+        return tmp;
+    }
     
     private static class Screen {
         
-        public final int x, y, displayWidth, displayHeight, screenWidth, screenHeight, halfScreenWidth, halfScreenHeight;
-        public final boolean render;
+        private int border, x, y, width, height, gridWidth, gridHeight;
+        private boolean render;
         
-        public double zoomFactor, stepX, begin, end;
+        private double sectionX, sectionY, sectionSize, stepX;
         
-        public Screen(int width, int height, int border, double zoom) {
+        public Screen(int border, int width, int height, double beginX, double beginY, double sectionSize) {
+            Preconditions.checkArgument(border >= 0, "The parameter 'border' has to be greater than or equal to zero");
             Preconditions.checkArgument(width >= 0, "The parameter 'width' has to be greater than or equal to zero");
             Preconditions.checkArgument(height >= 0, "The parameter 'height' has to be greater than or equal to zero");
-            Preconditions.checkArgument(border >= 0, "The parameter 'border' has to be greater than or equal to zero");
+            Preconditions.checkArgument(sectionSize > 0.0, "The parameter 'sectionSize' has to be greater than zero");
+            this.border = border;
             x = border;
             y = border;
-            displayWidth = width;
-            displayHeight = height;
-            screenWidth = Math.max(0, width - 2 * border);
-            screenHeight = Math.max(0, height - 2 * border);
-            halfScreenWidth = screenWidth / 2;
-            halfScreenHeight = screenHeight / 2;
-            render = (screenWidth >= 20) && (screenHeight >= 20);
-            setZoomFactor(zoom);
-        }
-        
-        public void setZoomFactor(double value) {
-            value = Math.max(0.1, value);
-            zoomFactor = value;
-            stepX = 1.0d / screenWidth * value;
-            begin = -value;
-            end = value;
+            this.width = width;
+            this.height = height;
+            gridWidth = Math.max(0, width - 2 * border);
+            gridHeight = Math.max(0, height - 2 * border);
+            render = (gridWidth >= 20) && (gridHeight >= 20);
+            this.sectionX = beginX;
+            this.sectionY = beginY;
+            this.sectionSize = sectionSize;
+            if (render) {
+                stepX = 1.0d / gridWidth;
+            }
         }
 
+        public void setBorder(int value) {
+            Preconditions.checkArgument(value >= 0, "The parameter 'value' has to be greater than or equal to zero");
+            border = value;
+            x = border;
+            y = border;
+            gridWidth = Math.max(0, width - 2 * border);
+            gridHeight = Math.max(0, height - 2 * border);
+            render = (gridWidth >= 20) && (gridHeight >= 20);
+            if (render) {
+                stepX = 1.0d / gridWidth;
+            }
+        }
+        
+        public void setSize(int width, int height) {
+            Preconditions.checkArgument(width >= 0, "The parameter 'width' has to be greater than or equal to zero");
+            Preconditions.checkArgument(height >= 0, "The parameter 'height' has to be greater than or equal to zero");
+            this.width = width;
+            this.height = height;
+            gridWidth = Math.max(0, width - 2 * border);
+            gridHeight = Math.max(0, height - 2 * border);
+            render = (gridWidth >= 20) && (gridHeight >= 20);
+            if (render) {
+                stepX = 1.0d / gridWidth;
+            }
+        }
+        
         public int tx(double v) {
-            return x + halfScreenWidth + (int) Math.round(halfScreenWidth * v / zoomFactor);
+            return x + (int) Math.round(gridWidth * (v - sectionX) / sectionSize);
         }
         
         public int ty(double v) {
-            return y + halfScreenHeight + (int) Math.round(halfScreenHeight * v / zoomFactor);
+            return y + (int) Math.round(gridHeight * (v - sectionY) / sectionSize);
         }
         
     }
@@ -67,48 +100,40 @@ public class ActivationFunctionRenderer {
     
     private void clearScreen() {
         g.setBackground(Color.white);
-        g.clearRect(0, 0, screen.displayWidth, screen.displayHeight);
+        g.clearRect(0, 0, screen.width, screen.height);
     }
     
-    private void renderLargeGrid() {
+    private void renderGrid(Color color, double stepSize) {
         g.setStroke(Stroke1);
-        final int begin = (int) screen.begin, end = (int) screen.end;
-        for (int x = begin; x <= end; x++) {
-            g.setColor(Color.gray);
-            renderLine(x, screen.begin, x, screen.end);
+        g.setColor(color);
+        final int steps = (int) Math.round(screen.sectionSize / stepSize) + 1;
+        final double beginX = trunc(screen.sectionX, stepSize);
+        for (int i = 0; i < steps; i++) {
+            final double x = beginX + (stepSize * i);
+            if (x < screen.sectionX) continue;
+            if (x > screen.sectionX + screen.sectionSize) break;
+            renderLine(x, screen.sectionY, x, screen.sectionY + screen.sectionSize);
         }
-        for (int y = begin; y <= end; y++) {
-            g.setColor(Color.gray);
-            renderLine(screen.begin, y, screen.end, y);
-        }
-    }
-    
-    private void renderSmallGrid() {
-        g.setStroke(Stroke1);
-        final int begin = (int) (screen.begin * 10), end = (int) (screen.end * 10);
-        for (int x = begin; x <= end; x++) {
-            if (x % 10 == 0) continue;
-            g.setColor(Color.lightGray);
-            renderLine(x * 0.1, screen.begin, x * 0.1, screen.end);
-        }
-        for (int y = begin; y <= end; y++) {
-            if (y % 10 == 0) continue;
-            g.setColor(Color.lightGray);
-            renderLine(screen.begin, y * 0.1, screen.end, y * 0.1);
+        final double beginY = trunc(screen.sectionY, stepSize);
+        for (int i = 0; i < steps; i++) {
+            final double y = beginY + (stepSize * i);
+            if (y < screen.sectionY) continue;
+            if (y > screen.sectionY + screen.sectionSize) break;
+            renderLine(screen.sectionX, y, screen.sectionX + screen.sectionSize, y);
         }
     }
     
     private void renderFunctions(List<FunctionEntry> functions) {
         g.setStroke(Stroke2);
-        g.setClip(screen.x, screen.y, screen.displayWidth, screen.displayHeight);
+        g.setClip(screen.x, screen.y, screen.gridWidth, screen.gridHeight);
         for (final FunctionEntry entry : functions) {
             if (!entry.getActive()) {
                 continue;
             }
             final ActivationFunction f = entry.getActivationFunction();
-            double x = screen.begin + screen.stepX, xprev = screen.begin, yprev = -f.compute(screen.begin);
+            double x = screen.sectionX + screen.stepX, xprev = screen.sectionX, yprev = -f.compute(screen.sectionX);
             g.setColor(entry.getColor());
-            while (x < screen.end) {
+            while (x < screen.sectionX + screen.sectionSize) {
                 final double y = -f.compute(x);
                 renderLine(xprev, yprev, x, y);
                 xprev = x;
@@ -116,10 +141,12 @@ public class ActivationFunctionRenderer {
                 x += screen.stepX;
             }
         }
-        g.setClip(0, 0, screen.displayWidth, screen.displayHeight);
+        g.setClip(0, 0, screen.width, screen.height);
     }
     
-    public ActivationFunctionRenderer() {}
+    public ActivationFunctionRenderer() {
+        screen = new Screen(30, 0, 0, -1.0, -1.0, 2.0);
+    }
     
     public boolean isReady() {
         return buffer != null;
@@ -129,40 +156,94 @@ public class ActivationFunctionRenderer {
         return buffer;
     }
     
+    public int getBorder() {
+        return screen.border;
+    }
+    
+    public void setBorder(int value) {
+        screen.setBorder(value);
+    }
+    
     public int getWidth() {
-        return buffer == null ? 0 : buffer.getWidth();
+        return screen.width;
     }
     
     public int getHeight() {
-        return buffer == null ? 0 : buffer.getHeight();
+        return screen.height;
     }
     
     public void setSize(int width, int height) {
-        if (buffer == null || buffer.getWidth() != width || buffer.getHeight() != height) {
+        if (width == 0 || height == 0) {
+            screen.setSize(0, 0);
+            buffer = null;
+            g = null;
+        } else if (buffer == null || buffer.getWidth() != width || buffer.getHeight() != height) {
+            screen.setSize(width, height);
             buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             g = (Graphics2D) buffer.getGraphics();
             g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            screen = new Screen(width, height, 30, zoomFactor);
         }
     }
     
-    public double getZoomFactor() {
-        return zoomFactor;
+    public int getGridWidth() {
+        return screen.gridWidth;
     }
     
-    public void setZoomFactor(double value) {
-        this.zoomFactor = value;
-        if (screen != null) {
-            screen.setZoomFactor(value);
-        }
+    public int getGridHeight() {
+        return screen.gridHeight;
+    }
+    
+    public double getSectionPosX() {
+        return screen.sectionX;
+    }
+    
+    public double getSectionPosY() {
+        return screen.sectionY;
+    }
+    
+    public void setSectionPos(double x, double y) {
+        screen.sectionX = x;
+        screen.sectionY = y;
+    }
+
+    public void addSectionPosDelta(double dx, double dy) {
+        setSectionPos(screen.sectionX + dx, screen.sectionY + dy);
+    }
+
+    public void addSectionPosDelta(double delta) {
+        setSectionPos(screen.sectionX + delta, screen.sectionY + delta);
+    }
+    
+    public double getSectionSize() {
+        return screen.sectionSize;
+    }
+
+    public void setSectionSize(double value) {
+        value = Math.max(0.1, value);
+        screen.sectionSize = value;
+    }
+    
+    public void addSectionSizeDelta(double delta) {
+        setSectionSize(screen.sectionSize + delta);
+    }
+    
+    public void addZoomDelta(double delta) {
+        addSectionPosDelta(-delta / 4);
+        addSectionSizeDelta(delta / 2);
+    }
+    
+    public void resetSection() {
+        screen.sectionX = -1.0;
+        screen.sectionY = -1.0;
+        screen.sectionSize = 2.0;
     }
 
     public void render(List<FunctionEntry> functions) {
         Preconditions.checkState(buffer != null, "The renderer is not ready");
         clearScreen();
-        if (screen != null && screen.render) {
-            renderSmallGrid();
-            renderLargeGrid();
+        if (screen.render) {
+            renderGrid(Color.lightGray, 0.1);
+            renderGrid(Color.gray, 1.0);
             renderFunctions(functions);
         }
     }

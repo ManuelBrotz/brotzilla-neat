@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.Collections;
@@ -35,13 +37,48 @@ public class ActivationFunctionDisplay extends JPanel {
         
     }
     
-    private class MouseListener implements MouseWheelListener {
+    private class MouseListener implements MouseWheelListener, MouseMotionListener, java.awt.event.MouseListener {
 
+        private double sectionX, sectionY;
+        private int startX, startY;
+        private boolean move = false;
+        
         public void mouseWheelMoved(MouseWheelEvent e) {
             final double delta = e.getPreciseWheelRotation();
-            renderer.setZoomFactor(renderer.getZoomFactor() + delta * 0.2);
+            renderer.addZoomDelta(renderer.getSectionSize() * (e.isControlDown() ? 0.01 : 0.1) * delta);
             renderFunctions();
         }
+
+        public void mousePressed(MouseEvent e) {
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                sectionX = renderer.getSectionPosX();
+                sectionY = renderer.getSectionPosY();
+                startX = e.getX();
+                startY = e.getY();
+                move = true;
+            }
+        }
+
+        public void mouseDragged(MouseEvent e) {
+            if (move) {
+                final int dx = e.getX() - startX, dy = e.getY() - startY;
+                final double ddx = (double) dx / renderer.getGridWidth() * renderer.getSectionSize(), ddy = (double) dy / renderer.getGridHeight() * renderer.getSectionSize();
+                renderer.setSectionPos(sectionX - ddx, sectionY - ddy);
+                renderFunctions();
+            }
+        }
+
+        public void mouseReleased(MouseEvent e) {
+            move = false;
+        }
+
+        public void mouseMoved(MouseEvent e) {}
+
+        public void mouseClicked(MouseEvent e) {}
+
+        public void mouseEntered(MouseEvent e) {}
+
+        public void mouseExited(MouseEvent e) {}
         
     }
 
@@ -87,7 +124,10 @@ public class ActivationFunctionDisplay extends JPanel {
         functionList = Lists.newArrayList();
         wrapperList = Collections.unmodifiableList(functionList);
         addComponentListener(new ResizeListener());
-        addMouseWheelListener(new MouseListener());
+        final MouseListener mouseListener = new MouseListener();
+        addMouseWheelListener(mouseListener);
+        addMouseMotionListener(mouseListener);
+        addMouseListener(mouseListener);
     }
     
     public List<FunctionEntry> getFunctions() {
