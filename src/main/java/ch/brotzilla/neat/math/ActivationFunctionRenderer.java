@@ -19,17 +19,6 @@ public class ActivationFunctionRenderer {
     private BufferedImage buffer;
     private Graphics2D g;
     
-    private double trunc(double v, double p) {
-        double tmp = v * (1.0 / p);
-        if (tmp > 0) {
-            return Math.floor(tmp) * p;
-        }
-        if (tmp < 0) {
-            return Math.ceil(tmp) * p;
-        }
-        return tmp;
-    }
-    
     private static class Screen {
         
         private int border, x, y, width, height, gridWidth, gridHeight;
@@ -101,6 +90,17 @@ public class ActivationFunctionRenderer {
     private void clearScreen() {
         g.setBackground(Color.white);
         g.clearRect(0, 0, screen.width, screen.height);
+    }
+    
+    private double trunc(double v, double stepSize) {
+        double tmp = v * (1.0 / stepSize);
+        if (tmp > 0) {
+            return Math.floor(tmp) * stepSize;
+        }
+        if (tmp < 0) {
+            return Math.ceil(tmp) * stepSize;
+        }
+        return tmp;
     }
     
     private void renderGrid(Color color, double stepSize) {
