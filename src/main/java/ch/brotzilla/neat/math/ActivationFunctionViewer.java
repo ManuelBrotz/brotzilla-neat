@@ -12,10 +12,11 @@ public class ActivationFunctionViewer extends JFrame {
     
     private void addFunctions() {
         display.addFunction(new SymmetricCosFunction(), Color.blue);
+//        display.addFunction(new SymmetricTanhFunction(), Color.cyan);
         display.addFunction(new SymmetricElliottFunction(), Color.red);
         display.addFunction(new SymmetricGaussianFunction(), Color.green);
-        display.addFunction(new SymmetricSqrtFunction(), Color.orange);
-        display.addFunction(new AbsFunction(), Color.black);
+//        display.addFunction(new SymmetricSqrtFunction(), Color.orange);
+//        display.addFunction(new AbsFunction(), Color.black);
     }
     
     public ActivationFunctionViewer() {

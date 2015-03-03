@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +32,16 @@ public class ActivationFunctionDisplay extends JPanel {
         public void componentShown(ComponentEvent e) {}
 
         public void componentHidden(ComponentEvent e) {}
+        
+    }
+    
+    private class MouseListener implements MouseWheelListener {
+
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            final double delta = e.getPreciseWheelRotation();
+            renderer.setZoomFactor(renderer.getZoomFactor() + delta * 0.2);
+            renderFunctions();
+        }
         
     }
 
@@ -75,6 +87,7 @@ public class ActivationFunctionDisplay extends JPanel {
         functionList = Lists.newArrayList();
         wrapperList = Collections.unmodifiableList(functionList);
         addComponentListener(new ResizeListener());
+        addMouseWheelListener(new MouseListener());
     }
     
     public List<FunctionEntry> getFunctions() {
