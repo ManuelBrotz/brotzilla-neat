@@ -7,9 +7,9 @@ import com.google.common.base.Preconditions;
 public abstract class ExtendedActivationFunction extends ActivationFunction {
 
     private double rectify(double v, double r) {
-        if (r > 0.33) {
+        if (r > 0.0) {
             if (v < 0) return -v;
-        } else if (r < -0.33) {
+        } else if (r < 0.0) {
             if (v > 0) return -v;
         }
         return v;
@@ -43,7 +43,7 @@ public abstract class ExtendedActivationFunction extends ActivationFunction {
                 .setViewerUpperBound(10.0)
                 .build());
         parameters.add(builder.setName("rectify")
-                .setDescription("If greater than 0.33, mapps all negative output values to positive ones. If less than -0.33, mappes all positive output values to negative ones. If inbetween, the output values remain unchanged.")
+                .setDescription("If greater than 0, mapps all negative output values to positive ones. If less than 0, mapps all positive output values to negative ones. If equal to 0, the output values remain unchanged.")
                 .setDefaultValue(0.0)
                 .setViewerLowerBound(-1.0)
                 .setViewerUpperBound(1.0)
