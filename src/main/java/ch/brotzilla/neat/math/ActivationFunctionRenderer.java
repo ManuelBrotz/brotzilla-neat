@@ -145,7 +145,7 @@ public class ActivationFunctionRenderer {
     }
     
     public ActivationFunctionRenderer() {
-        screen = new Screen(30, 0, 0, -1.0, -1.0, 2.0);
+        screen = new Screen(30, 0, 0, -1.1, -1.1, 2.2);
     }
     
     public boolean isReady() {

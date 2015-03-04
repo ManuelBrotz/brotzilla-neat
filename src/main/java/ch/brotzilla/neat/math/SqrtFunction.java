@@ -1,13 +1,16 @@
 package ch.brotzilla.neat.math;
 
-public class SqrtFunction extends ActivationFunction {
+public class SqrtFunction extends ExtendedActivationFunction {
 
     public SqrtFunction() {
-        super("neat.math.sqrt(x)", "Square Root", "Returns the positive square root of the argument.", 0.0d, Double.POSITIVE_INFINITY);
+        super("neat.math.extended.sqrt", "Square Root", "Returns the positive square root of the argument. Negative input values are mapped to negative output values.");
     }
 
     @Override
     protected double _compute(double activation, double[] parameters) {
+        if (activation < 0) {
+            return -Math.sqrt(-activation);
+        }
         return Math.sqrt(activation);
     }
 
