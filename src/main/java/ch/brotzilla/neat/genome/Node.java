@@ -27,7 +27,7 @@ public class Node {
             Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
             this.activationFunction = activationFunction;
             if (defaultParameters == null) {
-                this.defaultParameters = activationFunction.copyDefaultValues();
+                this.defaultParameters = activationFunction.copyParameterValues();
             } else {
                 Preconditions.checkArgument(defaultParameters.length == activationFunction.getNumberOfParameters(), "The length of the parameter 'defaultParameters' has to be equal to " + activationFunction.getNumberOfParameters());
                 this.defaultParameters = Arrays.copyOf(defaultParameters, defaultParameters.length);
@@ -69,7 +69,7 @@ public class Node {
         } 
         Preconditions.checkNotNull(value, "The parameter 'value' must not be null");
         activationFunction = value;
-        defaultParameters = value.copyDefaultValues();
+        defaultParameters = value.copyParameterValues();
     }
     
     public double[] getDefaultParameters() {

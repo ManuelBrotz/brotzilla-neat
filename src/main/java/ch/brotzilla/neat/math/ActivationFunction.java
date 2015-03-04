@@ -1,5 +1,6 @@
 package ch.brotzilla.neat.math;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -74,6 +75,25 @@ public abstract class ActivationFunction {
     
     public int getNumberOfParameters() {
         return numberOfParameters;
+    }
+    
+    public double[] copyDefaultValues() {
+        if (numberOfParameters > 0) { 
+            final double[] result = new double[numberOfParameters];
+            int i = 0;
+            for (final ActivationFunctionParameter p : parameters) {
+                result[i++] = p.getDefaultValue();
+            }
+            return result;
+        }
+        return null;
+    }
+
+    public double[] copyParameterValues() {
+        if (numberOfParameters > 0) {
+            return Arrays.copyOf(parameterValues, parameterValues.length);
+        }
+        return null;
     }
     
     public double[] getParameterValues() {

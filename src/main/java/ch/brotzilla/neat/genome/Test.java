@@ -6,23 +6,11 @@ import ch.brotzilla.neat.history.LinkInnovation;
 import ch.brotzilla.neat.history.NodeHistoryKey;
 import ch.brotzilla.neat.history.NodeInnovation;
 import ch.brotzilla.neat.math.ActivationFunction;
+import ch.brotzilla.neat.math.CosFunction;
 
 public class Test {
 
-    public static final TestFunction testFunction = new TestFunction();
-    
-    public static class TestFunction extends ActivationFunction {
-
-        public TestFunction() {
-            super("neat.core.testFunction", "TestFunction", "For testing purposes", 0, 0);
-        }
-
-        @Override
-        protected double _compute(double activation, double[] parameters) {
-            return 0;
-        }
-        
-    }
+    public static final ActivationFunction testFunction = new CosFunction();
     
     public static final HistoryList history = new HistoryList();
 
