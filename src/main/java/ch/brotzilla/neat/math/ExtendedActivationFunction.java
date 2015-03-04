@@ -6,6 +6,15 @@ import com.google.common.base.Preconditions;
 
 public abstract class ExtendedActivationFunction extends ActivationFunction {
 
+    private double rectify(double v, double r) {
+        if (r > 0.33) {
+            if (v < 0) return -v;
+        } else if (r < -0.33) {
+            if (v > 0) return -v;
+        }
+        return v;
+    }
+    
     @Override
     protected void initializeDefaultParameters(List<ActivationFunctionParameter> parameters) {
         final ActivationFunctionParameter.Builder builder = new ActivationFunctionParameter.Builder();
@@ -33,6 +42,12 @@ public abstract class ExtendedActivationFunction extends ActivationFunction {
                 .setViewerLowerBound(-10.0)
                 .setViewerUpperBound(10.0)
                 .build());
+        parameters.add(builder.setName("rectify")
+                .setDescription("If greater than 0.33, mapps all negative output values to positive ones. If less than -0.33, mappes all positive output values to negative ones. If inbetween, the output values remain unchanged.")
+                .setDefaultValue(0.0)
+                .setViewerLowerBound(-1.0)
+                .setViewerUpperBound(1.0)
+                .build());
     }
 
     protected ExtendedActivationFunction(String id, String name, String description, ActivationFunctionParameter... parameters) {
@@ -47,7 +62,7 @@ public abstract class ExtendedActivationFunction extends ActivationFunction {
         } else {
             Preconditions.checkArgument(parameters == null, "The parameter 'parameters' has to be null");
         }
-        return _compute(activation * parameters[0] + parameters[1], parameters) * parameters[2] + parameters[3];
+        return rectify(_compute(activation * parameters[0] + parameters[1], parameters), parameters[4]) * parameters[2] + parameters[3];
     }
     
 }

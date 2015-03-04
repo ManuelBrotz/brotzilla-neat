@@ -13,7 +13,7 @@ public class ActivationFunctionViewer extends JFrame {
     private final ActivationFunctionDisplay display;
     
     private ActivationFunction createFunction() {
-        return new SawtoothWaveFunction();
+        return new CosFunction();
     }
     
     private ActivationFunction setParams(ActivationFunction f, double[] p) {
@@ -26,13 +26,13 @@ public class ActivationFunctionViewer extends JFrame {
     }
     
     private void addFunctions() {
-//        display.addFunction(setParams(createFunction(), new double[] {-1.0, 0.0, 1.0, 0.0}), Color.pink);
-//        display.addFunction(setParams(createFunction(), new double[] {-1.0, 0.0, 0.5, 0.5}), Color.cyan);
-//        display.addFunction(setParams(createFunction(), new double[] {-1.0, 0.0, 0.5, -0.5}), Color.orange);
+//        display.addFunction(setParams(createFunction(), new double[] {-1.0, 0.0, 1.0, 0.0, 0.0}), Color.pink);
+//        display.addFunction(setParams(createFunction(), new double[] {-1.0, 0.0, 0.5, 0.5, 0.0}), Color.cyan);
+//        display.addFunction(setParams(createFunction(), new double[] {-1.0, 0.0, 0.5, -0.5, 0.0}), Color.orange);
         
-        display.addFunction(setParams(createFunction(), new double[] {1.0, 0.0, 1.0, 0.0}), Color.blue);
-//        display.addFunction(setParams(createFunction(), new double[] {1.0, 0.0, 0.5, 0.5}), Color.green);
-//        display.addFunction(setParams(createFunction(), new double[] {1.0, 0.0, 0.5, -0.5}), Color.red);
+        display.addFunction(setParams(createFunction(), new double[] {1.0, 0.0, 1.0, 0.0, 1.0}), Color.blue);
+//        display.addFunction(setParams(createFunction(), new double[] {1.0, 0.0, 0.5, 0.5, 0.0}), Color.green);
+//        display.addFunction(setParams(createFunction(), new double[] {1.0, 0.0, 0.5, -0.5, 0.0}), Color.red);
         
 //        display.addFunction(new SymmetricLeftSawtoothWaveFunction(), Color.blue);
 //        display.addFunction(new SymmetricRightSawtoothWaveFunction(), Color.green);
