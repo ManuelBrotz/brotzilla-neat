@@ -89,6 +89,10 @@ public abstract class ActivationFunction {
         return null;
     }
 
+    public double getDefaultValue(int index) {
+        return parameters.get(index).getDefaultValue();
+    }
+    
     public double[] copyParameterValues() {
         if (numberOfParameters > 0) {
             return Arrays.copyOf(parameterValues, parameterValues.length);
@@ -98,6 +102,10 @@ public abstract class ActivationFunction {
     
     public double[] getParameterValues() {
         return parameterValues;
+    }
+    
+    public double getParameterValue(int index) {
+        return parameterValues[index];
     }
     
     public void resetParameterValues() {

@@ -56,12 +56,8 @@ public abstract class ExtendedActivationFunction extends ActivationFunction {
 
     @Override
     public final double compute(double activation, double[] parameters) {
-        if (getNumberOfParameters() > 0) {
-            Preconditions.checkNotNull(parameters, "The parameter 'parameters' must not be null");
-            Preconditions.checkArgument(parameters.length == getNumberOfParameters(), "The length of the parameter 'parameters' has to be equal to " + getNumberOfParameters());
-        } else {
-            Preconditions.checkArgument(parameters == null, "The parameter 'parameters' has to be null");
-        }
+        Preconditions.checkNotNull(parameters, "The parameter 'parameters' must not be null");
+        Preconditions.checkArgument(parameters.length >= getNumberOfParameters(), "The length of the parameter 'parameters' has to be greater than or equal to " + getNumberOfParameters());
         return rectify(_compute(activation * parameters[0] + parameters[1], parameters), parameters[4]) * parameters[2] + parameters[3];
     }
     

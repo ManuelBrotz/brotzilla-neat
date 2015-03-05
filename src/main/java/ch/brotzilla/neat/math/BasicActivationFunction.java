@@ -17,9 +17,7 @@ public abstract class BasicActivationFunction extends ActivationFunction {
     public final double compute(double activation, double[] parameters) {
         if (getNumberOfParameters() > 0) {
             Preconditions.checkNotNull(parameters, "The parameter 'parameters' must not be null");
-            Preconditions.checkArgument(parameters.length == getNumberOfParameters(), "The length of the parameter 'parameters' has to be equal to " + getNumberOfParameters());
-        } else {
-            Preconditions.checkArgument(parameters == null, "The parameter 'parameters' has to be null");
+            Preconditions.checkArgument(parameters.length >= getNumberOfParameters(), "The length of the parameter 'parameters' has to be greater than or equal to " + getNumberOfParameters());
         }
         return _compute(activation, parameters);
     }
