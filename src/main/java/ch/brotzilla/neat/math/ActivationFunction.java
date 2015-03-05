@@ -7,6 +7,8 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
+// TODO Activation function parameters should be called 'synapses' throughout.
+// TODO Get rid of parameter values in activation functions and handle them externally.
 public abstract class ActivationFunction {
 
     public static final double Pi = Math.PI;

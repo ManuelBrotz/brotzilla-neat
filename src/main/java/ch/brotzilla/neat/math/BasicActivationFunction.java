@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.google.common.base.Preconditions;
 
+// TODO BasicActivationFunction should be renamed to SimpleActivationFunction.
+// TODO Simple activation functions should be fixed to have zero synapses.
 public abstract class BasicActivationFunction extends ActivationFunction {
 
     @Override

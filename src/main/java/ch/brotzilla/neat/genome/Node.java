@@ -6,6 +6,7 @@ import ch.brotzilla.neat.math.ActivationFunction;
 
 import com.google.common.base.Preconditions;
 
+// TODO Parameters should be called 'synapses' throughout.
 public class Node {
 
     private final NodeType type;
