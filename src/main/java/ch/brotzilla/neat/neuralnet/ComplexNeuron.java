@@ -1,0 +1,36 @@
+package ch.brotzilla.neat.neuralnet;
+
+import com.google.common.base.Preconditions;
+
+import ch.brotzilla.neat.math.ActivationFunction;
+
+public abstract class ComplexNeuron extends Neuron {
+
+    protected final double[] synapseDefaults;
+    protected final double[] synapseActivations;
+
+    public ComplexNeuron(NeuralNet owner, int neuronIndex, ActivationFunction activationFunction, Connection[] connections) {
+        super(owner, neuronIndex, activationFunction, connections);
+        Preconditions.checkArgument(activationFunction.getNumberOfParameters() > 0, "The parameter 'activationFunction.getNumberOfParameters()' has to be greater than zero");
+        this.synapseDefaults = activationFunction.copyParameterValues();
+        this.synapseActivations = new double[activationFunction.getNumberOfParameters()];
+}
+
+    @Override
+    public void compute() {
+        double input = 0;
+        for (int i = 0; i < synapseActivations.length; i++) {
+            synapseActivations[i] = synapseDefaults[i];
+        }
+        for (final Connection c : connections) {
+            final int synapse = c.getSynapse();
+            if (synapse == -1) {
+                input += c.getValue();
+            } else {
+                synapseActivations[synapse] += c.getValue();
+            }
+        }
+        setActivation(activationFunction.compute(input, synapseActivations));
+    }
+
+}
