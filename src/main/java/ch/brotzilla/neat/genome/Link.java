@@ -11,7 +11,7 @@ public class Link {
         Preconditions.checkArgument(innovationNumber > 0, "The parameter 'innovationNumber' has to be greater than zero");
         Preconditions.checkArgument(sourceNode > 0, "The parameter 'sourceNode' has to be greater than zero");
         Preconditions.checkArgument(targetNode > 0, "The parameter 'targetNode' has to be greater than zero");
-        Preconditions.checkArgument(targetSynapse >= 0, "The parameter 'targetSynapse' has to be greater than or equal to zero");
+        Preconditions.checkArgument(targetSynapse >= -1, "The parameter 'targetSynapse' has to be greater than or equal to -1");
         this.innovationNumber = innovationNumber;
         this.sourceNode = sourceNode;
         this.targetNode = targetNode;
