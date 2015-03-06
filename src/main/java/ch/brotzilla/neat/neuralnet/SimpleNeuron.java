@@ -10,7 +10,6 @@ public abstract class SimpleNeuron extends Neuron {
     void compute() {
         double input = 0;
         for (final Connection c : connections) {
-            Preconditions.checkState(c.getSynapse() == -1, "Simple neurons do not support additional synapses");
             input += c.getValue();
         }
         setActivation(activationFunction.compute(input, null));

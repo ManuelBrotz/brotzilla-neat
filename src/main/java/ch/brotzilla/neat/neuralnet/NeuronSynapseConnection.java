@@ -2,12 +2,12 @@ package ch.brotzilla.neat.neuralnet;
 
 import com.google.common.base.Preconditions;
 
-public abstract class NeuronConnection extends Connection {
+public abstract class NeuronSynapseConnection extends SynapseConnection {
 
     protected final int neuronIndex;
     
-    public NeuronConnection(NeuralNet owner, int neuronIndex, double weight) {
-        super(owner, weight);
+    public NeuronSynapseConnection(NeuralNet owner, int neuronIndex, int synapse, double weight) {
+        super(owner, synapse, weight);
         Preconditions.checkArgument(neuronIndex >= 0, "The parameter 'neuronIndex' has to be greater than or equal to zero");
         this.neuronIndex = neuronIndex;
     }

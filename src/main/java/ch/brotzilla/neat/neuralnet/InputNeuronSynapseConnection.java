@@ -2,10 +2,10 @@ package ch.brotzilla.neat.neuralnet;
 
 import com.google.common.base.Preconditions;
 
-public class InputNeuronConnection extends NeuronConnection {
+public class InputNeuronSynapseConnection extends NeuronSynapseConnection {
 
-    public InputNeuronConnection(NeuralNet owner, int neuronIndex, double weight) {
-        super(owner, neuronIndex, weight);
+    public InputNeuronSynapseConnection(NeuralNet owner, int neuronIndex, int synapse, double weight) {
+        super(owner, neuronIndex, synapse, weight);
         Preconditions.checkElementIndex(neuronIndex, owner.getNumberOfInputNeurons(), "The parameter 'neuronIndex'");
     }
 

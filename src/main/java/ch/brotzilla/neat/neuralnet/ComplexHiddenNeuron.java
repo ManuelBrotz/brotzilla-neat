@@ -11,8 +11,8 @@ public class ComplexHiddenNeuron extends ComplexNeuron {
         owner.setHiddenNeuronActivation(neuronIndex, activation);
     }
 
-    public ComplexHiddenNeuron(NeuralNet owner, int neuronIndex, ActivationFunction activationFunction, double[] synapseDefaults, Connection[] connections) {
-        super(owner, neuronIndex, activationFunction, synapseDefaults, connections);
+    public ComplexHiddenNeuron(NeuralNet owner, int neuronIndex, ActivationFunction activationFunction, double[] synapseDefaults, Connection[] connections, SynapseConnection[] synapseConnections) {
+        super(owner, neuronIndex, activationFunction, synapseDefaults, connections, synapseConnections);
         Preconditions.checkElementIndex(neuronIndex, owner.getNumberOfHiddenNeurons(), "The parameter 'neuronIndex'");
     }
 
