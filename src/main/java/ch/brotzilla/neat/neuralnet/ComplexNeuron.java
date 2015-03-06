@@ -19,10 +19,10 @@ public abstract class ComplexNeuron extends Neuron {
             synapseActivations[i] = synapseDefaults[i];
         }
         for (final Connection c : connections) {
-            input += c.getValue();
+            input += c.getValue(nn);
         }
         for (final SynapseConnection c : synapseConnections) {
-            synapseActivations[c.getSynapse()] += c.getValue();
+            synapseActivations[c.getSynapse()] += c.getValue(nn);
         }
         setActivation(nn, activationFunction.compute(input, synapseActivations));
     }

@@ -10,7 +10,7 @@ public abstract class SimpleNeuron extends Neuron {
     void compute(NeuralNet nn) {
         double input = 0;
         for (final Connection c : connections) {
-            input += c.getValue();
+            input += c.getValue(nn);
         }
         setActivation(nn, activationFunction.compute(input, null));
     }

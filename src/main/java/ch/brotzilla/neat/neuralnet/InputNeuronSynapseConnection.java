@@ -1,17 +1,14 @@
 package ch.brotzilla.neat.neuralnet;
 
-import com.google.common.base.Preconditions;
-
 public class InputNeuronSynapseConnection extends NeuronSynapseConnection {
 
-    public InputNeuronSynapseConnection(NeuralNet owner, int neuronIndex, int synapse, double weight) {
-        super(owner, neuronIndex, synapse, weight);
-        Preconditions.checkElementIndex(neuronIndex, owner.getNumberOfInputNeurons(), "The parameter 'neuronIndex'");
+    public InputNeuronSynapseConnection(int neuronIndex, int synapse, double weight) {
+        super(neuronIndex, synapse, weight);
     }
 
     @Override
-    public double getValue() {
-        return owner.getInputNeuronActivation(neuronIndex) * weight;
+    public double getValue(NeuralNet nn) {
+        return nn.getInputNeuronActivation(neuronIndex) * weight;
     }
 
 }
