@@ -13,7 +13,7 @@ public abstract class ComplexNeuron extends Neuron {
     protected final double[] synapseActivations;
 
     @Override
-    void compute() {
+    void compute(NeuralNet nn) {
         double input = 0;
         for (int i = 0; i < synapseActivations.length; i++) {
             synapseActivations[i] = synapseDefaults[i];
@@ -24,11 +24,11 @@ public abstract class ComplexNeuron extends Neuron {
         for (final SynapseConnection c : synapseConnections) {
             synapseActivations[c.getSynapse()] += c.getValue();
         }
-        setActivation(activationFunction.compute(input, synapseActivations));
+        setActivation(nn, activationFunction.compute(input, synapseActivations));
     }
 
-    public ComplexNeuron(NeuralNet owner, int neuronIndex, ActivationFunction activationFunction, double[] synapseDefaults, Connection[] connections, SynapseConnection[] synapseConnections) {
-        super(owner, neuronIndex, activationFunction, connections);
+    public ComplexNeuron(int neuronIndex, ActivationFunction activationFunction, double[] synapseDefaults, Connection[] connections, SynapseConnection[] synapseConnections) {
+        super(neuronIndex, activationFunction, connections);
         Preconditions.checkArgument(activationFunction.getNumberOfSynapses() > 0, "The number of synapses of the parameter 'activationFunction' has to be greater than zero");
         Preconditions.checkNotNull(synapseDefaults, "The parameter 'synapseDefaults' must not be null");
         Preconditions.checkArgument(synapseDefaults.length == activationFunction.getNumberOfSynapses(), "The length of the parameter 'synapseDefaults' has to be equal to " + activationFunction.getNumberOfSynapses());
@@ -50,4 +50,5 @@ public abstract class ComplexNeuron extends Neuron {
     public SynapseConnection getSynapseConnection(int index) {
         return synapseConnections[index];
     }
+    
 }

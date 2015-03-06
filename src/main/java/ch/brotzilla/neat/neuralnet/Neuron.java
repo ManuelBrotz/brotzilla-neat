@@ -8,17 +8,15 @@ import ch.brotzilla.neat.math.ActivationFunction;
 
 public abstract class Neuron {
 
-    protected final NeuralNet owner;
     protected final int neuronIndex;
     protected final ActivationFunction activationFunction;
     protected final Connection[] connections;
     
-    protected abstract void setActivation(double activation);
+    protected abstract void setActivation(NeuralNet nn, double activation);
 
-    abstract void compute();
+    abstract void compute(NeuralNet nn);
 
-    public Neuron(NeuralNet owner, int neuronIndex, ActivationFunction activationFunction, Connection[] connections) {
-        Preconditions.checkNotNull(owner, "The parameter 'owner' must not be null");
+    public Neuron(int neuronIndex, ActivationFunction activationFunction, Connection[] connections) {
         Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
         Preconditions.checkNotNull(connections, "The parameter 'connections' must not be null");
         Preconditions.checkArgument(connections.length > 0, "The length of the parameter 'connections' has to be greater than zero");
@@ -26,16 +24,11 @@ public abstract class Neuron {
             final Connection c = connections[i];
             Preconditions.checkNotNull(c, "The parameter 'connections[" + i + "]' must not be null");
         }
-        this.owner = owner;
         this.neuronIndex = neuronIndex;
         this.activationFunction = activationFunction;
         this.connections = Arrays.copyOf(connections, connections.length);
     }
 
-    public NeuralNet getOwner() {
-        return owner;
-    }
-    
     public int getNeuronIndex() {
         return neuronIndex;
     }

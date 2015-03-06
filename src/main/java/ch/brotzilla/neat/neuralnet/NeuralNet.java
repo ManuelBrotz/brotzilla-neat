@@ -93,10 +93,10 @@ public class NeuralNet {
         this.outputBuffer = outputBuffer;
         try {
             for (final Neuron n : hiddenNeurons) {
-                n.compute();
+                n.compute(this);
             }
             for (final Neuron n : outputNeurons) {
-                n.compute();
+                n.compute(this);
             }
         } finally {
             this.inputBuffer = null;
