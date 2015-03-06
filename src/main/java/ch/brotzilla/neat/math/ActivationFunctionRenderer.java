@@ -130,7 +130,7 @@ public class ActivationFunctionRenderer {
             if (!entry.getActive()) {
                 continue;
             }
-            final ActivationFunction f = entry.getActivationFunction();
+            final ActivationFunctionWrapper f = entry.getActivationFunction();
             double x = screen.sectionX + screen.stepX, xprev = screen.sectionX, yprev = -f.compute(screen.sectionX);
             g.setColor(entry.getColor());
             while (x < screen.sectionX + screen.sectionSize) {

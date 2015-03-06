@@ -5,8 +5,6 @@ import java.awt.Color;
 
 import javax.swing.JFrame;
 
-import com.google.common.base.Preconditions;
-
 @SuppressWarnings("serial")
 public class ActivationFunctionViewer extends JFrame {
 
@@ -16,13 +14,8 @@ public class ActivationFunctionViewer extends JFrame {
         return new LogFunction();
     }
     
-    private ActivationFunction setParams(ActivationFunction f, double[] p) {
-        Preconditions.checkNotNull(f, "The parameter 'f' must not be null");
-        Preconditions.checkArgument(p.length == f.getNumberOfParameters(), "The length of the parameter 'f' has to be equal to " + f.getNumberOfParameters());
-        for (int i = 0; i < p.length; i++) {
-            f.getParameterValues()[i] = p[i];
-        }
-        return f;
+    private ActivationFunctionWrapper wrap(ActivationFunction activationFunction, double[] synapseDefaults) {
+        return new ActivationFunctionWrapper(activationFunction, synapseDefaults);
     }
     
     private void addFunctions() {
@@ -30,7 +23,7 @@ public class ActivationFunctionViewer extends JFrame {
 //        display.addFunction(setParams(createFunction(), new double[] {-1.0, 0.0, 0.5, 0.5, 0.0}), Color.cyan);
 //        display.addFunction(setParams(createFunction(), new double[] {-1.0, 0.0, 0.5, -0.5, 0.0}), Color.orange);
         
-        display.addFunction(setParams(createFunction(), new double[] {1.0, 0.0, 1.0, 0.0, 0.0}), Color.blue);
+        display.addFunction(wrap(createFunction(), new double[] {1.0, 0.0, 1.0, 0.0, 0.0}), Color.blue);
 //        display.addFunction(setParams(createFunction(), new double[] {1.0, 0.0, 0.5, 0.5, 0.0}), Color.green);
 //        display.addFunction(setParams(createFunction(), new double[] {1.0, 0.0, 0.5, -0.5, 0.0}), Color.red);
         

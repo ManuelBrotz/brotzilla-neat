@@ -84,11 +84,11 @@ public class ActivationFunctionDisplay extends JPanel {
 
     public static class FunctionEntry {
         
-        private final ActivationFunction function;
+        private final ActivationFunctionWrapper function;
         private Color color;
         private boolean active;
         
-        public FunctionEntry(ActivationFunction function, Color color, boolean active) {
+        public FunctionEntry(ActivationFunctionWrapper function, Color color, boolean active) {
             Preconditions.checkNotNull(function, "The parameter 'function' must not be null");
             Preconditions.checkNotNull(color, "The parameter 'color' must not be null");
             this.function = function;
@@ -96,7 +96,7 @@ public class ActivationFunctionDisplay extends JPanel {
             this.active = active;
         }
         
-        public ActivationFunction getActivationFunction() {
+        public ActivationFunctionWrapper getActivationFunction() {
             return function;
         }
         
@@ -134,7 +134,7 @@ public class ActivationFunctionDisplay extends JPanel {
         return wrapperList;
     }
 
-    public FunctionEntry addFunction(ActivationFunction function, Color color) {
+    public FunctionEntry addFunction(ActivationFunctionWrapper function, Color color) {
         Preconditions.checkNotNull(function, "The parameter 'function' must not be null");
         Preconditions.checkNotNull(color, "The parameter 'color' must not be null");
         final FunctionEntry entry = new FunctionEntry(function, color, true);

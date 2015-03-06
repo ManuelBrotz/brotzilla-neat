@@ -1,5 +1,7 @@
 package ch.brotzilla.neat.neuralnet;
 
+import java.util.Arrays;
+
 import com.google.common.base.Preconditions;
 
 import ch.brotzilla.neat.math.ActivationFunction;
@@ -9,10 +11,12 @@ public abstract class ComplexNeuron extends Neuron {
     protected final double[] synapseDefaults;
     protected final double[] synapseActivations;
 
-    public ComplexNeuron(NeuralNet owner, int neuronIndex, ActivationFunction activationFunction, Connection[] connections) {
+    public ComplexNeuron(NeuralNet owner, int neuronIndex, ActivationFunction activationFunction, double[] synapseDefaults, Connection[] connections) {
         super(owner, neuronIndex, activationFunction, connections);
         Preconditions.checkArgument(activationFunction.getNumberOfParameters() > 0, "The parameter 'activationFunction.getNumberOfParameters()' has to be greater than zero");
-        this.synapseDefaults = activationFunction.copyParameterValues();
+        Preconditions.checkNotNull(synapseDefaults, "The parameter 'synapseDefaults' must not be null");
+        Preconditions.checkArgument(synapseDefaults.length == activationFunction.getNumberOfParameters(), "The length of the parameter 'synapseDefaults' has to be equal to " + activationFunction.getNumberOfParameters());
+        this.synapseDefaults = Arrays.copyOf(synapseDefaults, synapseDefaults.length);
         this.synapseActivations = new double[activationFunction.getNumberOfParameters()];
 }
 

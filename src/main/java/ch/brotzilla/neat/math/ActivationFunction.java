@@ -1,6 +1,5 @@
 package ch.brotzilla.neat.math;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 // TODO Activation function parameters should be called 'synapses' throughout.
-// TODO Get rid of parameter values in activation functions and handle them externally.
 public abstract class ActivationFunction {
 
     public static final double Pi = Math.PI;
@@ -17,7 +15,6 @@ public abstract class ActivationFunction {
     private final String id, name, description;
     private final List<ActivationFunctionParameter> parameters;
     private final int numberOfParameters;
-    private final double[] parameterValues;
     
     private List<ActivationFunctionParameter> initializeParameters(ActivationFunctionParameter[] parameters) {
         final List<ActivationFunctionParameter> result = Lists.newArrayList();
@@ -31,15 +28,6 @@ public abstract class ActivationFunction {
         return Collections.unmodifiableList(result);
     }
     
-    private double[] initializeDefaultValues() {
-        final double[] result = new double[parameters.size()];
-        int i = 0;
-        for (final ActivationFunctionParameter p : parameters) {
-            result[i++] = p.getDefaultValue();
-        }
-        return result;
-    }
-
     protected abstract void initializeDefaultParameters(List<ActivationFunctionParameter> parameters);
     
     protected abstract double _compute(double activation, double[] parameters);
@@ -56,7 +44,6 @@ public abstract class ActivationFunction {
         this.description = description;
         this.parameters = initializeParameters(parameters);
         this.numberOfParameters = this.parameters.size();
-        this.parameterValues = initializeDefaultValues();
     }
     
     public String getID() {
@@ -95,32 +82,6 @@ public abstract class ActivationFunction {
         return parameters.get(index).getDefaultValue();
     }
     
-    public double[] copyParameterValues() {
-        if (numberOfParameters > 0) {
-            return Arrays.copyOf(parameterValues, parameterValues.length);
-        }
-        return null;
-    }
-    
-    public double[] getParameterValues() {
-        return parameterValues;
-    }
-    
-    public double getParameterValue(int index) {
-        return parameterValues[index];
-    }
-    
-    public void resetParameterValues() {
-        int i = 0;
-        for (final ActivationFunctionParameter p : parameters) {
-            parameterValues[i++] = p.getDefaultValue();
-        }
-    }
-    
     public abstract double compute(double activation, double[] parameters);
 
-    public final double compute(double activation) {
-        return compute(activation, parameterValues);
-    }
-    
 }

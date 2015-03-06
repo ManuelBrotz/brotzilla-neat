@@ -27,11 +27,16 @@ public class Node {
         } else {
             Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
             this.activationFunction = activationFunction;
-            if (defaultParameters == null) {
-                this.defaultParameters = activationFunction.copyParameterValues();
+            if (activationFunction.getNumberOfParameters() > 0) {
+                if (defaultParameters == null) {
+                    this.defaultParameters = activationFunction.copyDefaultValues();
+                } else {
+                    Preconditions.checkArgument(defaultParameters.length == activationFunction.getNumberOfParameters(), "The length of the parameter 'defaultParameters' has to be equal to " + activationFunction.getNumberOfParameters());
+                    this.defaultParameters = Arrays.copyOf(defaultParameters, defaultParameters.length);
+                }
             } else {
-                Preconditions.checkArgument(defaultParameters.length == activationFunction.getNumberOfParameters(), "The length of the parameter 'defaultParameters' has to be equal to " + activationFunction.getNumberOfParameters());
-                this.defaultParameters = Arrays.copyOf(defaultParameters, defaultParameters.length);
+                Preconditions.checkArgument(defaultParameters == null, "The parameter 'defaultParameters' has to be null");
+                this.defaultParameters = null;
             }
         }
     }
@@ -64,13 +69,23 @@ public class Node {
         return activationFunction;
     }
     
-    public void setActivationFunction(ActivationFunction value) {
+    public void setActivationFunction(ActivationFunction activationFunction, double[] defaultParameters) {
         if (type.isInputNode()) {
             throw new UnsupportedOperationException("Input nodes cannot have activation functions");
         } 
-        Preconditions.checkNotNull(value, "The parameter 'value' must not be null");
-        activationFunction = value;
-        defaultParameters = value.copyParameterValues();
+        Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
+        this.activationFunction = activationFunction;
+        if (activationFunction.getNumberOfParameters() > 0) {
+            if (defaultParameters == null) {
+                this.defaultParameters = activationFunction.copyDefaultValues();
+            } else {
+                Preconditions.checkArgument(defaultParameters.length == activationFunction.getNumberOfParameters(), "The length of the parameter 'defaultParameters' has to be equal to " + activationFunction.getNumberOfParameters());
+                this.defaultParameters = Arrays.copyOf(defaultParameters, defaultParameters.length);
+            }
+        } else {
+            Preconditions.checkArgument(defaultParameters == null, "The parameter 'defaultParameters' has to be null");
+            this.defaultParameters = null;
+        }
     }
     
     public double[] getDefaultParameters() {
