@@ -13,6 +13,8 @@ public abstract class Neuron {
     
     protected abstract void setActivation(double activation);
 
+    abstract void compute();
+
     public Neuron(NeuralNet owner, int neuronIndex, ActivationFunction activationFunction, Connection[] connections) {
         Preconditions.checkNotNull(owner, "The parameter 'owner' must not be null");
         Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
@@ -51,7 +53,5 @@ public abstract class Neuron {
     public Connection getConnection(int index) {
         return connections[index];
     }
-    
-    public abstract void compute();
 
 }
