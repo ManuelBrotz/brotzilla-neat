@@ -18,7 +18,7 @@ public abstract class ComplexNeuron extends Neuron {
         Preconditions.checkArgument(synapseDefaults.length == activationFunction.getNumberOfSynapses(), "The length of the parameter 'synapseDefaults' has to be equal to " + activationFunction.getNumberOfSynapses());
         this.synapseDefaults = Arrays.copyOf(synapseDefaults, synapseDefaults.length);
         this.synapseActivations = new double[activationFunction.getNumberOfSynapses()];
-}
+    }
 
     @Override
     public void compute() {

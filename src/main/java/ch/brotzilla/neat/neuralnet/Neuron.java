@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 
 import ch.brotzilla.neat.math.ActivationFunction;
 
-// TODO Neurons have to handle activation function synapses themselves.
 public abstract class Neuron {
 
     protected final NeuralNet owner;
