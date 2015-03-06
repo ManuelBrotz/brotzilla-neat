@@ -1,8 +1,8 @@
 package ch.brotzilla.neat.math;
 
-public class CosFunction extends ExtendedActivationFunction {
+public class ExtendedCosFunction extends ExtendedActivationFunction {
 
-    public CosFunction() {
+    public ExtendedCosFunction() {
         super("neat.math.extended.wave.cosine", "Cosine", "Returns the cosine of the argument.");
     }
 

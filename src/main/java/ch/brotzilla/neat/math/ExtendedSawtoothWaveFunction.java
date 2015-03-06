@@ -1,8 +1,8 @@
 package ch.brotzilla.neat.math;
 
-public class SawtoothWaveFunction extends ExtendedActivationFunction {
+public class ExtendedSawtoothWaveFunction extends ExtendedActivationFunction {
 
-    public SawtoothWaveFunction() {
+    public ExtendedSawtoothWaveFunction() {
         super("neat.math.extended.wave.sawtooth", "Sawtooth Wave", "Computes a sawtooth wave function.");
     }
 

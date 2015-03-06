@@ -1,8 +1,8 @@
 package ch.brotzilla.neat.math;
 
-public class LogFunction extends ExtendedActivationFunction {
+public class ExtendedLogFunction extends ExtendedActivationFunction {
 
-    public LogFunction() {
+    public ExtendedLogFunction() {
         super("neat.math.extended.log", "Logarithm", "Returns the logarithm of the argument. Negative input values are mapped to negative output values.");
     }
 

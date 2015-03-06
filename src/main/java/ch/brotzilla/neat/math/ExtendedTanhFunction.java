@@ -1,8 +1,8 @@
 package ch.brotzilla.neat.math;
 
-public class TanhFunction extends ExtendedActivationFunction {
+public class ExtendedTanhFunction extends ExtendedActivationFunction {
 
-    public TanhFunction() {
+    public ExtendedTanhFunction() {
         super("neat.math.extended.tanh", "Hyperbolic Tangent", "Returns the hyperbolic tangent of the argument.");
     }
 

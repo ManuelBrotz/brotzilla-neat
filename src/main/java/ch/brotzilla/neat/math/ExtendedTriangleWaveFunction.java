@@ -1,8 +1,8 @@
 package ch.brotzilla.neat.math;
 
-public class TriangleWaveFunction extends ExtendedActivationFunction {
+public class ExtendedTriangleWaveFunction extends ExtendedActivationFunction {
 
-    public TriangleWaveFunction() {
+    public ExtendedTriangleWaveFunction() {
         super("neat.math.extended.wave.triangle", "Triangle Wave", "Computes a triangle wave function.");
     }
 

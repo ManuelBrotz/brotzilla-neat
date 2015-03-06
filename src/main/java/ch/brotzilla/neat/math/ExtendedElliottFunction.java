@@ -1,8 +1,8 @@
 package ch.brotzilla.neat.math;
 
-public class ElliottFunction extends ExtendedActivationFunction {
+public class ExtendedElliottFunction extends ExtendedActivationFunction {
 
-    public ElliottFunction() {
+    public ExtendedElliottFunction() {
         super("neat.math.extended.elliott", "Elliott", "The elliott function is higher-speed approximation of the hyperbolic tangent and sigmoid functions.");
     }
 

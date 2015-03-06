@@ -1,8 +1,8 @@
 package ch.brotzilla.neat.math;
 
-public class SqrtFunction extends ExtendedActivationFunction {
+public class ExtendedSqrtFunction extends ExtendedActivationFunction {
 
-    public SqrtFunction() {
+    public ExtendedSqrtFunction() {
         super("neat.math.extended.sqrt", "Square Root", "Returns the positive square root of the argument. Negative input values are mapped to negative output values.");
     }
 

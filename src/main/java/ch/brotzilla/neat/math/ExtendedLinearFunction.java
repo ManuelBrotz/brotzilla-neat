@@ -1,8 +1,8 @@
 package ch.brotzilla.neat.math;
 
-public class LinearFunction extends ExtendedActivationFunction {
+public class ExtendedLinearFunction extends ExtendedActivationFunction {
 
-    public LinearFunction() {
+    public ExtendedLinearFunction() {
         super("neat.math.extended.linear", "Linear", "Implements the linear function.");
     }
 

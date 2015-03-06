@@ -11,7 +11,7 @@ public class ActivationFunctionViewer extends JFrame {
     private final ActivationFunctionDisplay display;
     
     private ActivationFunction createFunction() {
-        return new LogFunction();
+        return new ExtendedLogFunction();
     }
     
     private ActivationFunctionWrapper wrap(ActivationFunction activationFunction, double[] synapseDefaults) {

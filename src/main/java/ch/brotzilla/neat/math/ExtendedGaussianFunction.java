@@ -1,8 +1,8 @@
 package ch.brotzilla.neat.math;
 
-public class GaussianFunction extends ExtendedActivationFunction {
+public class ExtendedGaussianFunction extends ExtendedActivationFunction {
 
-    public GaussianFunction() {
+    public ExtendedGaussianFunction() {
         super("neat.math.extended.gaussian", "Gaussian", "Returns the gaussian of the argument.");
     }
 

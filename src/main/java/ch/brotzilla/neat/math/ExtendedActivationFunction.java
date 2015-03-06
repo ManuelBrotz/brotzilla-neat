@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.common.base.Preconditions;
 
-// TODO All classes extending ExtendedActivationFunction should start with 'Extended'
 public abstract class ExtendedActivationFunction extends ActivationFunction {
 
     private double rectify(double v, double r) {

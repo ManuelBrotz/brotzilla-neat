@@ -6,11 +6,11 @@ import ch.brotzilla.neat.history.LinkInnovation;
 import ch.brotzilla.neat.history.NodeHistoryKey;
 import ch.brotzilla.neat.history.NodeInnovation;
 import ch.brotzilla.neat.math.ActivationFunction;
-import ch.brotzilla.neat.math.CosFunction;
+import ch.brotzilla.neat.math.ExtendedCosFunction;
 
 public class Test {
 
-    public static final ActivationFunction testFunction = new CosFunction();
+    public static final ActivationFunction testFunction = new ExtendedCosFunction();
     
     public static final HistoryList history = new HistoryList();
 
