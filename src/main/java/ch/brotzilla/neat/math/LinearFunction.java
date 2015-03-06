@@ -7,7 +7,7 @@ public class LinearFunction extends ExtendedActivationFunction {
     }
 
     @Override
-    protected double _compute(double activation, double[] parameters) {
+    protected double _compute(double activation, double[] synapses) {
         return activation;
     }
 

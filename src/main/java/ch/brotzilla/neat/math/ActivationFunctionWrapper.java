@@ -12,9 +12,9 @@ public class ActivationFunctionWrapper {
     public ActivationFunctionWrapper(ActivationFunction activationFunction, double[] synapseDefaults) {
         Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
         this.activationFunction = activationFunction;
-        if (activationFunction.getNumberOfParameters() > 0) {
+        if (activationFunction.getNumberOfSynapses() > 0) {
             Preconditions.checkNotNull(synapseDefaults, "The parameter 'synapseDefaults' must not be null");
-            Preconditions.checkArgument(synapseDefaults.length == activationFunction.getNumberOfParameters(), "The length of the parameter 'synapseDefaults' has to be equal to " + activationFunction.getNumberOfParameters());
+            Preconditions.checkArgument(synapseDefaults.length == activationFunction.getNumberOfSynapses(), "The length of the parameter 'synapseDefaults' has to be equal to " + activationFunction.getNumberOfSynapses());
             this.synapseDefaults = Arrays.copyOf(synapseDefaults, synapseDefaults.length);
         } else {
             Preconditions.checkArgument(synapseDefaults == null, "The parameter 'synapseDefaults' has to be null");

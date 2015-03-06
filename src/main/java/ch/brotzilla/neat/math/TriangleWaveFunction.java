@@ -7,7 +7,7 @@ public class TriangleWaveFunction extends ExtendedActivationFunction {
     }
 
     @Override
-    protected double _compute(double activation, double[] parameters) {
+    protected double _compute(double activation, double[] synapses) {
         return (2.0 * Math.asin(Math.cos(TwoPi * activation))) / Pi;
     }
 

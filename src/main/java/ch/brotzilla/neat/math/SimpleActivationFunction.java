@@ -7,16 +7,16 @@ import com.google.common.base.Preconditions;
 public abstract class SimpleActivationFunction extends ActivationFunction {
 
     @Override
-    protected final void initializeDefaultParameters(List<ActivationFunctionParameter> parameters) {}
+    protected final void initializeDefaultSynapses(List<ActivationFunctionSynapse> synapses) {}
 
     protected SimpleActivationFunction(String id, String name, String description) {
-        super(id, name, description, (ActivationFunctionParameter[]) null);
+        super(id, name, description, (ActivationFunctionSynapse[]) null);
     }
 
     @Override
-    public final double compute(double activation, double[] parameters) {
-        Preconditions.checkArgument(parameters == null, "The parameter 'parameters' has to be null");
-        return _compute(activation, parameters);
+    public final double compute(double activation, double[] synapses) {
+        Preconditions.checkArgument(synapses == null, "The parameter 'synapses' has to be null");
+        return _compute(activation, synapses);
     }
 
 }

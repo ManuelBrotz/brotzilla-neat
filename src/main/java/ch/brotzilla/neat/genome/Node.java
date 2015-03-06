@@ -6,37 +6,36 @@ import ch.brotzilla.neat.math.ActivationFunction;
 
 import com.google.common.base.Preconditions;
 
-// TODO Parameters should be called 'synapses' throughout.
 public class Node {
 
     private final NodeType type;
     private final int innovationNumber;
     private ActivationFunction activationFunction;
-    private double[] defaultParameters;
+    private double[] synapseDefaults;
 
-    public Node(NodeType type, int innovationNumber, ActivationFunction activationFunction, double[] defaultParameters) {
+    public Node(NodeType type, int innovationNumber, ActivationFunction activationFunction, double[] synapseDefaults) {
         Preconditions.checkNotNull(type, "The parameter 'type' must not be null");
         Preconditions.checkArgument(innovationNumber > 0, "The parameter 'innovationNumber' has to be greater than zero");
         this.type = type;
         this.innovationNumber = innovationNumber;
         if (type.isInputNode()) {
             Preconditions.checkArgument(activationFunction == null, "The parameter 'activationFunction' has to be null for input nodes");
-            Preconditions.checkArgument(defaultParameters == null, "The parameter 'defaultParameters' has to be null for input nodes");
+            Preconditions.checkArgument(synapseDefaults == null, "The parameter 'synapseDefaults' has to be null for input nodes");
             this.activationFunction = null;
-            this.defaultParameters = null;
+            this.synapseDefaults = null;
         } else {
             Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
             this.activationFunction = activationFunction;
-            if (activationFunction.getNumberOfParameters() > 0) {
-                if (defaultParameters == null) {
-                    this.defaultParameters = activationFunction.copyDefaultValues();
+            if (activationFunction.getNumberOfSynapses() > 0) {
+                if (synapseDefaults == null) {
+                    this.synapseDefaults = activationFunction.copySynapseDefaults();
                 } else {
-                    Preconditions.checkArgument(defaultParameters.length == activationFunction.getNumberOfParameters(), "The length of the parameter 'defaultParameters' has to be equal to " + activationFunction.getNumberOfParameters());
-                    this.defaultParameters = Arrays.copyOf(defaultParameters, defaultParameters.length);
+                    Preconditions.checkArgument(synapseDefaults.length == activationFunction.getNumberOfSynapses(), "The length of the parameter 'synapseDefaults' has to be equal to " + activationFunction.getNumberOfSynapses());
+                    this.synapseDefaults = Arrays.copyOf(synapseDefaults, synapseDefaults.length);
                 }
             } else {
-                Preconditions.checkArgument(defaultParameters == null, "The parameter 'defaultParameters' has to be null");
-                this.defaultParameters = null;
+                Preconditions.checkArgument(synapseDefaults == null, "The parameter 'synapseDefaults' has to be null");
+                this.synapseDefaults = null;
             }
         }
     }
@@ -54,7 +53,7 @@ public class Node {
         type = source.type;
         innovationNumber = source.innovationNumber;
         activationFunction = source.activationFunction;
-        defaultParameters = (source.defaultParameters == null ? null : Arrays.copyOf(source.defaultParameters, source.defaultParameters.length));
+        synapseDefaults = (source.synapseDefaults == null ? null : Arrays.copyOf(source.synapseDefaults, source.synapseDefaults.length));
     }
     
     public NodeType getType() {
@@ -69,27 +68,27 @@ public class Node {
         return activationFunction;
     }
     
-    public void setActivationFunction(ActivationFunction activationFunction, double[] defaultParameters) {
+    public void setActivationFunction(ActivationFunction activationFunction, double[] synapseDefaults) {
         if (type.isInputNode()) {
             throw new UnsupportedOperationException("Input nodes cannot have activation functions");
         } 
         Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
         this.activationFunction = activationFunction;
-        if (activationFunction.getNumberOfParameters() > 0) {
-            if (defaultParameters == null) {
-                this.defaultParameters = activationFunction.copyDefaultValues();
+        if (activationFunction.getNumberOfSynapses() > 0) {
+            if (synapseDefaults == null) {
+                this.synapseDefaults = activationFunction.copySynapseDefaults();
             } else {
-                Preconditions.checkArgument(defaultParameters.length == activationFunction.getNumberOfParameters(), "The length of the parameter 'defaultParameters' has to be equal to " + activationFunction.getNumberOfParameters());
-                this.defaultParameters = Arrays.copyOf(defaultParameters, defaultParameters.length);
+                Preconditions.checkArgument(synapseDefaults.length == activationFunction.getNumberOfSynapses(), "The length of the parameter 'synapseDefaults' has to be equal to " + activationFunction.getNumberOfSynapses());
+                this.synapseDefaults = Arrays.copyOf(synapseDefaults, synapseDefaults.length);
             }
         } else {
-            Preconditions.checkArgument(defaultParameters == null, "The parameter 'defaultParameters' has to be null");
-            this.defaultParameters = null;
+            Preconditions.checkArgument(synapseDefaults == null, "The parameter 'synapseDefaults' has to be null");
+            this.synapseDefaults = null;
         }
     }
     
-    public double[] getDefaultParameters() {
-        return defaultParameters;
+    public double[] getSynapseDefaults() {
+        return synapseDefaults;
     }
     
     @Override
@@ -102,7 +101,7 @@ public class Node {
             return type == node.type
                     && innovationNumber == node.innovationNumber
                     && activationFunction == node.activationFunction
-                    && Arrays.equals(defaultParameters, node.defaultParameters);
+                    && Arrays.equals(synapseDefaults, node.synapseDefaults);
         }
         return false;
     }

@@ -2,12 +2,12 @@ package ch.brotzilla.neat.math;
 
 import com.google.common.base.Preconditions;
 
-public class ActivationFunctionParameter {
+public class ActivationFunctionSynapse {
 
     private String name, description;
     private double defaultValue, viewerLowerBound, viewerUpperBound;
     
-    private ActivationFunctionParameter() {}
+    private ActivationFunctionSynapse() {}
     
     public String getName() {
         return name;
@@ -30,8 +30,8 @@ public class ActivationFunctionParameter {
     }
     
     @Override
-    public ActivationFunctionParameter clone() {
-        final ActivationFunctionParameter p = new ActivationFunctionParameter();
+    public ActivationFunctionSynapse clone() {
+        final ActivationFunctionSynapse p = new ActivationFunctionSynapse();
         p.name = name;
         p.description = description;
         p.defaultValue = defaultValue;
@@ -42,10 +42,10 @@ public class ActivationFunctionParameter {
     
     public static class Builder {
         
-        private final ActivationFunctionParameter p;
+        private final ActivationFunctionSynapse p;
         
         public Builder() {
-            p = new ActivationFunctionParameter();
+            p = new ActivationFunctionSynapse();
         }
         
         public Builder setName(String value) {
@@ -80,7 +80,7 @@ public class ActivationFunctionParameter {
             return this;
         }
         
-        public ActivationFunctionParameter build() {
+        public ActivationFunctionSynapse build() {
             Preconditions.checkState(p.name != null, "The property 'name' must not be null");
             Preconditions.checkState(!p.name.trim().isEmpty(), "The property 'name' must not be empty");
             Preconditions.checkState(p.description != null, "The property 'description' must not be null");

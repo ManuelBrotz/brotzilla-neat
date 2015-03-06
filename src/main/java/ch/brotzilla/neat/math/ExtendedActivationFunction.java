@@ -17,33 +17,33 @@ public abstract class ExtendedActivationFunction extends ActivationFunction {
     }
     
     @Override
-    protected void initializeDefaultParameters(List<ActivationFunctionParameter> parameters) {
-        final ActivationFunctionParameter.Builder builder = new ActivationFunctionParameter.Builder();
-        parameters.add(builder.setName("input-scale")
+    protected void initializeDefaultSynapses(List<ActivationFunctionSynapse> synapses) {
+        final ActivationFunctionSynapse.Builder builder = new ActivationFunctionSynapse.Builder();
+        synapses.add(builder.setName("input-scale")
                 .setDescription("Scales the input value of the activation function.")
                 .setDefaultValue(1.0)
                 .setViewerLowerBound(-10.0)
                 .setViewerUpperBound(10.0)
                 .build());
-        parameters.add(builder.setName("input-shift")
+        synapses.add(builder.setName("input-shift")
                 .setDescription("Shifts the input value of the activation function.")
                 .setDefaultValue(0.0)
                 .setViewerLowerBound(-10.0)
                 .setViewerUpperBound(10.0)
                 .build());
-        parameters.add(builder.setName("output-scale")
+        synapses.add(builder.setName("output-scale")
                 .setDescription("Scales the output value of the activation function.")
                 .setDefaultValue(1.0)
                 .setViewerLowerBound(-10.0)
                 .setViewerUpperBound(10.0)
                 .build());
-        parameters.add(builder.setName("output-shift")
+        synapses.add(builder.setName("output-shift")
                 .setDescription("Shifts the output value of the activation function.")
                 .setDefaultValue(0.0)
                 .setViewerLowerBound(-10.0)
                 .setViewerUpperBound(10.0)
                 .build());
-        parameters.add(builder.setName("rectify")
+        synapses.add(builder.setName("rectify")
                 .setDescription("If greater than 0, mapps all negative output values to positive ones. If less than 0, mapps all positive output values to negative ones. If equal to 0, the output values remain unchanged.")
                 .setDefaultValue(0.0)
                 .setViewerLowerBound(-1.0)
@@ -51,15 +51,15 @@ public abstract class ExtendedActivationFunction extends ActivationFunction {
                 .build());
     }
 
-    protected ExtendedActivationFunction(String id, String name, String description, ActivationFunctionParameter... parameters) {
-        super(id, name, description, parameters);
+    protected ExtendedActivationFunction(String id, String name, String description, ActivationFunctionSynapse... synapses) {
+        super(id, name, description, synapses);
     }
 
     @Override
-    public final double compute(double activation, double[] parameters) {
-        Preconditions.checkNotNull(parameters, "The parameter 'parameters' must not be null");
-        Preconditions.checkArgument(parameters.length >= getNumberOfParameters(), "The length of the parameter 'parameters' has to be greater than or equal to " + getNumberOfParameters());
-        return rectify(_compute(activation * parameters[0] + parameters[1], parameters), parameters[4]) * parameters[2] + parameters[3];
+    public final double compute(double activation, double[] synapses) {
+        Preconditions.checkNotNull(synapses, "The parameter 'synapses' must not be null");
+        Preconditions.checkArgument(synapses.length >= getNumberOfSynapses(), "The length of the parameter 'synapses' has to be greater than or equal to " + getNumberOfSynapses());
+        return rectify(_compute(activation * synapses[0] + synapses[1], synapses), synapses[4]) * synapses[2] + synapses[3];
     }
     
 }

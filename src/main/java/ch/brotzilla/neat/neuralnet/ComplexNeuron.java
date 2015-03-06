@@ -13,11 +13,11 @@ public abstract class ComplexNeuron extends Neuron {
 
     public ComplexNeuron(NeuralNet owner, int neuronIndex, ActivationFunction activationFunction, double[] synapseDefaults, Connection[] connections) {
         super(owner, neuronIndex, activationFunction, connections);
-        Preconditions.checkArgument(activationFunction.getNumberOfParameters() > 0, "The parameter 'activationFunction.getNumberOfParameters()' has to be greater than zero");
+        Preconditions.checkArgument(activationFunction.getNumberOfSynapses() > 0, "The number of synapses of the parameter 'activationFunction' has to be greater than zero");
         Preconditions.checkNotNull(synapseDefaults, "The parameter 'synapseDefaults' must not be null");
-        Preconditions.checkArgument(synapseDefaults.length == activationFunction.getNumberOfParameters(), "The length of the parameter 'synapseDefaults' has to be equal to " + activationFunction.getNumberOfParameters());
+        Preconditions.checkArgument(synapseDefaults.length == activationFunction.getNumberOfSynapses(), "The length of the parameter 'synapseDefaults' has to be equal to " + activationFunction.getNumberOfSynapses());
         this.synapseDefaults = Arrays.copyOf(synapseDefaults, synapseDefaults.length);
-        this.synapseActivations = new double[activationFunction.getNumberOfParameters()];
+        this.synapseActivations = new double[activationFunction.getNumberOfSynapses()];
 }
 
     @Override

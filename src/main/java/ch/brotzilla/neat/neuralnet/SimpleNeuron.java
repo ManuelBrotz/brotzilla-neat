@@ -8,7 +8,7 @@ public abstract class SimpleNeuron extends Neuron {
 
     public SimpleNeuron(NeuralNet owner, int neuronIndex, ActivationFunction activationFunction, Connection[] connections) {
         super(owner, neuronIndex, activationFunction, connections);
-        Preconditions.checkArgument(activationFunction.getNumberOfParameters() == 0, "The parameter 'activationFunction.getNumberOfParameters()' has to be equal to zero");
+        Preconditions.checkArgument(activationFunction.getNumberOfSynapses() == 0, "The number of synapses of the parameter 'activationFunction' has to be equal to zero");
     }
 
     @Override

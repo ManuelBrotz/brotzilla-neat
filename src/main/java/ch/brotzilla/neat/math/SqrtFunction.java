@@ -7,7 +7,7 @@ public class SqrtFunction extends ExtendedActivationFunction {
     }
 
     @Override
-    protected double _compute(double activation, double[] parameters) {
+    protected double _compute(double activation, double[] synapses) {
         if (activation < 0) {
             return -Math.sqrt(-activation);
         }

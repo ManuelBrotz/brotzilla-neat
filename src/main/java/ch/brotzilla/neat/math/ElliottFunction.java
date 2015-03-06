@@ -7,7 +7,7 @@ public class ElliottFunction extends ExtendedActivationFunction {
     }
 
     @Override
-    protected double _compute(double activation, double[] parameters) {
+    protected double _compute(double activation, double[] synapses) {
         final double b = activation < 0.0 ? -activation : activation;
         return activation / (1.0 + b);
     }

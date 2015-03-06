@@ -6,33 +6,32 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
-// TODO Activation function parameters should be called 'synapses' throughout.
 public abstract class ActivationFunction {
 
     public static final double Pi = Math.PI;
     public static final double TwoPi = 2 * Math.PI;
 
     private final String id, name, description;
-    private final List<ActivationFunctionParameter> parameters;
-    private final int numberOfParameters;
+    private final List<ActivationFunctionSynapse> synapses;
+    private final int numberOfSynapses;
     
-    private List<ActivationFunctionParameter> initializeParameters(ActivationFunctionParameter[] parameters) {
-        final List<ActivationFunctionParameter> result = Lists.newArrayList();
-        initializeDefaultParameters(result);
-        if (parameters != null) {
-            for (final ActivationFunctionParameter p : parameters) {
-                Preconditions.checkNotNull(p, "Activation function parameters must not be null");
-                result.add(p);
+    private List<ActivationFunctionSynapse> initializeSynapses(ActivationFunctionSynapse[] synapses) {
+        final List<ActivationFunctionSynapse> result = Lists.newArrayList();
+        initializeDefaultSynapses(result);
+        if (synapses != null) {
+            for (final ActivationFunctionSynapse synapse : synapses) {
+                Preconditions.checkNotNull(synapse, "Activation function synapses must not be null");
+                result.add(synapse);
             }
         }
         return Collections.unmodifiableList(result);
     }
     
-    protected abstract void initializeDefaultParameters(List<ActivationFunctionParameter> parameters);
+    protected abstract void initializeDefaultSynapses(List<ActivationFunctionSynapse> synapses);
     
-    protected abstract double _compute(double activation, double[] parameters);
+    protected abstract double _compute(double activation, double[] synapses);
 
-    protected ActivationFunction(String id, String name, String description, ActivationFunctionParameter... parameters) {
+    protected ActivationFunction(String id, String name, String description, ActivationFunctionSynapse... synapses) {
         Preconditions.checkNotNull(id, "The parameter 'id' must not be null");
         Preconditions.checkArgument(!id.trim().isEmpty(), "The parameter 'id' must not be empty");
         Preconditions.checkNotNull(name, "The parameter 'name' must not be null");
@@ -42,8 +41,8 @@ public abstract class ActivationFunction {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.parameters = initializeParameters(parameters);
-        this.numberOfParameters = this.parameters.size();
+        this.synapses = initializeSynapses(synapses);
+        this.numberOfSynapses = this.synapses.size();
     }
     
     public String getID() {
@@ -58,30 +57,30 @@ public abstract class ActivationFunction {
         return description;
     }
 
-    public List<ActivationFunctionParameter> getParameters() {
-        return parameters;
+    public List<ActivationFunctionSynapse> getSynapses() {
+        return synapses;
     }
     
-    public int getNumberOfParameters() {
-        return numberOfParameters;
+    public int getNumberOfSynapses() {
+        return numberOfSynapses;
     }
     
-    public double[] copyDefaultValues() {
-        if (numberOfParameters > 0) { 
-            final double[] result = new double[numberOfParameters];
+    public double[] copySynapseDefaults() {
+        if (numberOfSynapses > 0) { 
+            final double[] result = new double[numberOfSynapses];
             int i = 0;
-            for (final ActivationFunctionParameter p : parameters) {
-                result[i++] = p.getDefaultValue();
+            for (final ActivationFunctionSynapse synapse : synapses) {
+                result[i++] = synapse.getDefaultValue();
             }
             return result;
         }
         return null;
     }
 
-    public double getDefaultValue(int index) {
-        return parameters.get(index).getDefaultValue();
+    public double getSynapseDefault(int index) {
+        return synapses.get(index).getDefaultValue();
     }
     
-    public abstract double compute(double activation, double[] parameters);
+    public abstract double compute(double activation, double[] synapses);
 
 }
