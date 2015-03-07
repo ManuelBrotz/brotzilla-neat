@@ -43,10 +43,9 @@ import ch.brotzilla.util.MersenneTwister;
 public class TestImageGenerator {
 
     public static final int NumImages = 3000;
-    public static final int ImageSize = 400;
+    public static final int ImageSize = 1000;
     public static final double Section = 8;
     public static final boolean Color = false;
-    public static final boolean FeedForward = true;
     public static final File SavePath = new File("./pics/");
     
     private TestImageGenerator() {}
@@ -205,19 +204,78 @@ public class TestImageGenerator {
     public static int encodeColor(int a, int r, int g, int b) {
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
+    
+    public static double distance(double x1, double y1, double x2, double y2) {
+        final double dx = x2 - x1, dy = y2 - y1;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
 
-    public static BufferedImage generateColorImage(MersenneTwister rng) {
-        final NeuralNet nn = FeedForward ? createFeedForwardNeuralNet(rng, 3, 3) : createRandomNeuralNet(rng, 3, 3);
-        final double[] inputBuffer = new double[3], hiddenBuffer = new double[nn.getNumberOfHiddenNeurons()], outputBuffer = new double[nn.getNumberOfOutputNeurons()];
+    public static BufferedImage generateColorImageXY(MersenneTwister rng) {
+        final NeuralNet nn = rng.nextBoolean() ? createFeedForwardNeuralNet(rng, 2, 3) : createRandomNeuralNet(rng, 2, 3);
+        final double[] inputBuffer = new double[nn.getNumberOfInputNeurons()], hiddenBuffer = new double[nn.getNumberOfHiddenNeurons()], outputBuffer = new double[nn.getNumberOfOutputNeurons()];
+        final BufferedImage image = new BufferedImage(ImageSize, ImageSize, BufferedImage.TYPE_INT_ARGB);
+        final int[] buffer = new int[ImageSize * ImageSize];
+        final WritableRaster raster = image.getRaster();
+        final double halfSection = Section / 2.0;
+        for (int y = 0; y < ImageSize; y++) {
+            final double yy = (double) y / (ImageSize - 1) * Section - halfSection;
+            for (int x = 0; x < ImageSize; x++) {
+                final double xx = (double) x / (ImageSize - 1) * Section - halfSection;
+                inputBuffer[0] = xx;
+                inputBuffer[1] = yy;
+                nn.compute(inputBuffer, hiddenBuffer, outputBuffer);
+                final int r = Math.min(255, (int) Math.round(Math.abs(outputBuffer[0]) * 255));
+                final int g = Math.min(255, (int) Math.round(Math.abs(outputBuffer[1]) * 255));
+                final int b = Math.min(255, (int) Math.round(Math.abs(outputBuffer[2]) * 255));
+                buffer[y * ImageSize + x] = encodeColor(255, r, g, b);
+            }
+        }
+        raster.setDataElements(0, 0, ImageSize, ImageSize, buffer);
+        return image;
+    }
+
+    public static BufferedImage generateColorImageXYR(MersenneTwister rng) {
+        final NeuralNet nn = rng.nextBoolean() ? createFeedForwardNeuralNet(rng, 3, 3) : createRandomNeuralNet(rng, 3, 3);
+        final double[] inputBuffer = new double[nn.getNumberOfInputNeurons()], hiddenBuffer = new double[nn.getNumberOfHiddenNeurons()], outputBuffer = new double[nn.getNumberOfOutputNeurons()];
+        final BufferedImage image = new BufferedImage(ImageSize, ImageSize, BufferedImage.TYPE_INT_ARGB);
+        final int[] buffer = new int[ImageSize * ImageSize];
+        final WritableRaster raster = image.getRaster();
+        final double halfSection = Section / 2.0;
+        for (int y = 0; y < ImageSize; y++) {
+            final double yy = (double) y / (ImageSize - 1) * Section - halfSection;
+            for (int x = 0; x < ImageSize; x++) {
+                final double xx = (double) x / (ImageSize - 1) * Section - halfSection;
+                inputBuffer[0] = xx;
+                inputBuffer[1] = yy;
+                inputBuffer[2] = distance(xx, yy, 0, 0);
+                nn.compute(inputBuffer, hiddenBuffer, outputBuffer);
+                final int r = Math.min(255, (int) Math.round(Math.abs(outputBuffer[0]) * 255));
+                final int g = Math.min(255, (int) Math.round(Math.abs(outputBuffer[1]) * 255));
+                final int b = Math.min(255, (int) Math.round(Math.abs(outputBuffer[2]) * 255));
+                buffer[y * ImageSize + x] = encodeColor(255, r, g, b);
+            }
+        }
+        raster.setDataElements(0, 0, ImageSize, ImageSize, buffer);
+        return image;
+    }
+
+    public static BufferedImage generateColorImageR(MersenneTwister rng) {
+        final NeuralNet nn = rng.nextBoolean() ? createFeedForwardNeuralNet(rng, 5, 3) : createRandomNeuralNet(rng, 5, 3);
+        final double[] inputBuffer = new double[nn.getNumberOfInputNeurons()], hiddenBuffer = new double[nn.getNumberOfHiddenNeurons()], outputBuffer = new double[nn.getNumberOfOutputNeurons()];
         final BufferedImage image = new BufferedImage(ImageSize, ImageSize, BufferedImage.TYPE_INT_ARGB);
         final int[] buffer = new int[ImageSize * ImageSize];
         final WritableRaster raster = image.getRaster();
         final double halfSection = Section / 2.0;
         for (int y = 0; y < ImageSize; y++) {
             inputBuffer[1] = (double) y / (ImageSize - 1) * Section - halfSection;
+            final double yy = (double) y / (ImageSize - 1) * Section - halfSection;
             for (int x = 0; x < ImageSize; x++) {
-                inputBuffer[0] = (double) x / (ImageSize - 1) * Section - halfSection;
-                inputBuffer[2] = Math.sqrt(inputBuffer[1] * inputBuffer[1] + inputBuffer[0] * inputBuffer[0]);
+                final double xx = (double) x / (ImageSize - 1) * Section - halfSection;
+                inputBuffer[0] = distance(xx, yy, 0, 0);
+                inputBuffer[1] = distance(xx, yy, -1, 1);
+                inputBuffer[2] = distance(xx, yy, 1, 1);
+                inputBuffer[3] = distance(xx, yy, -1, 1);
+                inputBuffer[4] = distance(xx, yy, -1, -1);
                 nn.compute(inputBuffer, hiddenBuffer, outputBuffer);
                 final int r = Math.min(255, (int) Math.round(Math.abs(outputBuffer[0]) * 255));
                 final int g = Math.min(255, (int) Math.round(Math.abs(outputBuffer[1]) * 255));
@@ -229,18 +287,67 @@ public class TestImageGenerator {
         return image;
     }
     
-    public static BufferedImage generateImage(MersenneTwister rng) {
-        final NeuralNet nn = FeedForward ? createFeedForwardNeuralNet(rng, 3, 1) : createRandomNeuralNet(rng, 3, 1);
-        final double[] inputBuffer = new double[3], hiddenBuffer = new double[nn.getNumberOfHiddenNeurons()], outputBuffer = new double[nn.getNumberOfOutputNeurons()];
+    public static BufferedImage generateGrayImageXY(MersenneTwister rng) {
+        final NeuralNet nn = rng.nextBoolean() ? createFeedForwardNeuralNet(rng, 2, 1) : createRandomNeuralNet(rng, 2, 1);
+        final double[] inputBuffer = new double[nn.getNumberOfInputNeurons()], hiddenBuffer = new double[nn.getNumberOfHiddenNeurons()], outputBuffer = new double[nn.getNumberOfOutputNeurons()];
         final BufferedImage image = new BufferedImage(ImageSize, ImageSize, BufferedImage.TYPE_INT_ARGB);
         final int[] buffer = new int[ImageSize * ImageSize];
         final WritableRaster raster = image.getRaster();
         final double halfSection = Section / 2.0;
         for (int y = 0; y < ImageSize; y++) {
-            inputBuffer[1] = (double) y / (ImageSize - 1) * Section - halfSection;
+            final double yy = (double) y / (ImageSize - 1) * Section - halfSection;
             for (int x = 0; x < ImageSize; x++) {
-                inputBuffer[0] = (double) x / (ImageSize - 1) * Section - halfSection;
-                inputBuffer[2] = Math.sqrt(inputBuffer[1] * inputBuffer[1] + inputBuffer[0] * inputBuffer[0]);
+                final double xx = (double) x / (ImageSize - 1) * Section - halfSection;
+                inputBuffer[0] = xx;
+                inputBuffer[1] = yy;
+                nn.compute(inputBuffer, hiddenBuffer, outputBuffer);
+                final int v = Math.min(255, (int) Math.round(Math.abs(outputBuffer[0]) * 255));
+                buffer[y * ImageSize + x] = encodeColor(255, v, v, v);
+            }
+        }
+        raster.setDataElements(0, 0, ImageSize, ImageSize, buffer);
+        return image;
+    }
+    
+    public static BufferedImage generateGrayImageXYR(MersenneTwister rng) {
+        final NeuralNet nn = rng.nextBoolean() ? createFeedForwardNeuralNet(rng, 3, 1) : createRandomNeuralNet(rng, 3, 1);
+        final double[] inputBuffer = new double[nn.getNumberOfInputNeurons()], hiddenBuffer = new double[nn.getNumberOfHiddenNeurons()], outputBuffer = new double[nn.getNumberOfOutputNeurons()];
+        final BufferedImage image = new BufferedImage(ImageSize, ImageSize, BufferedImage.TYPE_INT_ARGB);
+        final int[] buffer = new int[ImageSize * ImageSize];
+        final WritableRaster raster = image.getRaster();
+        final double halfSection = Section / 2.0;
+        for (int y = 0; y < ImageSize; y++) {
+            final double yy = (double) y / (ImageSize - 1) * Section - halfSection;
+            for (int x = 0; x < ImageSize; x++) {
+                final double xx = (double) x / (ImageSize - 1) * Section - halfSection;
+                inputBuffer[0] = xx;
+                inputBuffer[1] = yy;
+                inputBuffer[2] = distance(xx, yy, 0, 0);
+                nn.compute(inputBuffer, hiddenBuffer, outputBuffer);
+                final int v = Math.min(255, (int) Math.round(Math.abs(outputBuffer[0]) * 255));
+                buffer[y * ImageSize + x] = encodeColor(255, v, v, v);
+            }
+        }
+        raster.setDataElements(0, 0, ImageSize, ImageSize, buffer);
+        return image;
+    }
+    
+    public static BufferedImage generateGrayImageR(MersenneTwister rng) {
+        final NeuralNet nn = rng.nextBoolean() ? createFeedForwardNeuralNet(rng, 5, 1) : createRandomNeuralNet(rng, 5, 1);
+        final double[] inputBuffer = new double[nn.getNumberOfInputNeurons()], hiddenBuffer = new double[nn.getNumberOfHiddenNeurons()], outputBuffer = new double[nn.getNumberOfOutputNeurons()];
+        final BufferedImage image = new BufferedImage(ImageSize, ImageSize, BufferedImage.TYPE_INT_ARGB);
+        final int[] buffer = new int[ImageSize * ImageSize];
+        final WritableRaster raster = image.getRaster();
+        final double halfSection = Section / 2.0;
+        for (int y = 0; y < ImageSize; y++) {
+            final double yy = (double) y / (ImageSize - 1) * Section - halfSection;
+            for (int x = 0; x < ImageSize; x++) {
+                final double xx = (double) x / (ImageSize - 1) * Section - halfSection;
+                inputBuffer[0] = distance(xx, yy, 0, 0);
+                inputBuffer[1] = distance(xx, yy, -1, 1);
+                inputBuffer[2] = distance(xx, yy, 1, 1);
+                inputBuffer[3] = distance(xx, yy, -1, 1);
+                inputBuffer[4] = distance(xx, yy, -1, -1);
                 nn.compute(inputBuffer, hiddenBuffer, outputBuffer);
                 final int v = Math.min(255, (int) Math.round(Math.abs(outputBuffer[0]) * 255));
                 buffer[y * ImageSize + x] = encodeColor(255, v, v, v);
@@ -251,7 +358,7 @@ public class TestImageGenerator {
     }
     
     public static File chooseSavePath() {
-        final File tmp = new File(SavePath, (FeedForward ? "feedforward" : "recurrent") + "-" + (Color ? "color" : "gray") + "-" + ImageSize + "x" + ImageSize + "-" + Section);
+        final File tmp = new File(SavePath, (Color ? "color" : "gray") + "-" + ImageSize + "x" + ImageSize + "-" + Section);
         return new File(tmp, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date()));
     }
     
@@ -271,7 +378,17 @@ public class TestImageGenerator {
                 file = new File(savePath, seed + ".png");
             }
             final MersenneTwister rng = new MersenneTwister(seed);
-            final BufferedImage image = Color ? generateColorImage(rng) : generateImage(rng);
+            final BufferedImage image = Color // color or gray 
+                    ? (rng.nextBoolean() // xy or radial
+                            ? generateColorImageXY(rng) 
+                            : (rng.nextBoolean() // xyr or r
+                                    ? generateColorImageXYR(rng) 
+                                    : generateColorImageR(rng))) 
+                    : (rng.nextBoolean() // xy or radial
+                            ? generateGrayImageXY(rng) 
+                            : (rng.nextBoolean() // xyr or r
+                                    ? generateGrayImageXYR(rng)
+                                    : generateGrayImageR(rng)));
             ImageIO.write(image, "PNG", file);
         }
         System.out.println("Done!");
@@ -280,7 +397,7 @@ public class TestImageGenerator {
     public static void generateImage(long seed, File file) throws IOException {
         System.out.println("Generating image with seed " + seed + "...");
         final MersenneTwister rng = new MersenneTwister(seed);
-        final BufferedImage image = generateImage(rng);
+        final BufferedImage image = generateGrayImageXYR(rng);
         ImageIO.write(image, "PNG", file);
         System.out.println("Done!");
     }
