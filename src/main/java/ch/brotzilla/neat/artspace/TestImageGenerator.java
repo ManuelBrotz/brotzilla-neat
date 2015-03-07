@@ -1,4 +1,4 @@
-package ch.brotzilla.neat.neuralnet;
+package ch.brotzilla.neat.artspace;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
@@ -25,6 +25,19 @@ import ch.brotzilla.neat.math.ExtendedSqrtFunction;
 import ch.brotzilla.neat.math.ExtendedSquareWaveFunction;
 import ch.brotzilla.neat.math.ExtendedTanhFunction;
 import ch.brotzilla.neat.math.ExtendedTriangleWaveFunction;
+import ch.brotzilla.neat.neuralnet.BiasConnection;
+import ch.brotzilla.neat.neuralnet.ComplexHiddenNeuron;
+import ch.brotzilla.neat.neuralnet.ComplexOutputNeuron;
+import ch.brotzilla.neat.neuralnet.Connection;
+import ch.brotzilla.neat.neuralnet.HiddenNeuronConnection;
+import ch.brotzilla.neat.neuralnet.HiddenNeuronSynapseConnection;
+import ch.brotzilla.neat.neuralnet.InputNeuronConnection;
+import ch.brotzilla.neat.neuralnet.InputNeuronSynapseConnection;
+import ch.brotzilla.neat.neuralnet.NeuralNet;
+import ch.brotzilla.neat.neuralnet.Neuron;
+import ch.brotzilla.neat.neuralnet.OutputNeuronConnection;
+import ch.brotzilla.neat.neuralnet.OutputNeuronSynapseConnection;
+import ch.brotzilla.neat.neuralnet.SynapseConnection;
 import ch.brotzilla.util.MersenneTwister;
 
 public class TestImageGenerator {
@@ -33,7 +46,7 @@ public class TestImageGenerator {
     public static final int ImageSize = 400;
     public static final double Section = 8;
     public static final boolean Color = false;
-    public static final boolean FeedForward = false;
+    public static final boolean FeedForward = true;
     public static final File SavePath = new File("./pics/");
     
     private TestImageGenerator() {}
