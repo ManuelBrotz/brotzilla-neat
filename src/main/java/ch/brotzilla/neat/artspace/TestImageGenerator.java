@@ -77,7 +77,7 @@ public class TestImageGenerator {
                 if (i == 4) {
                     synapses[i] = rng.nextBoolean() ? -1 : 1;
                 } else {
-                    synapses[i] = rng.nextDouble() * 3.0 - 1.5;
+                    synapses[i] = rng.nextDouble() * 2.0 - 1.0;
                 }
             }
         }
@@ -369,6 +369,7 @@ public class TestImageGenerator {
                 throw new RuntimeException("Unable to create folder: " + savePath);
             }
         }
+        final long start = System.currentTimeMillis();
         for (int i = 0; i < NumImages; i++) {
             System.out.println("Generating image " + (i + 1) + " of " + NumImages + "...");
             long seed = new Random().nextLong();
@@ -391,7 +392,11 @@ public class TestImageGenerator {
                                     : generateGrayImageR(rng)));
             ImageIO.write(image, "PNG", file);
         }
+        final long timeTotal = System.currentTimeMillis() - start;
+        final long timePerImage = timeTotal / NumImages;
         System.out.println("Done!");
+        System.out.println("Total time: " + (timeTotal / 1000) + " s");
+        System.out.println("Time per image: " + timePerImage + " ms");
     } 
     
     public static void generateImage(long seed, File file) throws IOException {
