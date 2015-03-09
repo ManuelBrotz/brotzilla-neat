@@ -4,6 +4,7 @@ public class ExtendedTanhFunction extends ExtendedActivationFunction {
 
     public ExtendedTanhFunction() {
         super("neat.math.extended.tanh", "Hyperbolic Tangent", "Returns the hyperbolic tangent of the argument.");
+        setSynapseDefault(0, 2.5);
     }
 
     @Override

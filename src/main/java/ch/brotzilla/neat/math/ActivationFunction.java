@@ -81,6 +81,10 @@ public abstract class ActivationFunction {
         return synapses.get(index).getDefaultValue();
     }
     
+    public void setSynapseDefault(int synapse, double value) {
+        synapses.get(synapse).setDefaultValue(value);
+    }
+    
     public abstract double compute(double activation, double[] synapses);
 
 }

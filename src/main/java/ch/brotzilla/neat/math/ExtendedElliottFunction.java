@@ -4,6 +4,7 @@ public class ExtendedElliottFunction extends ExtendedActivationFunction {
 
     public ExtendedElliottFunction() {
         super("neat.math.extended.elliott", "Elliott", "The elliott function is higher-speed approximation of the hyperbolic tangent and sigmoid functions.");
+        setSynapseDefault(0, 4.5);
     }
 
     @Override

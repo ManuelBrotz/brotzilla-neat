@@ -21,6 +21,11 @@ public class ActivationFunctionSynapse {
         return defaultValue;
     }
     
+    public void setDefaultValue(double value) {
+        Preconditions.checkState(!Double.isInfinite(value) && !Double.isNaN(value), "The parameter 'value' has to be a valid double value (neither infinity nor nan are allowed)");
+        defaultValue = value;
+    }
+    
     public double getViewerLowerBound() {
         return viewerLowerBound;
     }

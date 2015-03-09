@@ -23,7 +23,7 @@ public class ActivationFunctionViewer extends JFrame {
 //        display.addFunction(setParams(createFunction(), new double[] {-1.0, 0.0, 0.5, 0.5, 0.0}), Color.cyan);
 //        display.addFunction(setParams(createFunction(), new double[] {-1.0, 0.0, 0.5, -0.5, 0.0}), Color.orange);
         
-        display.addFunction(wrap(createFunction(), new double[] {1.0, 0.0, 1.0, 0.0, 0.0}), Color.blue);
+        display.addFunction(wrap(createFunction(), new double[] {2.5, 0.0, 1.0, 0.0, 0.0}), Color.blue);
 //        display.addFunction(setParams(createFunction(), new double[] {1.0, 0.0, 0.5, 0.5, 0.0}), Color.green);
 //        display.addFunction(setParams(createFunction(), new double[] {1.0, 0.0, 0.5, -0.5, 0.0}), Color.red);
         
