@@ -29,8 +29,6 @@ public abstract class ActivationFunction {
     
     protected abstract void initializeDefaultSynapses(List<ActivationFunctionSynapse> synapses);
     
-    protected abstract double _compute(double activation, double[] synapses);
-
     protected ActivationFunction(String id, String name, String description, ActivationFunctionSynapse... synapses) {
         Preconditions.checkNotNull(id, "The parameter 'id' must not be null");
         Preconditions.checkArgument(!id.trim().isEmpty(), "The parameter 'id' must not be empty");

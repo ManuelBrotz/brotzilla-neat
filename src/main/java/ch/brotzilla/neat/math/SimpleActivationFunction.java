@@ -9,6 +9,8 @@ public abstract class SimpleActivationFunction extends ActivationFunction {
     @Override
     protected final void initializeDefaultSynapses(List<ActivationFunctionSynapse> synapses) {}
 
+    protected abstract double _compute(double activation, double[] synapses);
+
     protected SimpleActivationFunction(String id, String name, String description) {
         super(id, name, description, (ActivationFunctionSynapse[]) null);
     }

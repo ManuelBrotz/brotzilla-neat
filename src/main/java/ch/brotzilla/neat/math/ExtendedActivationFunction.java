@@ -49,6 +49,8 @@ public abstract class ExtendedActivationFunction extends ActivationFunction {
                 .setViewerUpperBound(1.0)
                 .build());
     }
+    
+    protected abstract double _compute(double activation, double[] synapses);
 
     protected ExtendedActivationFunction(String id, String name, String description, ActivationFunctionSynapse... synapses) {
         super(id, name, description, synapses);
