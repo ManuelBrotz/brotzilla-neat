@@ -8,11 +8,14 @@ public class ReciprocalFunction extends ActivationFunction {
     protected void initializeDefaultSynapses(List<ActivationFunctionSynapse> synapses) {}
 
     public ReciprocalFunction() {
-        super("neat.math.reciprocal", "Reciprocal", "Returns the reciprocal of the argument.");
+        super("neat.math.reciprocal", "Reciprocal", "Returns the reciprocal of the argument. Returns zero, if the argument is zero.");
     }
 
     @Override
     public double compute(double activation, double[] synapses) {
+        if (activation == 0.0) {
+            return 0.0;
+        }
         return 1.0 / activation;
     }
 
