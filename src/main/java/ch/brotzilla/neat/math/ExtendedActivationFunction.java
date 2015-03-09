@@ -55,7 +55,7 @@ public abstract class ExtendedActivationFunction extends ActivationFunction {
     }
 
     @Override
-    public final double compute(double activation, double[] synapses) {
+    public double compute(double activation, double[] synapses) {
         Preconditions.checkNotNull(synapses, "The parameter 'synapses' must not be null");
         Preconditions.checkArgument(synapses.length >= getNumberOfSynapses(), "The length of the parameter 'synapses' has to be greater than or equal to " + getNumberOfSynapses());
         return rectify(_compute(activation * synapses[0] + synapses[1], synapses), synapses[4]) * synapses[2] + synapses[3];
