@@ -79,13 +79,10 @@ public class Genome implements Iterable<Node> {
         this();
         Preconditions.checkNotNull(source, "The parameter 'source' must not be null");
         for (final Node node : source) {
-            final Node clone = node.clone();
-            add(clone);
+            add(node.clone());
         }
         for (final Link link : source.links) {
-            final Link clone = link.clone();
-            links.add(clone);
-            linksMap.put(clone.getInnovationNumber(), clone);
+            add(link.clone());
         }
         inputSize = source.inputSize;
         hiddenSize = source.hiddenSize;
