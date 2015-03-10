@@ -4,55 +4,69 @@ import com.google.common.base.Preconditions;
 
 public class NodeInnovation {
     
-    private final int sourceLinkInnovationNumber, targetLinkInnovationNumber, nodeInnovationNumber;
-    private final LinkHistoryKey sourceLinkHistoryKey, targetLinkHistoryKey;
-    private final String activationFunctionID;
+    private final int nodeInnovationNumber;
+    private final NodeHistoryKey nodeHistoryKey;
+    private final LinkInnovation sourceLinkInnovation, targetLinkInnovation;
     
-    public NodeInnovation(int nodeInnovationNumber, int sourceLinkInnovationNumber, int targetLinkInnovationNumber, LinkHistoryKey sourceLinkHistoryKey, LinkHistoryKey targetLinkHistoryKey, String activationFunctionID) {
+    public NodeInnovation(int nodeInnovationNumber, NodeHistoryKey nodeHistoryKey, LinkInnovation sourceLinkInnovation, LinkInnovation targetLinkInnovation) {
         Preconditions.checkArgument(nodeInnovationNumber > 0, "The paramter 'nodeInnovationNumber' has to be greater than zero");
-        Preconditions.checkArgument(sourceLinkInnovationNumber > 0, "The paramter 'sourceLinkInnovationNumber' has to be greater than zero");
-        Preconditions.checkArgument(targetLinkInnovationNumber > 0, "The paramter 'targetLinkInnovationNumber' has to be greater than zero");
         
-        Preconditions.checkNotNull(sourceLinkHistoryKey, "The parameter 'sourceLinkHistoryKey' must not be null");
-        Preconditions.checkArgument(sourceLinkHistoryKey.getTargetNode() == nodeInnovationNumber, "The target node of the parameter 'sourceLinkHistoryKey' has to be equal to " + nodeInnovationNumber);
-        Preconditions.checkArgument(sourceLinkHistoryKey.getTargetSynapse() == 0, "The target synapse of the parameter 'sourceLinkHistoryKey' has to be equal to zero");
+        Preconditions.checkNotNull(nodeHistoryKey, "The parameter 'nodeHistoryKey' must not be null");
         
-        Preconditions.checkNotNull(targetLinkHistoryKey, "The parameter 'targetLinkHistoryKey' must not be null");
-        Preconditions.checkArgument(targetLinkHistoryKey.getSourceNode() == nodeInnovationNumber, "The source node of the parameter 'targetLinkHistoryKey' has to be equal to " + nodeInnovationNumber);
+        Preconditions.checkNotNull(sourceLinkInnovation, "The parameter 'sourceLinkInnovation' must not be null");
+        Preconditions.checkArgument(sourceLinkInnovation.getSourceNode() == nodeHistoryKey.getSourceNode(), "The source node of the parameter 'sourceLinkInnovation' has to be equal to " + nodeHistoryKey.getSourceNode());
+        Preconditions.checkArgument(sourceLinkInnovation.getTargetNode() == nodeInnovationNumber, "The target node of the parameter 'sourceLinkInnovation' has to be equal to " + nodeInnovationNumber);
+        Preconditions.checkArgument(sourceLinkInnovation.getTargetSynapse() == 0, "The target synapse of the parameter 'sourceLinkInnovation' has to be equal to zero");
         
-        Preconditions.checkNotNull(activationFunctionID, "The parameter 'activationFunctionID' must not be null");
-        Preconditions.checkArgument(!activationFunctionID.trim().isEmpty(), "The parameter 'activationFunctionID' must not be empty");
+        Preconditions.checkNotNull(targetLinkInnovation, "The parameter 'targetLinkInnovation' must not be null");
+        Preconditions.checkArgument(targetLinkInnovation.getSourceNode() == nodeInnovationNumber, "The source node of the parameter 'targetLinkInnovation' has to be equal to " + nodeInnovationNumber);
+        Preconditions.checkArgument(targetLinkInnovation.getTargetNode() == nodeHistoryKey.getTargetNode(), "The target node of the parameter 'targetLinkInnovation' has to be equal to " + nodeHistoryKey.getTargetNode());
+        Preconditions.checkArgument(targetLinkInnovation.getTargetSynapse() == nodeHistoryKey.getTargetSynapse(), "The target synapse of the parameter 'targetLinkInnovation' has to be equal to " + nodeHistoryKey.getTargetSynapse());
         
         this.nodeInnovationNumber = nodeInnovationNumber;
-        this.targetLinkHistoryKey = targetLinkHistoryKey;
-        this.targetLinkInnovationNumber = targetLinkInnovationNumber;
-        this.sourceLinkHistoryKey = sourceLinkHistoryKey;
-        this.sourceLinkInnovationNumber = sourceLinkInnovationNumber;
-        this.activationFunctionID = activationFunctionID;
+        this.nodeHistoryKey = nodeHistoryKey;
+        this.sourceLinkInnovation = sourceLinkInnovation;
+        this.targetLinkInnovation = targetLinkInnovation;
     }
     
     public int getNodeInnovationNumber() {
         return nodeInnovationNumber;
     }
-
+    
     public int getSourceLinkInnovationNumber() {
-        return sourceLinkInnovationNumber;
+        return sourceLinkInnovation.getLinkInnovationNumber();
     }
 
     public int getTargetLinkInnovationNumber() {
-        return targetLinkInnovationNumber;
-    }
-    
-    public LinkHistoryKey getSourceLinkHistoryKey() {
-        return sourceLinkHistoryKey;
-    }
-    
-    public LinkHistoryKey getTargetLinkHistoryKey() {
-        return targetLinkHistoryKey;
+        return targetLinkInnovation.getLinkInnovationNumber();
     }
     
     public String getActivationFunctionID() {
-        return activationFunctionID;
+        return nodeHistoryKey.getActivationFunctionID();
+    }
+    
+    public int getSourceNode() {
+        return nodeHistoryKey.getSourceNode();
+    }
+    
+    public int getTargetNode() {
+        return nodeHistoryKey.getTargetNode();
+    }
+    
+    public int getTargetSynapse() {
+        return nodeHistoryKey.getTargetSynapse();
+    }
+
+    public NodeHistoryKey getNodeHistoryKey() {
+        return nodeHistoryKey;
+    }
+
+    public LinkInnovation getSourceLinkInnovation() {
+        return sourceLinkInnovation;
+    }
+    
+    public LinkInnovation getTargetLinkInnovation() {
+        return targetLinkInnovation;
     }
     
 }

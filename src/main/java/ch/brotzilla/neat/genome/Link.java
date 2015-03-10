@@ -1,5 +1,8 @@
 package ch.brotzilla.neat.genome;
 
+import ch.brotzilla.neat.history.LinkHistoryKey;
+import ch.brotzilla.neat.history.LinkInnovation;
+
 import com.google.common.base.Preconditions;
 
 public class Link {
@@ -16,6 +19,23 @@ public class Link {
         this.sourceNode = sourceNode;
         this.targetNode = targetNode;
         this.targetSynapse = targetSynapse;
+    }
+    
+    public Link(int innovationNumber, LinkHistoryKey key) {
+        Preconditions.checkArgument(innovationNumber > 0, "The parameter 'innovationNumber' has to be greater than zero");
+        Preconditions.checkNotNull(key, "The parameter 'key' must not be null");
+        this.innovationNumber = innovationNumber;
+        this.sourceNode = key.getSourceNode();
+        this.targetNode = key.getTargetNode();
+        this.targetSynapse = key.getTargetSynapse();
+    }
+    
+    public Link(LinkInnovation innovation) {
+        Preconditions.checkNotNull(innovation, "The parameter 'innovation' must not be null");
+        this.innovationNumber = innovation.getLinkInnovationNumber();
+        this.sourceNode = innovation.getLinkHistoryKey().getSourceNode();
+        this.targetNode = innovation.getLinkHistoryKey().getTargetNode();
+        this.targetSynapse = innovation.getLinkHistoryKey().getTargetSynapse();
     }
     
     public Link(Link source) {

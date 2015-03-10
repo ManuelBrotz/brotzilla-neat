@@ -1,14 +1,17 @@
 package ch.brotzilla.neat.genome;
 
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public class Genome {
+public class Genome implements Iterable<Node> {
 
     private static final boolean CheckIntegrityOnAddLink = true;
     
@@ -119,6 +122,10 @@ public class Genome {
     
     public final List<Node> getOutputNodes() {
         return outputWrapper;
+    }
+    
+    public Iterator<Node> iterator() {
+        return new NodesIterator();
     }
     
     public final List<Link> getLinks() {
@@ -273,4 +280,90 @@ public class Genome {
         return new Genome(this);
     }
     
+    private class NodesIterator implements Iterator<Node> {
+
+        private final int expectedSize;
+        private final Iterator<Node>[] iterators;
+        private Iterator<Node> iterator;
+        private int nextIterator;
+        
+        private Iterator<Node>[] initIterators() {
+            final int numIterators = (biasNode != null ? 1 : 0) + (inputSize > 0 ? 1 : 0) + (hiddenSize > 0 ? 1 : 0) + (outputNodes.size() > 0 ? 1 : 0);
+            if (numIterators > 0) {
+                @SuppressWarnings("unchecked")
+                final Iterator<Node>[] result = new Iterator[numIterators];
+                int index = 0;
+                if (biasNode != null) {
+                    result[index++] = new BiasNodeIterator();
+                }
+                if (inputSize > 0) {
+                    result[index++] = inputNodes.iterator();
+                }
+                if (hiddenSize > 0) {
+                    result[index++] = hiddenNodes.iterator();
+                }
+                if (outputNodes.size() > 0) {
+                    result[index] = outputNodes.iterator();
+                }
+                return result;
+            }
+            return null;
+        }
+        
+        public NodesIterator() {
+            expectedSize = totalSize;
+            iterators = initIterators();
+            iterator = (iterators == null ? null : iterators[0]);
+            nextIterator = 1;
+        }
+
+        public boolean hasNext() {
+            return iterator != null && iterator.hasNext();
+        }
+
+        public Node next() {
+            if (totalSize != expectedSize) {
+                throw new ConcurrentModificationException();
+            }
+            if (iterator == null) {
+                throw new NoSuchElementException();
+            }
+            final Node node = iterator.next();
+            if (!iterator.hasNext()) {
+                if (nextIterator < iterators.length) {
+                    iterator = iterators[nextIterator++];
+                } else {
+                    iterator = null;
+                }
+            }
+            return node;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+    
+    private class BiasNodeIterator implements Iterator<Node> {
+
+        private boolean hasNext = true;
+        
+        public BiasNodeIterator() {}
+        
+        public boolean hasNext() {
+            return hasNext;
+        }
+
+        public Node next() {
+            hasNext = false;
+            return biasNode;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+        
+    }
+
 }

@@ -37,7 +37,7 @@ public class HistoryList {
     public LinkInnovation newLinkInnovation(LinkHistoryKey key) {
         Preconditions.checkNotNull(key, "The parameter 'key' must not be null");
         Preconditions.checkArgument(!linkHistory.containsKey(key), "The parameter 'key' is already part of the link innovation history");
-        final LinkInnovation result = new LinkInnovation(newInnovationNumber());
+        final LinkInnovation result = new LinkInnovation(newInnovationNumber(), key);
         linkHistory.put(key, result);
         return result;
     }
@@ -52,13 +52,15 @@ public class HistoryList {
         final int sourceLinkInnovationNumber = newInnovationNumber();
         final int targetLinkInnovationNumber = newInnovationNumber();
         final LinkHistoryKey sourceLinkHistoryKey = new LinkHistoryKey(key.getSourceNode(), nodeInnovationNumber, 0);
-        final LinkHistoryKey targetLinkHistoryKey = new LinkHistoryKey(nodeInnovationNumber, key.getTargetNode(), key.getTargetSynapse()); 
-        final NodeInnovation result = new NodeInnovation(nodeInnovationNumber, sourceLinkInnovationNumber, targetLinkInnovationNumber, sourceLinkHistoryKey, targetLinkHistoryKey, key.getActivationFunctionID());
+        final LinkInnovation sourceLinkInnovation = new LinkInnovation(sourceLinkInnovationNumber, sourceLinkHistoryKey);
+        final LinkHistoryKey targetLinkHistoryKey = new LinkHistoryKey(nodeInnovationNumber, key.getTargetNode(), key.getTargetSynapse());
+        final LinkInnovation targetLinkInnovation = new LinkInnovation(targetLinkInnovationNumber, targetLinkHistoryKey);
+        final NodeInnovation result = new NodeInnovation(nodeInnovationNumber, key, sourceLinkInnovation, targetLinkInnovation);
         Preconditions.checkState(!linkHistory.containsKey(sourceLinkHistoryKey), "Internal Error: The link innovation history already contains a link from " + key.getSourceNode() + " to " + nodeInnovationNumber);
         Preconditions.checkState(!linkHistory.containsKey(targetLinkHistoryKey), "Internal Error: The link innovation history already contians a link from " + nodeInnovationNumber + " to " + key.getTargetNode() + ":" + key.getTargetSynapse());
         nodeHistory.put(key, result);
-        linkHistory.put(sourceLinkHistoryKey, new LinkInnovation(sourceLinkInnovationNumber));
-        linkHistory.put(targetLinkHistoryKey, new LinkInnovation(targetLinkInnovationNumber));
+        linkHistory.put(sourceLinkHistoryKey, sourceLinkInnovation);
+        linkHistory.put(targetLinkHistoryKey, targetLinkInnovation);
         return result;
     }
     

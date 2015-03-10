@@ -67,9 +67,9 @@ public class Test {
                 final NodeHistoryKey nodeHistoryKey = new NodeHistoryKey(sourceNode.getInnovationNumber(), targetNode.getInnovationNumber(), 0, testFunction.getID());
                 final NodeInnovation nodeInnovation = history.newNodeInnovation(nodeHistoryKey);
                 genome.add(new Node(NodeType.Hidden, nodeInnovation.getNodeInnovationNumber(), testFunction));
-                genome.add(new Link(nodeInnovation.getSourceLinkInnovationNumber(), sourceNode.getInnovationNumber(), nodeInnovation.getNodeInnovationNumber(), 0));
-                genome.add(new Link(nodeInnovation.getTargetLinkInnovationNumber(), nodeInnovation.getNodeInnovationNumber(), targetNode.getInnovationNumber(), 0));
-                System.out.println("New Hidden-Node from Input" + sourceNode.getInnovationNumber() + " to Output" + targetNode.getInnovationNumber() + ": L" + nodeInnovation.getSourceLinkInnovationNumber() + ", N" + nodeInnovation.getNodeInnovationNumber() + ", L" + nodeInnovation.getTargetLinkInnovationNumber()); 
+                genome.add(new Link(nodeInnovation.getSourceLinkInnovation()));
+                genome.add(new Link(nodeInnovation.getTargetLinkInnovation()));
+                System.out.println("New Hidden-Node " + nodeInnovation.getNodeInnovationNumber() +" from Input" + sourceNode.getInnovationNumber() + " to Output" + targetNode.getInnovationNumber() + ": L" + nodeInnovation.getSourceLinkInnovationNumber() + ", L" + nodeInnovation.getTargetLinkInnovationNumber()); 
             }
         }
         
@@ -78,11 +78,51 @@ public class Test {
         return genome;
     }
     
+    public static Genome testAddBiasNode(Genome genome) {
+        System.out.println("Add bias node:");
+        
+        final Node biasNode = new Node(NodeType.Bias, history.newInnovationNumber());
+        genome.add(biasNode);
+        
+        System.out.println("New Bias-Node: " + biasNode.getInnovationNumber());
+        System.out.println();
+        
+        System.out.println("Add new links from bias node to hidden nodes:");
+        for (final Node targetNode : genome.getHiddenNodes()) {
+            final LinkHistoryKey key = new LinkHistoryKey(biasNode.getInnovationNumber(), targetNode.getInnovationNumber(), 0);
+            final LinkInnovation innovation = history.newLinkInnovation(key);
+            genome.add(new Link(innovation));
+            System.out.println("New Link " + innovation.getLinkInnovationNumber() + " from Bias-Node to " + targetNode.getType() + "" + targetNode.getInnovationNumber());
+        }
+        System.out.println();
+        
+        System.out.println("Add new links from bias node to output nodes:");
+        for (final Node targetNode : genome.getOutputNodes()) {
+            final LinkHistoryKey key = new LinkHistoryKey(biasNode.getInnovationNumber(), targetNode.getInnovationNumber(), 0);
+            final LinkInnovation innovation = history.newLinkInnovation(key);
+            genome.add(new Link(innovation));
+            System.out.println("New Link " + innovation.getLinkInnovationNumber() + " from Bias-Node to " + targetNode.getType() + "" + targetNode.getInnovationNumber());
+        }
+        System.out.println();
+        
+        return genome;
+    }
+    
+    public static Genome testNodeIterationAndIndexedAccess(Genome genome) {
+        System.out.println("Node iteration and indexed access comparison:");
+        int index = 0;
+        for (final Node iteratedNode : genome) {
+            final Node indexedNode = genome.getNodeByIndex(index++);
+            System.out.println("Index " + (index - 1) + ": " + (iteratedNode == indexedNode ? "OK!" : "Wrong! (Iterated = " + iteratedNode.getType() + "" + iteratedNode.getInnovationNumber() + ", Indexed = " + indexedNode.getType() + "" + indexedNode.getInnovationNumber() + ")"));
+        }
+        System.out.println();
+        return genome;
+    }
+    
     public static Genome printGenome(Genome genome) {
         System.out.println("All Nodes:");
         
-        for (int i = 0; i < genome.getNumberOfNodes(); i++) {
-            final Node node = genome.getNodeByIndex(i);
+        for (final Node node : genome) {
             System.out.println(node.getType() + "-Node: " + node.getInnovationNumber());
         }
         
@@ -116,7 +156,7 @@ public class Test {
     }
     
     public static void main(String[] args) {
-        testEquals(printGenome(testAddHiddenNodes(testCreateGenome(2, 2))));
+        testEquals(testNodeIterationAndIndexedAccess(printGenome(testAddBiasNode(testAddHiddenNodes(testCreateGenome(2, 3))))));
     }
 
 }
