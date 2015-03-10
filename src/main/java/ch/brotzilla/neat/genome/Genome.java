@@ -78,21 +78,9 @@ public class Genome implements Iterable<Node> {
     public Genome(Genome source) {
         this();
         Preconditions.checkNotNull(source, "The parameter 'source' must not be null");
-        biasNode = (source.biasNode == null ? null : source.biasNode.clone());
-        for (final Node node : source.inputNodes) {
+        for (final Node node : source) {
             final Node clone = node.clone();
-            inputNodes.add(clone);
-            nodesMap.put(clone.getInnovationNumber(), clone);
-        }
-        for (final Node node : source.hiddenNodes) {
-            final Node clone = node.clone();
-            hiddenNodes.add(clone);
-            nodesMap.put(clone.getInnovationNumber(), clone);
-        }
-        for (final Node node : source.outputNodes) {
-            final Node clone = node.clone();
-            outputNodes.add(clone);
-            nodesMap.put(clone.getInnovationNumber(), clone);
+            add(clone);
         }
         for (final Link link : source.links) {
             final Link clone = link.clone();
