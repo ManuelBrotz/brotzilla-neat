@@ -9,13 +9,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import ch.brotzilla.neat.Debug;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 public class Genome implements Iterable<Node> {
 
-    private static final boolean CheckIntegrityOnAddLink = true;
-    
     private Node biasNode;
     private final List<Node> inputNodes, hiddenNodes, outputNodes, inputWrapper, hiddenWrapper, outputWrapper;
     private final List<Link> links, linksWrapper;
@@ -167,7 +167,7 @@ public class Genome implements Iterable<Node> {
     public final void add(Link link) {
         Preconditions.checkNotNull(link, "The parameter 'link' must not be null");
         Preconditions.checkArgument(!linksMap.containsKey(link.getInnovationNumber()), "The genome already contains a link with the innovation number " + link.getInnovationNumber());
-        if (CheckIntegrityOnAddLink) {
+        if (Debug.EnableIntegrityChecks) {
             final Node sourceNode = nodesMap.get(link.getSourceNode());
             Preconditions.checkArgument(sourceNode != null, "The genome does not contain a source node with the innovation number " + link.getSourceNode());
             final Node targetNode = nodesMap.get(link.getTargetNode());
