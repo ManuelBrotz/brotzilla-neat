@@ -1,15 +1,16 @@
 package ch.brotzilla.neat.genome;
 
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 public class Genome implements Iterable<Node> {
 
@@ -18,8 +19,8 @@ public class Genome implements Iterable<Node> {
     private Node biasNode;
     private final List<Node> inputNodes, hiddenNodes, outputNodes, inputWrapper, hiddenWrapper, outputWrapper;
     private final List<Link> links, linksWrapper;
-    private final HashMap<Integer, Node> nodesMap;
-    private final HashMap<Integer, Link> linksMap;
+    private final TIntObjectMap<Node> nodesMap;
+    private final TIntObjectMap<Link> linksMap;
     
     private int inputSize, hiddenSize, totalSize;
     
@@ -71,8 +72,8 @@ public class Genome implements Iterable<Node> {
         outputWrapper = Collections.unmodifiableList(outputNodes);
         links = Lists.newArrayList();
         linksWrapper = Collections.unmodifiableList(links);
-        nodesMap = Maps.newHashMap();
-        linksMap = Maps.newHashMap();
+        nodesMap = new TIntObjectHashMap<Node>();
+        linksMap = new TIntObjectHashMap<Link>();
     }
     
     public Genome(Genome source) {
