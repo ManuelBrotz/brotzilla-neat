@@ -24,6 +24,32 @@ public class Genome implements Iterable<Node> {
     
     private int inputSize, hiddenSize, outputSize, totalSize;
     
+    private void add(Link link, boolean updateTargetNode) {
+        Preconditions.checkNotNull(link, "The parameter 'link' must not be null");
+        Preconditions.checkArgument(!linksMap.containsKey(link.getInnovationNumber()), "The genome already contains a link with the innovation number " + link.getInnovationNumber());
+        if (Debug.EnableIntegrityChecks) {
+            final Node sourceNode = nodesMap.get(link.getSourceNode());
+            Preconditions.checkArgument(sourceNode != null, "The genome does not contain a source node with the innovation number " + link.getSourceNode());
+            final Node targetNode = nodesMap.get(link.getTargetNode());
+            Preconditions.checkArgument(targetNode != null, "The genome does not contain a target node with the innovation number " + link.getTargetNode());
+            Preconditions.checkArgument(targetNode.getType().isTargetNode(), "The node with the innovation number " + targetNode.getInnovationNumber() + " has to be of type Hidden or Output");
+        }
+        if (updateTargetNode) {
+            final Node targetNode = nodesMap.get(link.getTargetNode());
+            Preconditions.checkArgument(targetNode != null, "The genome does not contain a target node with the innovation number " + link.getTargetNode());
+            targetNode.add(link);
+        }
+        links.add(link);
+        linksMap.put(link.getInnovationNumber(), link);
+    }
+    
+    private void removeLinkFromNode(Link link) {
+        Preconditions.checkNotNull(link, "The parameter 'link' must not be null");
+        final Node targetNode = nodesMap.get(link.getTargetNode());
+        Preconditions.checkArgument(targetNode != null, "The genome does not contain a target node with the innovation number " + link.getTargetNode());
+        targetNode.remove(link);
+    }
+
     private Node removeNodeFromLists(int index) {
         Preconditions.checkElementIndex(index, totalSize, "The parameter 'index'");
         if (biasNode != null) {
@@ -87,7 +113,7 @@ public class Genome implements Iterable<Node> {
             add(node.clone());
         }
         for (final Link link : source.links) {
-            add(link.clone());
+            add(link.clone(), false);
         }
         inputSize = source.inputSize;
         hiddenSize = source.hiddenSize;
@@ -181,17 +207,7 @@ public class Genome implements Iterable<Node> {
     }
     
     public final void add(Link link) {
-        Preconditions.checkNotNull(link, "The parameter 'link' must not be null");
-        Preconditions.checkArgument(!linksMap.containsKey(link.getInnovationNumber()), "The genome already contains a link with the innovation number " + link.getInnovationNumber());
-        if (Debug.EnableIntegrityChecks) {
-            final Node sourceNode = nodesMap.get(link.getSourceNode());
-            Preconditions.checkArgument(sourceNode != null, "The genome does not contain a source node with the innovation number " + link.getSourceNode());
-            final Node targetNode = nodesMap.get(link.getTargetNode());
-            Preconditions.checkArgument(targetNode != null, "The genome does not contain a target node with the innovation number " + link.getTargetNode());
-            Preconditions.checkArgument(targetNode.getType().isTargetNode(), "The node with the innovation number " + targetNode.getInnovationNumber() + " has to be of type Output or Hidden");
-        }
-        links.add(link);
-        linksMap.put(link.getInnovationNumber(), link);
+        add(link, true);
     }
     
     public final void remove(Node node) {
@@ -229,12 +245,13 @@ public class Genome implements Iterable<Node> {
         Preconditions.checkNotNull(link, "The parameter 'link' must not be null");
         Preconditions.checkArgument(links.remove(link), "The parameter 'link' is not part of this genome");
         linksMap.remove(link.getInnovationNumber());
+        removeLinkFromNode(link);
     }
     
     public final void removeLinkByIndex(int index) {
-        final Link link = links.get(index);
-        links.remove(index);
+        final Link link = links.remove(index);
         linksMap.remove(link.getInnovationNumber());
+        removeLinkFromNode(link);
     }
     
     public final void removeLinkByInnovation(int innovationNumber) {
@@ -242,6 +259,7 @@ public class Genome implements Iterable<Node> {
         final Link link = linksMap.remove(innovationNumber);
         Preconditions.checkArgument(link != null, "The genome does not contain a link with the innovation number " + innovationNumber);
         links.remove(link);
+        removeLinkFromNode(link);
     }
     
     @Override

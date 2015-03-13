@@ -22,6 +22,7 @@ public class Node {
     private final TIntSet links, linksWrapper;
 
     void add(Link link) {
+        Preconditions.checkState(type.isTargetNode(), type + " nodes do not support links");
         Preconditions.checkNotNull(link, "The parameter 'link' must not be null");
         Preconditions.checkArgument(link.getTargetNode() == innovationNumber, "The target node of the parameter 'link' has to be equal to " + innovationNumber);
         if (Debug.EnableIntegrityChecks) {
@@ -31,6 +32,7 @@ public class Node {
     }
     
     void remove(Link link) {
+        Preconditions.checkState(type.isTargetNode(), type + " nodes do not support links");
         Preconditions.checkNotNull(link, "The parameter 'link' must not be null");
         Preconditions.checkArgument(link.getTargetNode() == innovationNumber, "The target node of the parameter 'link' has to be equal to " + innovationNumber);
         final boolean removed = links.remove(link.getInnovationNumber());

@@ -1,5 +1,6 @@
 package ch.brotzilla.neat.genome;
 
+import gnu.trove.iterator.TIntIterator;
 import ch.brotzilla.neat.history.HistoryList;
 import ch.brotzilla.neat.history.LinkHistoryKey;
 import ch.brotzilla.neat.history.LinkInnovation;
@@ -119,11 +120,27 @@ public class Test {
         return genome;
     }
     
+    private static String getLinkList(Node node) {
+        if (node.getNumberOfLinks() == 0) {
+            return "";
+        }
+        final StringBuilder result = new StringBuilder();
+        final TIntIterator it = node.getLinks().iterator();
+        while (it.hasNext()) {
+            final int link = it.next();
+            if (result.length() > 0) {
+                result.append(", ");
+            }
+            result.append(link);
+        }
+        return ", Links: " + result;
+    }
+    
     public static Genome printGenome(Genome genome) {
         System.out.println("All Nodes:");
         
         for (final Node node : genome) {
-            System.out.println(node.getType() + "-Node: " + node.getInnovationNumber());
+            System.out.println(node.getType() + "-Node: " + node.getInnovationNumber() + getLinkList(node));
         }
         
         System.out.println();
