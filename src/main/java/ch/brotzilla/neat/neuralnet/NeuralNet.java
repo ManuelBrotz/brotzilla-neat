@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.google.common.base.Preconditions;
 
-// TODO Add NeuronType to class Neuron to make it possible to distinguish hidden/output neurons. For preconditions.
 public class NeuralNet {
 
     private final int numberOfInputNeurons, numberOfHiddenNeurons, numberOfOutputNeurons;
