@@ -14,6 +14,7 @@ public class NodeIndex {
     private final TIntIntMap nodeIndexMap;
 
     private void createNodeIndex(Genome genome) {
+        Preconditions.checkNotNull(genome, "The parameter 'genome' must not be null");
         int index = 0;
         for (final Node node : genome.getInputNodes()) {
             if (Debug.EnableIntegrityChecks) {
@@ -37,23 +38,13 @@ public class NodeIndex {
         }
     }
     
-    public NodeIndex() {
+    public NodeIndex(Genome genome) {
         nodeIndexMap = new TIntIntHashMap(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, 0, -1);
-        clear();
+        createNodeIndex(genome);
     }
 
     public int getNodeIndex(int innovationNumber) {
         return nodeIndexMap.get(innovationNumber);
-    }
-    
-    public void clear() {
-    	nodeIndexMap.clear();
-    }
-    
-    public void createIndex(Genome genome) {
-        Preconditions.checkNotNull(genome, "The parameter 'genome' must not be null");
-        clear();
-        createNodeIndex(genome);
     }
 
 }

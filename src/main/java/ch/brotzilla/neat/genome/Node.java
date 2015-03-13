@@ -119,6 +119,10 @@ public class Node implements Iterable<Integer> {
         }
     }
     
+    public double[] copySynapseDefaults() {
+        return Arrays.copyOf(synapseDefaults, synapseDefaults.length);
+    }
+
     public double[] getSynapseDefaults() {
         return synapseDefaults;
     }

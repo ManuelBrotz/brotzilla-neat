@@ -1,30 +1,78 @@
 package ch.brotzilla.neat.expression;
 
+import java.util.List;
+
+import gnu.trove.iterator.TIntIterator;
+
 import com.google.common.base.Preconditions;
 
 import ch.brotzilla.neat.genome.Genome;
+import ch.brotzilla.neat.genome.Link;
 import ch.brotzilla.neat.genome.Node;
+import ch.brotzilla.neat.genome.NodeType;
+import ch.brotzilla.neat.neuralnet.BiasConnection;
+import ch.brotzilla.neat.neuralnet.Connection;
+import ch.brotzilla.neat.neuralnet.HiddenNeuron;
+import ch.brotzilla.neat.neuralnet.HiddenNeuronConnection;
+import ch.brotzilla.neat.neuralnet.InputNeuronConnection;
 import ch.brotzilla.neat.neuralnet.NeuralNet;
 import ch.brotzilla.neat.neuralnet.Neuron;
+import ch.brotzilla.neat.neuralnet.OutputNeuronConnection;
 
 public class DefaultGenomeExpressor implements GenomeExpressor {
 
-	public DefaultGenomeExpressor() {
-
-	}
+    private Neuron[] expressNeurons(Genome genome, NodeIndex index, List<Node> nodes) {
+        if (nodes.size() == 0) {
+            return new Neuron[0];
+        }
+        final Neuron[] result = new Neuron[nodes.size()];
+        final int biasInnovation = (genome.getBiasNode() != null ? genome.getBiasNode().getInnovationNumber() : -1);
+        int ni = 0;
+        for (final Node node : nodes) {
+            final int targetNeuronIndex = index.getNodeIndex(node.getInnovationNumber());
+            Preconditions.checkState(targetNeuronIndex >= 0, "Internal Error: The node index does not contain a node with the innovation number " + node.getInnovationNumber());
+            final Connection[] connections = new Connection[node.getNumberOfLinks()];
+            final TIntIterator links = node.getLinks().iterator();
+            int ci = 0;
+            while (links.hasNext()) {
+                final int linkInnovation = links.next();
+                final Link link = genome.getLinkByInnovation(linkInnovation);
+                Preconditions.checkArgument(link != null, "The parameter 'genome' does not contain a link with the innovation number " + linkInnovation);
+                final int sourceNodeInnovation = link.getSourceNode();
+                if (sourceNodeInnovation == biasInnovation) {
+                    connections[ci++] = new BiasConnection(link.getTargetSynapse(), link.getWeight());
+                } else {
+                    final Node sourceNode = genome.getNodeByInnovation(sourceNodeInnovation);
+                    Preconditions.checkArgument(sourceNode != null, "The parameter 'genome' does not contain a node with the innovation number " + sourceNodeInnovation);
+                    Preconditions.checkArgument(sourceNode.getType() != NodeType.Bias, "The parameter 'genome' must not contain more than one bias node");
+                    final int sourceNeuronIndex = index.getNodeIndex(sourceNodeInnovation);
+                    Preconditions.checkState(sourceNeuronIndex >= 0, "Internal Error: The node index does not contain a node with the innovation number " + sourceNodeInnovation);
+                    if (sourceNode.getType() == NodeType.Input) {
+                        connections[ci++] = new InputNeuronConnection(sourceNeuronIndex, link.getTargetSynapse(), link.getWeight());
+                    } else if (sourceNode.getType() == NodeType.Hidden) {
+                        connections[ci++] = new HiddenNeuronConnection(sourceNeuronIndex, link.getTargetSynapse(), link.getWeight());
+                    } else if (sourceNode.getType() == NodeType.Output) {
+                        connections[ci++] = new OutputNeuronConnection(sourceNeuronIndex, link.getTargetSynapse(), link.getWeight());
+                    } else {
+                        throw new IllegalStateException("Unknown node type: " + sourceNode.getType());
+                    }
+                }
+            }
+            result[ni++] = new HiddenNeuron(targetNeuronIndex, node.getActivationFunction(), node.copySynapseDefaults(), connections);
+        }
+        return result;
+    }
+    
+	public DefaultGenomeExpressor() {}
 
 	public NeuralNet express(Genome genome) {
 		Preconditions.checkNotNull(genome, "The parameter 'genome' must not be null");
 		Preconditions.checkArgument(genome.getNumberOfInputNodes() > 0, "The parameter 'genome' requires at least one input node");
 		Preconditions.checkArgument(genome.getNumberOfOutputNodes() > 0, "The parameter 'genome' requires at least one output node");
-		final NodeIndex index = new NodeIndex();
-		index.createIndex(genome);
-		final int biasInnovation = (genome.getBiasNode() != null ? genome.getBiasNode().getInnovationNumber() : -1);
-		final Neuron[] hiddenNeurons = genome.getNumberOfInputNodes() == 0 ? null : new Neuron[genome.getNumberOfHiddenNodes()];
-		final Neuron[] outputNeurons = new Neuron[genome.getNumberOfOutputNodes()];
-		for (final Node node : genome.getHiddenNodes()) {
-			
-		}
+		final NodeIndex index = new NodeIndex(genome);
+		final Neuron[] hiddenNeurons = expressNeurons(genome, index, genome.getHiddenNodes());
+		final Neuron[] outputNeurons = expressNeurons(genome, index, genome.getOutputNodes());
+		return new NeuralNet(genome.getNumberOfInputNodes(), genome.getNumberOfHiddenNodes(), genome.getNumberOfOutputNodes(), hiddenNeurons, outputNeurons);
 	}
 
 }
