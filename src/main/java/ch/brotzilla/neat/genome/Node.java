@@ -1,17 +1,19 @@
 package ch.brotzilla.neat.genome;
 
 import gnu.trove.impl.unmodifiable.TUnmodifiableIntSet;
+import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.TIntSet;
 import gnu.trove.set.hash.TIntHashSet;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 import ch.brotzilla.neat.Debug;
 import ch.brotzilla.neat.math.ActivationFunction;
 
 import com.google.common.base.Preconditions;
 
-public class Node {
+public class Node implements Iterable<Integer> {
 
     private final NodeType type;
     private final int innovationNumber;
@@ -148,6 +150,33 @@ public class Node {
     @Override
     public Node clone() {
         return new Node(this);
+    }
+
+    public Iterator<Integer> iterator() {
+        return new LinkIterator(links.iterator());
+    }
+    
+    private static class LinkIterator implements Iterator<Integer> {
+
+        private final TIntIterator it;
+        
+        public LinkIterator(TIntIterator it) {
+            Preconditions.checkNotNull(it, "The parameter 'it' must not be null");
+            this.it = it;
+        }
+        
+        public boolean hasNext() {
+            return it.hasNext();
+        }
+
+        public Integer next() {
+            return it.next();
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+        
     }
     
 }
