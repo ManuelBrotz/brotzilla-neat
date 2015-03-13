@@ -22,7 +22,7 @@ public class Genome implements Iterable<Node> {
     private final TIntObjectMap<Node> nodesMap;
     private final TIntObjectMap<Link> linksMap;
     
-    private int inputSize, hiddenSize, totalSize;
+    private int inputSize, hiddenSize, outputSize, totalSize;
     
     private Node removeNodeFromLists(int index) {
         Preconditions.checkElementIndex(index, totalSize, "The parameter 'index'");
@@ -50,6 +50,8 @@ public class Genome implements Iterable<Node> {
             --inputSize;
         } else if (type == NodeType.Hidden) {
             --hiddenSize;
+        } else if (type == NodeType.Output) {
+        	--outputSize;
         }
         --totalSize;
     }
@@ -59,6 +61,8 @@ public class Genome implements Iterable<Node> {
             ++inputSize;
         } else if (type == NodeType.Hidden) {
             ++hiddenSize;
+        } else if (type == NodeType.Output) {
+        	++outputSize;
         }
         ++totalSize;
     }
@@ -92,6 +96,18 @@ public class Genome implements Iterable<Node> {
 
     public final int getNumberOfNodes() {
         return totalSize;
+    }
+    
+    public final int getNumberOfInputNodes() {
+    	return inputSize;
+    }
+    
+    public final int getNumberOfHiddenNodes() {
+    	return hiddenSize;
+    }
+    
+    public final int getNumberOfOutputNodes() {
+    	return outputSize;
     }
     
     public final Node getBiasNode() {
