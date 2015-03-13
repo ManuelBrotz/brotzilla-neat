@@ -1,9 +1,12 @@
-package ch.brotzilla.neat.genome;
+package ch.brotzilla.neat.expression;
 
 import gnu.trove.impl.Constants;
 import gnu.trove.map.TIntIntMap;
 import gnu.trove.map.hash.TIntIntHashMap;
 import ch.brotzilla.neat.Debug;
+import ch.brotzilla.neat.genome.Genome;
+import ch.brotzilla.neat.genome.Link;
+import ch.brotzilla.neat.genome.Node;
 
 import com.google.common.base.Preconditions;
 
