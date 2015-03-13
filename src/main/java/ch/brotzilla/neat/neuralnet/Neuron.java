@@ -12,25 +12,39 @@ public abstract class Neuron {
     protected final int neuronIndex;
     protected final ActivationFunction activationFunction;
     protected final Connection[] connections;
+    protected final double[] synapseDefaults;
+    protected final double[] synapseInputs;
     
     protected abstract void setActivation(NeuralNet nn, double activation);
 
-    abstract void compute(NeuralNet nn);
+    void compute(NeuralNet nn) {
+        for (int i = 0; i < synapseInputs.length; i++) {
+            synapseInputs[i] = synapseDefaults[i];
+        }
+        for (final Connection c : connections) {
+            synapseInputs[c.getSynapse()] += c.getValue(nn);
+        }
+        setActivation(nn, activationFunction.compute(synapseInputs));
+    }
 
-    public Neuron(int neuronIndex, ActivationFunction activationFunction, Connection[] connections) {
+    public Neuron(int neuronIndex, ActivationFunction activationFunction, double[] synapseDefaults, Connection[] connections) {
         Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
+        Preconditions.checkNotNull(synapseDefaults, "The parameter 'synapseDefaults' must not be null");
+        Preconditions.checkArgument(synapseDefaults.length == activationFunction.getNumberOfSynapses(), "The length of the parameter 'synapseDefaults' has to be equal to " + activationFunction.getNumberOfSynapses());
         Preconditions.checkNotNull(connections, "The parameter 'connections' must not be null");
         Preconditions.checkArgument(connections.length > 0, "The length of the parameter 'connections' has to be greater than zero");
         if (Debug.EnableIntegrityChecks) {
             for (int i = 0; i < connections.length; i++) {
                 final Connection c = connections[i];
                 Preconditions.checkNotNull(c, "The parameter 'connections[" + i + "]' must not be null");
-                Preconditions.checkArgument(c.getSynapse() == -1, "The synapse value of the parameter 'connections[" + i + "] has to be equal to -1");
+                Preconditions.checkElementIndex(c.getSynapse(), activationFunction.getNumberOfSynapses(), "The synapse of the parameter 'connections[" + i + "]'");
             }
         }
         this.neuronIndex = neuronIndex;
         this.activationFunction = activationFunction;
         this.connections = Arrays.copyOf(connections, connections.length);
+        this.synapseDefaults = Arrays.copyOf(synapseDefaults, synapseDefaults.length);
+        this.synapseInputs = new double[activationFunction.getNumberOfSynapses()];
     }
 
     public int getNeuronIndex() {

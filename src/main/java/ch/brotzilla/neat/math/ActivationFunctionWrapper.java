@@ -11,15 +11,10 @@ public class ActivationFunctionWrapper {
     
     public ActivationFunctionWrapper(ActivationFunction activationFunction, double[] synapseDefaults) {
         Preconditions.checkNotNull(activationFunction, "The parameter 'activationFunction' must not be null");
+        Preconditions.checkNotNull(synapseDefaults, "The parameter 'synapseDefaults' must not be null");
+        Preconditions.checkArgument(synapseDefaults.length == activationFunction.getNumberOfSynapses(), "The length of the parameter 'synapseDefaults' has to be equal to " + activationFunction.getNumberOfSynapses());
         this.activationFunction = activationFunction;
-        if (activationFunction.getNumberOfSynapses() > 0) {
-            Preconditions.checkNotNull(synapseDefaults, "The parameter 'synapseDefaults' must not be null");
-            Preconditions.checkArgument(synapseDefaults.length == activationFunction.getNumberOfSynapses(), "The length of the parameter 'synapseDefaults' has to be equal to " + activationFunction.getNumberOfSynapses());
-            this.synapseDefaults = Arrays.copyOf(synapseDefaults, synapseDefaults.length);
-        } else {
-            Preconditions.checkArgument(synapseDefaults == null, "The parameter 'synapseDefaults' has to be null");
-            this.synapseDefaults = null;
-        }
+        this.synapseDefaults = Arrays.copyOf(synapseDefaults, synapseDefaults.length);
     }
     
     public ActivationFunction getActivationFunction() {
@@ -30,8 +25,9 @@ public class ActivationFunctionWrapper {
         return synapseDefaults;
     }
     
-    public double compute(double activation) {
-        return activationFunction.compute(activation, synapseDefaults);
+    public double compute(double input) {
+        synapseDefaults[0] = input;
+        return activationFunction.compute(synapseDefaults);
     }
 
 }

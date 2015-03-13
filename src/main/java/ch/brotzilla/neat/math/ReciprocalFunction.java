@@ -12,7 +12,8 @@ public class ReciprocalFunction extends ActivationFunction {
     }
 
     @Override
-    public double compute(double activation, double[] synapses) {
+    public double compute(double[] synapses) {
+        final double activation = synapses[0];
         if (activation == 0.0) {
             return 0.0;
         }

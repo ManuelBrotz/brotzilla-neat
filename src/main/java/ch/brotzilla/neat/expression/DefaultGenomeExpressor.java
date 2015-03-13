@@ -17,7 +17,7 @@ public class DefaultGenomeExpressor implements GenomeExpressor {
 		Preconditions.checkNotNull(genome, "The parameter 'genome' must not be null");
 		Preconditions.checkArgument(genome.getNumberOfInputNodes() > 0, "The parameter 'genome' requires at least one input node");
 		Preconditions.checkArgument(genome.getNumberOfOutputNodes() > 0, "The parameter 'genome' requires at least one output node");
-		final GenomeIndex index = new GenomeIndex();
+		final NodeIndex index = new NodeIndex();
 		index.createIndex(genome);
 		final int biasInnovation = (genome.getBiasNode() != null ? genome.getBiasNode().getInnovationNumber() : -1);
 		final Neuron[] hiddenNeurons = genome.getNumberOfInputNodes() == 0 ? null : new Neuron[genome.getNumberOfHiddenNodes()];

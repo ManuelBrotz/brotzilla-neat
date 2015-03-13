@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
+// TODO Change parameter name 'activation' to 'input' for all activation functions.
 public abstract class ActivationFunction {
 
     public static final double Pi = Math.PI;
@@ -15,21 +16,22 @@ public abstract class ActivationFunction {
     private final List<ActivationFunctionSynapse> synapses;
     private final int numberOfSynapses;
     
-    private List<ActivationFunctionSynapse> initializeSynapses(ActivationFunctionSynapse[] synapses) {
+    private List<ActivationFunctionSynapse> initializeSynapses() {
         final List<ActivationFunctionSynapse> result = Lists.newArrayList();
+        final ActivationFunctionSynapse.Builder builder = new ActivationFunctionSynapse.Builder();
+        result.add(builder.setName("input")
+                .setDescription("The input of the activation function.")
+                .setDefaultValue(0.0)
+                .setViewerLowerBound(-10.0)
+                .setViewerUpperBound(10.0)
+                .build());
         initializeDefaultSynapses(result);
-        if (synapses != null) {
-            for (final ActivationFunctionSynapse synapse : synapses) {
-                Preconditions.checkNotNull(synapse, "Activation function synapses must not be null");
-                result.add(synapse);
-            }
-        }
         return Collections.unmodifiableList(result);
     }
     
     protected abstract void initializeDefaultSynapses(List<ActivationFunctionSynapse> synapses);
     
-    protected ActivationFunction(String id, String name, String description, ActivationFunctionSynapse... synapses) {
+    protected ActivationFunction(String id, String name, String description) {
         Preconditions.checkNotNull(id, "The parameter 'id' must not be null");
         Preconditions.checkArgument(!id.trim().isEmpty(), "The parameter 'id' must not be empty");
         Preconditions.checkNotNull(name, "The parameter 'name' must not be null");
@@ -39,8 +41,10 @@ public abstract class ActivationFunction {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.synapses = initializeSynapses(synapses);
-        this.numberOfSynapses = this.synapses.size();
+        synapses = initializeSynapses();
+        Preconditions.checkState(synapses.size() > 0, "Internal Error: An activation function requires at least one synapse");
+        Preconditions.checkState("input".equals(synapses.get(0).getName()), "Internal Error: The first synapse has to be named 'input'");
+        numberOfSynapses = synapses.size();
     }
     
     public String getID() {
@@ -64,15 +68,12 @@ public abstract class ActivationFunction {
     }
     
     public double[] copySynapseDefaults() {
-        if (numberOfSynapses > 0) { 
-            final double[] result = new double[numberOfSynapses];
-            int i = 0;
-            for (final ActivationFunctionSynapse synapse : synapses) {
-                result[i++] = synapse.getDefaultValue();
-            }
-            return result;
+        final double[] result = new double[numberOfSynapses];
+        int i = 0;
+        for (final ActivationFunctionSynapse synapse : synapses) {
+            result[i++] = synapse.getDefaultValue();
         }
-        return null;
+        return result;
     }
 
     public double getSynapseDefault(int index) {
@@ -83,6 +84,6 @@ public abstract class ActivationFunction {
         synapses.get(synapse).setDefaultValue(value);
     }
     
-    public abstract double compute(double activation, double[] synapses);
+    public abstract double compute(double[] synapses);
 
 }

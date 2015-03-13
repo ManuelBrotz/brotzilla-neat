@@ -16,14 +16,15 @@ public abstract class ExtendedDecliningActivationFunction extends ExtendedActiva
                 .build());
     }
 
-    protected ExtendedDecliningActivationFunction(String id, String name, String description, ActivationFunctionSynapse... synapses) {
-        super(id, name, description, synapses);
+    protected ExtendedDecliningActivationFunction(String id, String name, String description) {
+        super(id, name, description);
     }
 
     @Override
-    public double compute(double activation, double[] synapses) {
-        final double result = super.compute(activation, synapses);
-        final double d = synapses[5];
+    public double compute(double[] synapses) {
+        final double result = super.compute(synapses);
+        final double activation = synapses[0];
+        final double d = synapses[6];
         final double decline = d < 0 ? -d : d;
         return result / (1.0 + activation * activation * decline);
     }

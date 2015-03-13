@@ -52,15 +52,15 @@ public abstract class ExtendedActivationFunction extends ActivationFunction {
     
     protected abstract double _compute(double activation, double[] synapses);
 
-    protected ExtendedActivationFunction(String id, String name, String description, ActivationFunctionSynapse... synapses) {
-        super(id, name, description, synapses);
+    protected ExtendedActivationFunction(String id, String name, String description) {
+        super(id, name, description);
     }
 
     @Override
-    public double compute(double activation, double[] synapses) {
+    public double compute(double[] synapses) {
         Preconditions.checkNotNull(synapses, "The parameter 'synapses' must not be null");
         Preconditions.checkArgument(synapses.length >= getNumberOfSynapses(), "The length of the parameter 'synapses' has to be greater than or equal to " + getNumberOfSynapses());
-        return rectify(_compute(activation * synapses[0] + synapses[1], synapses), synapses[4]) * synapses[2] + synapses[3];
+        return rectify(_compute(synapses[0] * synapses[1] + synapses[2], synapses), synapses[5]) * synapses[3] + synapses[4];
     }
     
 }

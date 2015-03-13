@@ -1,7 +1,12 @@
 package ch.brotzilla.neat.genome;
 
+import gnu.trove.impl.unmodifiable.TUnmodifiableIntSet;
+import gnu.trove.set.TIntSet;
+import gnu.trove.set.hash.TIntHashSet;
+
 import java.util.Arrays;
 
+import ch.brotzilla.neat.Debug;
 import ch.brotzilla.neat.math.ActivationFunction;
 
 import com.google.common.base.Preconditions;
@@ -10,9 +15,28 @@ public class Node {
 
     private final NodeType type;
     private final int innovationNumber;
+    
     private ActivationFunction activationFunction;
     private double[] synapseDefaults;
 
+    private final TIntSet links, linksWrapper;
+
+    void add(Link link) {
+        Preconditions.checkNotNull(link, "The parameter 'link' must not be null");
+        Preconditions.checkArgument(link.getTargetNode() == innovationNumber, "The target node of the parameter 'link' has to be equal to " + innovationNumber);
+        if (Debug.EnableIntegrityChecks) {
+            Preconditions.checkState(!links.contains(link.getInnovationNumber()), "This node already contains a link with with the innovation number " + link.getInnovationNumber());
+        }
+        links.add(link.getInnovationNumber());
+    }
+    
+    void remove(Link link) {
+        Preconditions.checkNotNull(link, "The parameter 'link' must not be null");
+        Preconditions.checkArgument(link.getTargetNode() == innovationNumber, "The target node of the parameter 'link' has to be equal to " + innovationNumber);
+        final boolean removed = links.remove(link.getInnovationNumber());
+        Preconditions.checkArgument(removed, "The parameter 'link' is not part of this node");
+    }
+    
     public Node(NodeType type, int innovationNumber, ActivationFunction activationFunction, double[] synapseDefaults) {
         Preconditions.checkNotNull(type, "The parameter 'type' must not be null");
         Preconditions.checkArgument(innovationNumber > 0, "The parameter 'innovationNumber' has to be greater than zero");
@@ -38,6 +62,8 @@ public class Node {
                 this.synapseDefaults = null;
             }
         }
+        links = new TIntHashSet();
+        linksWrapper = new TUnmodifiableIntSet(links);
     }
     
     public Node(NodeType type, int innovationNumber, ActivationFunction activationFunction) {
@@ -54,6 +80,8 @@ public class Node {
         innovationNumber = source.innovationNumber;
         activationFunction = source.activationFunction;
         synapseDefaults = (source.synapseDefaults == null ? null : Arrays.copyOf(source.synapseDefaults, source.synapseDefaults.length));
+        links = new TIntHashSet(source.links);
+        linksWrapper = new TUnmodifiableIntSet(links);
     }
     
     public NodeType getType() {
@@ -91,6 +119,14 @@ public class Node {
         return synapseDefaults;
     }
     
+    public TIntSet getLinks() {
+        return linksWrapper;
+    }
+    
+    public int getNumberOfLinks() {
+        return links.size();
+    }
+    
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -101,7 +137,8 @@ public class Node {
             return type == node.type
                     && innovationNumber == node.innovationNumber
                     && activationFunction == node.activationFunction
-                    && Arrays.equals(synapseDefaults, node.synapseDefaults);
+                    && Arrays.equals(synapseDefaults, node.synapseDefaults)
+                    && links.equals(node.links);
         }
         return false;
     }
@@ -110,4 +147,5 @@ public class Node {
     public Node clone() {
         return new Node(this);
     }
+    
 }

@@ -11,7 +11,7 @@ public class ActivationFunctionViewer extends JFrame {
     private final ActivationFunctionDisplay display;
     
     private ActivationFunction createFunction() {
-        return new ReciprocalFunction();
+        return new ExtendedPeriodicCosFunction();
     }
     
     private ActivationFunctionWrapper wrap(ActivationFunction activationFunction, double... synapseDefaults) {
@@ -22,9 +22,8 @@ public class ActivationFunctionViewer extends JFrame {
     }
     
     private void addFunctions() {
-//        display.addFunction(wrap(createFunction(), 4.5, 0.0, 1.0, 0.0, 0.0, -25), Color.blue);
+        display.addFunction(wrap(createFunction(), 0.0, 1.0, 0.0, 1.0, 0.0, 0.0), Color.blue);
 //        display.addFunction(wrap(createFunction(), 2), Color.blue);
-        display.addFunction(wrap(createFunction()), Color.blue);
     }
     
     public ActivationFunctionViewer() {

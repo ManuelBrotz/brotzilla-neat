@@ -20,12 +20,12 @@ public class DivisionFunction extends ActivationFunction {
     }
 
     @Override
-    public double compute(double activation, double[] synapses) {
-        final double divisor = synapses[0];
+    public double compute(double[] synapses) {
+        final double divisor = synapses[1];
         if (divisor == 0.0) {
             return 0;
         }
-        return activation / divisor;
+        return synapses[0] / divisor;
     }
 
 }
