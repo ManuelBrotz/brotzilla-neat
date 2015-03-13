@@ -6,8 +6,8 @@ public abstract class NeuronConnection extends Connection {
 
     protected final int neuronIndex;
     
-    public NeuronConnection(int neuronIndex, double weight) {
-        super(weight);
+    public NeuronConnection(int neuronIndex, int synapse, double weight) {
+        super(synapse, weight);
         Preconditions.checkArgument(neuronIndex >= 0, "The parameter 'neuronIndex' has to be greater than or equal to zero");
         this.neuronIndex = neuronIndex;
     }

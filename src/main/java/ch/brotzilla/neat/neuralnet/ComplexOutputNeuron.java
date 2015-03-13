@@ -9,7 +9,7 @@ public class ComplexOutputNeuron extends ComplexNeuron {
         nn.setOutputNeuronActivation(neuronIndex, activation);
     }
 
-    public ComplexOutputNeuron(int neuronIndex, ActivationFunction activationFunction, double[] synapseDefaults, Connection[] connections, SynapseConnection[] synapseConnections) {
+    public ComplexOutputNeuron(int neuronIndex, ActivationFunction activationFunction, double[] synapseDefaults, Connection[] connections, Connection[] synapseConnections) {
         super(neuronIndex, activationFunction, synapseDefaults, connections, synapseConnections);
     }
 

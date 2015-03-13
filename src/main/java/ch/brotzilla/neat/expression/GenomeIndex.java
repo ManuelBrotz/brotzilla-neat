@@ -14,7 +14,7 @@ public class GenomeIndex {
     
 	private static final int[] NONE = new int[0];
 	
-    private final TIntIntMap innovationIndexMap;
+    private final TIntIntMap nodeIndexMap;
     private int[] hiddenNeuronConnections, outputNeuronConnections;
     private int[] hiddenNeuronSynapseConnections, outputNeuronSynapseConnections;
     
@@ -22,45 +22,41 @@ public class GenomeIndex {
         int index = 0;
         for (final Node node : genome.getInputNodes()) {
             if (Debug.EnableIntegrityChecks) {
-                Preconditions.checkState(!innovationIndexMap.containsKey(node.getInnovationNumber()), "Internal Error: The index already contains a node with the innovation number " + node.getInnovationNumber());
+                Preconditions.checkState(!nodeIndexMap.containsKey(node.getInnovationNumber()), "Internal Error: The index already contains a node with the innovation number " + node.getInnovationNumber());
             }
-            innovationIndexMap.put(node.getInnovationNumber(), index++);
+            nodeIndexMap.put(node.getInnovationNumber(), index++);
         }
         index = 0;
         for (final Node node : genome.getHiddenNodes()) {
             if (Debug.EnableIntegrityChecks) {
-                Preconditions.checkState(!innovationIndexMap.containsKey(node.getInnovationNumber()), "Internal Error: The index already contains a node with the innovation number " + node.getInnovationNumber());
+                Preconditions.checkState(!nodeIndexMap.containsKey(node.getInnovationNumber()), "Internal Error: The index already contains a node with the innovation number " + node.getInnovationNumber());
             }
-            innovationIndexMap.put(node.getInnovationNumber(), index++);
+            nodeIndexMap.put(node.getInnovationNumber(), index++);
         }
         index = 0;
         for (final Node node : genome.getOutputNodes()) {
             if (Debug.EnableIntegrityChecks) {
-                Preconditions.checkState(!innovationIndexMap.containsKey(node.getInnovationNumber()), "Internal Error: The index already contains a node with the innovation number " + node.getInnovationNumber());
+                Preconditions.checkState(!nodeIndexMap.containsKey(node.getInnovationNumber()), "Internal Error: The index already contains a node with the innovation number " + node.getInnovationNumber());
             }
-            innovationIndexMap.put(node.getInnovationNumber(), index++);
+            nodeIndexMap.put(node.getInnovationNumber(), index++);
         }
     }
     
     private void createLinkIndex(Genome genome) {
-        int index = 0;
         for (final Link link : genome.getLinks()) {
-            if (Debug.EnableIntegrityChecks) {
-                Preconditions.checkState(!innovationIndexMap.containsKey(link.getInnovationNumber()), "Internal Error: The index already contains a link with the innovation number " + link.getInnovationNumber());
-            }
-            innovationIndexMap.put(link.getInnovationNumber(), index++);
-            final int targetNodeIndex = innovationIndexMap.get(link.getTargetNode());
-            Preconditions.checkState(targetNodeIndex >= 0, "Internal Error: No index found for innovation number " + link.getTargetNode());
+            final int targetNode = link.getTargetNode();
+            final int targetNodeIndex = nodeIndexMap.get(targetNode);
+            Preconditions.checkState(targetNodeIndex >= 0, "Internal Error: No index found for innovation number " + targetNode);
         }
     }
     
     public GenomeIndex() {
-        innovationIndexMap = new TIntIntHashMap(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, 0, -1);
+        nodeIndexMap = new TIntIntHashMap(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, 0, -1);
         clear();
     }
 
-    public int getInnovationIndex(int innovationNumber) {
-        return innovationIndexMap.get(innovationNumber);
+    public int getNodeIndex(int innovationNumber) {
+        return nodeIndexMap.get(innovationNumber);
     }
     
     public int getHiddenNeuronConnections(int neuronIndex) {
@@ -80,7 +76,7 @@ public class GenomeIndex {
     }
     
     public void clear() {
-    	innovationIndexMap.clear();
+    	nodeIndexMap.clear();
     	hiddenNeuronConnections = NONE;
     	hiddenNeuronSynapseConnections = NONE;
     	outputNeuronConnections = NONE;

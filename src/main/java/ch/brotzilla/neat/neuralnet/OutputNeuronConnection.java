@@ -2,8 +2,8 @@ package ch.brotzilla.neat.neuralnet;
 
 public class OutputNeuronConnection extends NeuronConnection {
 
-    public OutputNeuronConnection(int neuronIndex, double weight) {
-        super(neuronIndex, weight);
+    public OutputNeuronConnection(int neuronIndex, int synapse, double weight) {
+        super(neuronIndex, synapse, weight);
     }
 
     @Override

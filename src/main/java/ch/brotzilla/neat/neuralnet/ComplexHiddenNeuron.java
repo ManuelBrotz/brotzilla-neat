@@ -9,7 +9,7 @@ public class ComplexHiddenNeuron extends ComplexNeuron {
         nn.setHiddenNeuronActivation(neuronIndex, activation);
     }
 
-    public ComplexHiddenNeuron(int neuronIndex, ActivationFunction activationFunction, double[] synapseDefaults, Connection[] connections, SynapseConnection[] synapseConnections) {
+    public ComplexHiddenNeuron(int neuronIndex, ActivationFunction activationFunction, double[] synapseDefaults, Connection[] connections, Connection[] synapseConnections) {
         super(neuronIndex, activationFunction, synapseDefaults, connections, synapseConnections);
     }
 

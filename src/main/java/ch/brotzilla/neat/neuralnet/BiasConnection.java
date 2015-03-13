@@ -2,8 +2,8 @@ package ch.brotzilla.neat.neuralnet;
 
 public class BiasConnection extends Connection {
 
-    public BiasConnection(double weight) {
-        super(weight);
+    public BiasConnection(int synapse, double weight) {
+        super(synapse, weight);
     }
 
     @Override

@@ -4,11 +4,12 @@ import java.util.Arrays;
 
 import com.google.common.base.Preconditions;
 
+import ch.brotzilla.neat.Debug;
 import ch.brotzilla.neat.math.ActivationFunction;
 
 public abstract class ComplexNeuron extends Neuron {
 
-    protected final SynapseConnection[] synapseConnections;
+    protected final Connection[] synapseConnections;
     protected final double[] synapseDefaults;
     protected final double[] synapseActivations;
 
@@ -21,22 +22,24 @@ public abstract class ComplexNeuron extends Neuron {
         for (final Connection c : connections) {
             input += c.getValue(nn);
         }
-        for (final SynapseConnection c : synapseConnections) {
+        for (final Connection c : synapseConnections) {
             synapseActivations[c.getSynapse()] += c.getValue(nn);
         }
         setActivation(nn, activationFunction.compute(input, synapseActivations));
     }
 
-    public ComplexNeuron(int neuronIndex, ActivationFunction activationFunction, double[] synapseDefaults, Connection[] connections, SynapseConnection[] synapseConnections) {
+    public ComplexNeuron(int neuronIndex, ActivationFunction activationFunction, double[] synapseDefaults, Connection[] connections, Connection[] synapseConnections) {
         super(neuronIndex, activationFunction, connections);
         Preconditions.checkArgument(activationFunction.getNumberOfSynapses() > 0, "The number of synapses of the parameter 'activationFunction' has to be greater than zero");
         Preconditions.checkNotNull(synapseDefaults, "The parameter 'synapseDefaults' must not be null");
         Preconditions.checkArgument(synapseDefaults.length == activationFunction.getNumberOfSynapses(), "The length of the parameter 'synapseDefaults' has to be equal to " + activationFunction.getNumberOfSynapses());
         Preconditions.checkNotNull(synapseConnections, "The parameter 'synapseConnections' must not be null");
-        for (int i = 0; i < synapseConnections.length; i++) {
-            final SynapseConnection c = synapseConnections[i];
-            Preconditions.checkNotNull(c, "The parameter 'synapseConnections[" + i + "]' must not be null");
-            Preconditions.checkElementIndex(c.getSynapse(), activationFunction.getNumberOfSynapses(), "The synapse of the parameter 'synapseConnections[" + i + "]'");
+        if (Debug.EnableIntegrityChecks) {
+            for (int i = 0; i < synapseConnections.length; i++) {
+                final Connection c = synapseConnections[i];
+                Preconditions.checkNotNull(c, "The parameter 'synapseConnections[" + i + "]' must not be null");
+                Preconditions.checkElementIndex(c.getSynapse(), activationFunction.getNumberOfSynapses(), "The synapse of the parameter 'synapseConnections[" + i + "]'");
+            }
         }
         this.synapseDefaults = Arrays.copyOf(synapseDefaults, synapseDefaults.length);
         this.synapseActivations = new double[activationFunction.getNumberOfSynapses()];
@@ -47,7 +50,7 @@ public abstract class ComplexNeuron extends Neuron {
         return synapseConnections.length;
     }
     
-    public SynapseConnection getSynapseConnection(int index) {
+    public Connection getSynapseConnection(int index) {
         return synapseConnections[index];
     }
     
