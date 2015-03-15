@@ -1,4 +1,4 @@
-package ch.brotzilla.neat.expression;
+package ch.brotzilla.neat.genome.index;
 
 import gnu.trove.impl.Constants;
 import gnu.trove.map.TIntIntMap;

@@ -10,6 +10,7 @@ import ch.brotzilla.neat.genome.Genome;
 import ch.brotzilla.neat.genome.Link;
 import ch.brotzilla.neat.genome.Node;
 import ch.brotzilla.neat.genome.NodeType;
+import ch.brotzilla.neat.genome.index.NodeIndex;
 import ch.brotzilla.neat.neuralnet.BiasConnection;
 import ch.brotzilla.neat.neuralnet.Connection;
 import ch.brotzilla.neat.neuralnet.HiddenNeuron;
