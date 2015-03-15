@@ -10,6 +10,7 @@ import ch.brotzilla.neat.genome.Genome;
 import ch.brotzilla.neat.genome.Link;
 import ch.brotzilla.neat.genome.Node;
 import ch.brotzilla.neat.genome.NodeType;
+import ch.brotzilla.neat.genome.index.LayeredIndexStrategy;
 import ch.brotzilla.neat.genome.index.NodeIndex;
 import ch.brotzilla.neat.neuralnet.BiasConnection;
 import ch.brotzilla.neat.neuralnet.Connection;
@@ -78,7 +79,7 @@ public class DefaultGenomeExpressor implements GenomeExpressor {
 		Preconditions.checkArgument(genome.getNumberOfInputNodes() > 0, "The parameter 'genome' requires at least one input node");
 		Preconditions.checkArgument(genome.getNumberOfOutputNodes() > 0, "The parameter 'genome' requires at least one output node");
         final int biasInnovation = (genome.getBiasNode() != null ? genome.getBiasNode().getInnovationNumber() : -1);
-		final NodeIndex index = new NodeIndex(genome);
+		final NodeIndex index = new NodeIndex(genome, new LayeredIndexStrategy());
 		final Neuron[] hiddenNeurons = expressNeurons(genome, index, biasInnovation, genome.getHiddenNodes());
 		final Neuron[] outputNeurons = expressNeurons(genome, index, biasInnovation, genome.getOutputNodes());
 		return new NeuralNet(genome.getNumberOfInputNodes(), genome.getNumberOfHiddenNodes(), genome.getNumberOfOutputNodes(), hiddenNeurons, outputNeurons);

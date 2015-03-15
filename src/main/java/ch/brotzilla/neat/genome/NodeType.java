@@ -7,7 +7,7 @@ public enum NodeType {
     Bias {
 
         @Override
-        public List<Node> selectNodesList(List<Node> inputNodes, List<Node> hiddenNodes, List<Node> outputNodes) {
+        List<Node> selectNodesList(List<Node> inputNodes, List<Node> hiddenNodes, List<Node> outputNodes) {
             throw new UnsupportedOperationException();
         }
         
@@ -16,7 +16,7 @@ public enum NodeType {
     Input {
 
         @Override
-        public List<Node> selectNodesList(List<Node> inputNodes, List<Node> hiddenNodes, List<Node> outputNodes) {
+        List<Node> selectNodesList(List<Node> inputNodes, List<Node> hiddenNodes, List<Node> outputNodes) {
             return inputNodes;
         }
         
@@ -25,7 +25,7 @@ public enum NodeType {
     Hidden {
 
         @Override
-        public List<Node> selectNodesList(List<Node> inputNodes, List<Node> hiddenNodes, List<Node> outputNodes) {
+        List<Node> selectNodesList(List<Node> inputNodes, List<Node> hiddenNodes, List<Node> outputNodes) {
             return hiddenNodes;
         }
         
@@ -34,7 +34,7 @@ public enum NodeType {
     Output {
 
         @Override
-        public List<Node> selectNodesList(List<Node> inputNodes, List<Node> hiddenNodes, List<Node> outputNodes) {
+        List<Node> selectNodesList(List<Node> inputNodes, List<Node> hiddenNodes, List<Node> outputNodes) {
             return outputNodes;
         }
         
@@ -48,6 +48,6 @@ public enum NodeType {
         return this == Output || this == Hidden;
     }
     
-    public abstract List<Node> selectNodesList(List<Node> inputNodes, List<Node> hiddenNodes, List<Node> outputNodes);
+    abstract List<Node> selectNodesList(List<Node> inputNodes, List<Node> hiddenNodes, List<Node> outputNodes);
     
 }
