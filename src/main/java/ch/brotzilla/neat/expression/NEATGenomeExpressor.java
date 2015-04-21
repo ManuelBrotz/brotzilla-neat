@@ -21,7 +21,7 @@ import ch.brotzilla.neat.neuralnet.NeuralNet;
 import ch.brotzilla.neat.neuralnet.Neuron;
 import ch.brotzilla.neat.neuralnet.OutputNeuronConnection;
 
-public class DefaultGenomeExpressor implements GenomeExpressor {
+public class NEATGenomeExpressor implements GenomeExpressor {
 
     private Connection expressConnection(Genome genome, NodeIndex index, int biasInnovation, Link link) {
         final int sourceNodeInnovation = link.getSourceNode();
@@ -72,7 +72,7 @@ public class DefaultGenomeExpressor implements GenomeExpressor {
         return null;
     }
     
-	public DefaultGenomeExpressor() {}
+	public NEATGenomeExpressor() {}
 
 	public NeuralNet express(Genome genome) {
 		Preconditions.checkNotNull(genome, "The parameter 'genome' must not be null");
