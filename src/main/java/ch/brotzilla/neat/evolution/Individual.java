@@ -39,6 +39,10 @@ public class Individual {
         return objectives;
     }
     
+    public double getObjective(int index) {
+        return objectives[index];
+    }
+    
     public Genome getGenome() {
         return genome;
     }

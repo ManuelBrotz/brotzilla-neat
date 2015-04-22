@@ -53,7 +53,7 @@ public class Population implements Iterable<Individual> {
     
     public Individual add(Genome genome) {
         Preconditions.checkNotNull(genome, "The parameter 'genome' must not be null");
-        final Individual individual = new Individual(numberOfObjectives, genome);
+        final Individual individual = new Individual(getNumberOfObjectives(), genome);
         individuals.add(individual);
         return individual;
     }

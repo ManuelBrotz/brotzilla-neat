@@ -4,31 +4,42 @@ import com.google.common.base.Preconditions;
 
 public class EvolutionConfig {
 
-    private int numberOfObjectives;
+    private Objectives objectives;
     private int populationSize;
-    private double eliteFraction;
+    private double eliteFraction, selectFraction;
     private InitialPopulationProvider initialPopulationProvider;
     private PopulationEvaluator populationEvaluator;
     private FitnessEvaluatorProvider fitnessEvaluatorProvider;
     private EvolutionStrategy evolutionStrategy;
+    private SelectionStrategy selectionStrategy;
     private StopCondition stopCondition;
     
     private EvolutionConfig() {}
     
-    public EvolutionConfig(EvolutionConfig source) {
+    private EvolutionConfig(EvolutionConfig source) {
         Preconditions.checkNotNull(source, "The parameter 'source' must not be null");
-        numberOfObjectives = source.numberOfObjectives;
+        objectives = source.objectives;
         populationSize = source.populationSize;
         eliteFraction = source.eliteFraction;
+        selectFraction = source.selectFraction;
         initialPopulationProvider = source.initialPopulationProvider;
         populationEvaluator = source.populationEvaluator;
         fitnessEvaluatorProvider = source.fitnessEvaluatorProvider;
         evolutionStrategy = source.evolutionStrategy;
+        selectionStrategy = source.selectionStrategy;
         stopCondition = source.stopCondition;
     }
     
+    public Objectives getObjectives() {
+        return objectives;
+    }
+    
+    public Objective getObjective(int index) {
+        return objectives.get(index);
+    }
+    
     public int getNumberOfObjectives() {
-        return numberOfObjectives;
+        return objectives.getNumberOfObjectives();
     }
     
     public int getPopulationSize() {
@@ -41,6 +52,14 @@ public class EvolutionConfig {
     
     public int getEliteSize() {
         return (int) Math.round(populationSize * eliteFraction);
+    }
+    
+    public double getSelectFraction() {
+        return selectFraction;
+    }
+    
+    public int getSelectSize() {
+        return (int) Math.round(populationSize * selectFraction);
     }
     
     public InitialPopulationProvider getInitialPopulationProvider() {
@@ -59,10 +78,14 @@ public class EvolutionConfig {
         return evolutionStrategy;
     }
     
+    public SelectionStrategy getSelectionStrategy() {
+        return selectionStrategy;
+    }
+    
     public StopCondition getStopCondition() {
         return stopCondition;
     }
-
+    
     public static class Builder {
         
         private EvolutionConfig config;
@@ -71,10 +94,14 @@ public class EvolutionConfig {
             config = new EvolutionConfig();
         }
         
-        public Builder setNumberOfObjectives(int numberOfObjectives) {
-            Preconditions.checkArgument(numberOfObjectives > 0, "The parameter 'numberOfObjectives' has to be greater than zero");
-            config.numberOfObjectives = numberOfObjectives;
+        public Builder setObjectives(Objectives objectives) {
+            Preconditions.checkNotNull(objectives, "The parameter 'objectives' must not be null");
+            config.objectives = objectives;
             return this;
+        }
+        
+        public Builder setObjectives(Objective... objectives) {
+            return setObjectives(new Objectives(objectives));
         }
         
         public Builder setPopulationSize(int populationSize) {
@@ -86,6 +113,12 @@ public class EvolutionConfig {
         public Builder setEliteFraction(double eliteFraction) {
             Preconditions.checkArgument(eliteFraction > 0, "The parameter 'eliteFraction' has to be greater than zero");
             config.eliteFraction = eliteFraction;
+            return this;
+        }
+        
+        public Builder setSelectFraction(double selectFraction) {
+            Preconditions.checkArgument(selectFraction > 0, "The parameter 'selectFraction' has to be greater than zero");
+            config.selectFraction = selectFraction;
             return this;
         }
         
@@ -113,6 +146,12 @@ public class EvolutionConfig {
             return this;
         }
         
+        public Builder setSelectionStrategy(SelectionStrategy selectionStrategy) {
+            Preconditions.checkNotNull(selectionStrategy, "The parameter 'selectionStrategy' must not be null");
+            config.selectionStrategy = selectionStrategy;
+            return this;
+        }
+        
         public Builder setStopCondition(StopCondition stopCondition) {
             Preconditions.checkNotNull(stopCondition, "The parameter 'stopCondition' must not be null");
             config.stopCondition = stopCondition;
@@ -120,15 +159,24 @@ public class EvolutionConfig {
         }
         
         public EvolutionConfig build() {
-            Preconditions.checkArgument(config.numberOfObjectives > 0, "The property 'numberOfObjectives' has to be greater than zero");
+            Preconditions.checkNotNull(config.objectives, "The property 'objectives' must not be null");
+            
             Preconditions.checkArgument(config.eliteFraction >= 0, "The property 'eliteFraction' has to be greater than or equal to zero");
             Preconditions.checkArgument(config.eliteFraction < 1.0, "The property 'eliteFraction' has to be less than 1.0");
             Preconditions.checkArgument(config.populationSize > config.getEliteSize(), "The property 'populationSize' has to be greater than the property 'eliteSize'");
+            
+            Preconditions.checkArgument(config.selectFraction > 0, "The property 'selectFraction' has to be greater than zero");
+            Preconditions.checkArgument(config.selectFraction < 1.0, "The property 'selectFraction' has to be less than 1.0");
+            Preconditions.checkArgument(config.getSelectSize() > 0, "The property 'selectSize' has to be greater than zero");
+            Preconditions.checkArgument(config.populationSize > config.getSelectSize(), "The property 'populationSize' has to be greater than the property 'selectSize'");
+
             Preconditions.checkNotNull(config.initialPopulationProvider, "The property 'initialPopulationProvider' must not be null");
             Preconditions.checkNotNull(config.populationEvaluator, "The property 'populationEvaluator' must not be null");
             Preconditions.checkNotNull(config.fitnessEvaluatorProvider, "The property 'fitnessEvaluatorProvider' must not be null");
             Preconditions.checkNotNull(config.evolutionStrategy, "The property 'evolutionStrategy' must not be null");
+            Preconditions.checkNotNull(config.selectionStrategy, "The property 'selectionStrategy' must not be null");
             Preconditions.checkNotNull(config.stopCondition, "The property 'stopCondition' must not be null");
+            
             return new EvolutionConfig(config);
         }
         
