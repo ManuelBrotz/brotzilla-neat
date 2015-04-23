@@ -1,11 +1,11 @@
 package ch.brotzilla.neat.evolution;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import ch.brotzilla.neat.Debug;
+
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
 public class SimpleEvolutionStrategy implements EvolutionStrategy {
 
@@ -14,16 +14,11 @@ public class SimpleEvolutionStrategy implements EvolutionStrategy {
     }
 
     public Population evolve(Population population, EvolutionConfig config) {
-        Preconditions.checkNotNull(population, "The parameter 'population' must not be null");
-        Preconditions.checkArgument(population.getNumberOfObjectives() == 1, "Multiple objective populations are not supported");
-        Preconditions.checkNotNull(config, "The parameter 'config' must not be null");
-        Preconditions.checkArgument(config.getNumberOfObjectives() == 1, "Multiple objective configurations are not supported");
+    	Debug.checkPopulationAndConfig(population, config, false);
+    	
+        population.sort(new IndividualComparator(config.getObjective(0)));
         
-        final List<Individual> individuals = Lists.newArrayList();
-        individuals.addAll(population.getIndividuals());
-        Collections.sort(individuals, new IndividualComparator(config.getObjective(0)));
-        
-        final List<Individual> selected = config.getSelectionStrategy().select(individuals, config);
+        final List<Individual> selected = config.getSelectionStrategy().select(population, config);
         Preconditions.checkState(selected != null, "The selection strategy must not return null");
         Preconditions.checkState(selected.size() == config.getSelectSize(), "The selection strategy has to select " + config.getSelectSize() + " individuals");
         

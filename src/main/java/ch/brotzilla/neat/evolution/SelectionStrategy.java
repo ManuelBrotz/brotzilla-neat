@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface SelectionStrategy {
     
-    List<Individual> select(List<Individual> individuals, EvolutionConfig config);
+    List<Individual> select(Population population, EvolutionConfig config);
     
 }

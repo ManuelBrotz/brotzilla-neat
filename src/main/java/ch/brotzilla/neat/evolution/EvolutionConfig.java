@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 
 public class EvolutionConfig {
 
+	private RngProvider rngProvider;
     private Objectives objectives;
     private int populationSize;
     private double eliteFraction, selectFraction;
@@ -18,6 +19,7 @@ public class EvolutionConfig {
     
     private EvolutionConfig(EvolutionConfig source) {
         Preconditions.checkNotNull(source, "The parameter 'source' must not be null");
+        rngProvider = source.rngProvider;
         objectives = source.objectives;
         populationSize = source.populationSize;
         eliteFraction = source.eliteFraction;
@@ -28,6 +30,10 @@ public class EvolutionConfig {
         evolutionStrategy = source.evolutionStrategy;
         selectionStrategy = source.selectionStrategy;
         stopCondition = source.stopCondition;
+    }
+    
+    public RngProvider getRngProvider() {
+    	return rngProvider;
     }
     
     public Objectives getObjectives() {
@@ -92,6 +98,12 @@ public class EvolutionConfig {
         
         public Builder() {
             config = new EvolutionConfig();
+        }
+        
+        public Builder setRngProvider(RngProvider rngProvider) {
+        	Preconditions.checkNotNull(rngProvider, "The parameter 'rngProvider' must not be zero");
+        	config.rngProvider = rngProvider;
+        	return this;
         }
         
         public Builder setObjectives(Objectives objectives) {
@@ -159,6 +171,7 @@ public class EvolutionConfig {
         }
         
         public EvolutionConfig build() {
+        	Preconditions.checkNotNull(config.rngProvider, "The property 'rngProvider' must not be zero");
             Preconditions.checkNotNull(config.objectives, "The property 'objectives' must not be null");
             
             Preconditions.checkArgument(config.eliteFraction >= 0, "The property 'eliteFraction' has to be greater than or equal to zero");
