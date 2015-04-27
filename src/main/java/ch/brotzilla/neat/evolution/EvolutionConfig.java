@@ -8,11 +8,9 @@ public class EvolutionConfig {
     private Objectives objectives;
     private int populationSize;
     private double eliteFraction, selectFraction;
-    private InitialPopulationProvider initialPopulationProvider;
     private PopulationEvaluator populationEvaluator;
     private FitnessEvaluatorProvider fitnessEvaluatorProvider;
     private EvolutionStrategy evolutionStrategy;
-    private SelectionStrategy selectionStrategy;
     private StopCondition stopCondition;
     
     private EvolutionConfig() {}
@@ -24,11 +22,9 @@ public class EvolutionConfig {
         populationSize = source.populationSize;
         eliteFraction = source.eliteFraction;
         selectFraction = source.selectFraction;
-        initialPopulationProvider = source.initialPopulationProvider;
         populationEvaluator = source.populationEvaluator;
         fitnessEvaluatorProvider = source.fitnessEvaluatorProvider;
         evolutionStrategy = source.evolutionStrategy;
-        selectionStrategy = source.selectionStrategy;
         stopCondition = source.stopCondition;
     }
     
@@ -68,10 +64,6 @@ public class EvolutionConfig {
         return (int) Math.round(populationSize * selectFraction);
     }
     
-    public InitialPopulationProvider getInitialPopulationProvider() {
-        return initialPopulationProvider;
-    }
-    
     public PopulationEvaluator getPopulationEvaluator() {
         return populationEvaluator;
     }
@@ -82,10 +74,6 @@ public class EvolutionConfig {
     
     public EvolutionStrategy getEvolutionStrategy() {
         return evolutionStrategy;
-    }
-    
-    public SelectionStrategy getSelectionStrategy() {
-        return selectionStrategy;
     }
     
     public StopCondition getStopCondition() {
@@ -134,12 +122,6 @@ public class EvolutionConfig {
             return this;
         }
         
-        public Builder setInitialPopulationProvider(InitialPopulationProvider initialPopulationProvider) {
-            Preconditions.checkNotNull(initialPopulationProvider, "The parameter 'initialPopulationProvider' must not be null");
-            config.initialPopulationProvider = initialPopulationProvider;
-            return this;
-        }
-        
         public Builder setPopulationEvaluator(PopulationEvaluator populationEvaluator) {
             Preconditions.checkNotNull(populationEvaluator, "The parameter 'populationEvaluator' must not be null");
             config.populationEvaluator = populationEvaluator;
@@ -155,12 +137,6 @@ public class EvolutionConfig {
         public Builder setEvolutionStrategy(EvolutionStrategy evolutionStrategy) {
             Preconditions.checkNotNull(evolutionStrategy, "The parameter 'evolutionStrategy' must not be null");
             config.evolutionStrategy = evolutionStrategy;
-            return this;
-        }
-        
-        public Builder setSelectionStrategy(SelectionStrategy selectionStrategy) {
-            Preconditions.checkNotNull(selectionStrategy, "The parameter 'selectionStrategy' must not be null");
-            config.selectionStrategy = selectionStrategy;
             return this;
         }
         
@@ -183,11 +159,9 @@ public class EvolutionConfig {
             Preconditions.checkArgument(config.getSelectSize() > 0, "The property 'selectSize' has to be greater than zero");
             Preconditions.checkArgument(config.populationSize > config.getSelectSize(), "The property 'populationSize' has to be greater than the property 'selectSize'");
 
-            Preconditions.checkNotNull(config.initialPopulationProvider, "The property 'initialPopulationProvider' must not be null");
             Preconditions.checkNotNull(config.populationEvaluator, "The property 'populationEvaluator' must not be null");
             Preconditions.checkNotNull(config.fitnessEvaluatorProvider, "The property 'fitnessEvaluatorProvider' must not be null");
             Preconditions.checkNotNull(config.evolutionStrategy, "The property 'evolutionStrategy' must not be null");
-            Preconditions.checkNotNull(config.selectionStrategy, "The property 'selectionStrategy' must not be null");
             Preconditions.checkNotNull(config.stopCondition, "The property 'stopCondition' must not be null");
             
             return new EvolutionConfig(config);

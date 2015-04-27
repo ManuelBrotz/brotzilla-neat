@@ -17,7 +17,7 @@ public class EvolutionEngine {
     
     public void evolve() {
         
-        Population population = config.getInitialPopulationProvider().providePopulation(config);
+        Population population = config.getEvolutionStrategy().provideInitialPopulation(config);
 
         Preconditions.checkNotNull(population, "The population must not be null");
         Preconditions.checkState(population.getNumberOfObjectives() == config.getNumberOfObjectives(), "The population's number of objectives has to be equal to " + config.getNumberOfObjectives());
