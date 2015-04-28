@@ -1,6 +1,6 @@
 package ch.brotzilla.neat.evolution;
 
-public interface GenomeEvaluator {
+public interface EvaluationStrategy {
     
     void evaluate(Specimen specimen, EvolutionConfig config);
     

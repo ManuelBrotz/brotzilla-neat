@@ -1,13 +1,9 @@
 package ch.brotzilla.neat.evolution;
 
+import java.util.List;
+
 public interface EvolutionStrategy {
 
-    Objectives getObjectives();
-    
-    GenomeEvaluator provideGenomeEvaluator(EvolutionConfig config);
-
-    Population provideInitialPopulation(EvolutionConfig config);
-    
-    Population evolvePopulation(Population population, EvolutionConfig config);
+    List<Specimen> evolve(List<Specimen> population, Speciation speciation, EvolutionConfig config);
     
 }

@@ -1,7 +1,9 @@
 package ch.brotzilla.neat.evolution;
 
+import java.util.List;
+
 public interface ThreadingStrategy {
 
-    void evaluate(Population population, EvolutionConfig config);
+    void run(List<Specimen> population, EvolutionConfig config);
     
 }

@@ -1,5 +1,7 @@
 package ch.brotzilla.neat.evolution;
 
+import java.util.List;
+
 import com.google.common.base.Preconditions;
 
 public class EvolutionEngine {
@@ -17,23 +19,21 @@ public class EvolutionEngine {
     
     public void evolve() {
         
-        final int numberOfObjectives = config.getEvolutionStrategy().getObjectives().getNumberOfObjectives();
-        final int populationSize = config.getPopulationSize();
+        List<Specimen> population = config.getPopulationProvider().providePopulation(config);
+        Preconditions.checkNotNull(population, "The population provider must not return null");
+        Preconditions.checkArgument(population.size() == config.getPopulationSize(), "The population provider has to return " + config.getPopulationSize() + " specimens");
         
-        Population population = config.getEvolutionStrategy().provideInitialPopulation(config);
-
-        Preconditions.checkNotNull(population, "The population must not be null");
-        Preconditions.checkState(population.getNumberOfObjectives() == numberOfObjectives, "The population's number of objectives has to be equal to " + numberOfObjectives);
-        Preconditions.checkState(population.getSpecimens().size() == populationSize, "The population has to be of size " + populationSize);
+        Speciation speciation = config.getPopulationProvider().provideSpeciation(config);
         
         do {
+            config.getThreadingStrategy().run(population, config);
 
-            config.getThreadingStrategy().evaluate(population, config);
-            population = config.getEvolutionStrategy().evolvePopulation(population, config);
-
-            Preconditions.checkNotNull(population, "The population must not be null");
-            Preconditions.checkState(population.getNumberOfObjectives() == numberOfObjectives, "The population's number of objectives has to be equal to " + numberOfObjectives);
-            Preconditions.checkState(population.getSpecimens().size() == populationSize, "The population has to be of size " + populationSize);
+            speciation = config.getSpeciationStrategy().speciate(speciation, population);
+            Preconditions.checkNotNull(speciation, "The speciation strategy must not return null");
+            
+            population = config.getEvolutionStrategy().evolve(population, speciation, config);
+            Preconditions.checkNotNull(population, "The evolution strategy must not return null");
+            Preconditions.checkArgument(population.size() == config.getPopulationSize(), "The evolution strategy has to return " + config.getPopulationSize() + " specimens");
 
         } while (!config.getStopCondition().isSatisfied());
         
