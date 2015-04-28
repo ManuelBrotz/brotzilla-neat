@@ -15,16 +15,4 @@ public class Debug {
      */
     public static final boolean EnableIntegrityChecks = true;
     
-    public static final void checkPopulationAndConfig(Population population, EvolutionConfig config, boolean checkMultipleObjectives) {
-		Preconditions.checkNotNull(population, "The parameter 'population' must not be null");
-		Preconditions.checkNotNull(config, "The parameter 'config' must not be null");
-    	if (checkMultipleObjectives) {
-    		Preconditions.checkArgument(population.getNumberOfObjectives() > 1, "The number of objectives of the parameter 'population' has to be greater than 1");
-    		Preconditions.checkArgument(population.getNumberOfObjectives() == config.getNumberOfObjectives(), "The number of objectives of the parameter 'population' has to be equal to the number of objectives of the parameter 'config'");
-    	} else {
-    		Preconditions.checkArgument(population.getNumberOfObjectives() == 1, "The number of objectives of the parameter 'population' has to be equal to 1");
-    		Preconditions.checkArgument(config.getNumberOfObjectives() == 1, "The number of objectives of the parameter 'config' has to be equal to 1");
-    	}
-    }
-    
 }
