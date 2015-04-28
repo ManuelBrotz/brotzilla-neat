@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
-// TODO Change parameter name 'activation' to 'input' for all activation functions.
 public abstract class ActivationFunction {
 
     public static final double Pi = Math.PI;
