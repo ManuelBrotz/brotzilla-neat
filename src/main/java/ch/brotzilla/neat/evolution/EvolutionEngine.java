@@ -17,20 +17,23 @@ public class EvolutionEngine {
     
     public void evolve() {
         
+        final int numberOfObjectives = config.getEvolutionStrategy().getObjectives().getNumberOfObjectives();
+        final int populationSize = config.getPopulationSize();
+        
         Population population = config.getEvolutionStrategy().provideInitialPopulation(config);
 
         Preconditions.checkNotNull(population, "The population must not be null");
-        Preconditions.checkState(population.getNumberOfObjectives() == config.getNumberOfObjectives(), "The population's number of objectives has to be equal to " + config.getNumberOfObjectives());
-        Preconditions.checkState(population.size() == config.getPopulationSize(), "The population has to be of size " + config.getPopulationSize());
+        Preconditions.checkState(population.getNumberOfObjectives() == numberOfObjectives, "The population's number of objectives has to be equal to " + numberOfObjectives);
+        Preconditions.checkState(population.getIndividuals().size() == populationSize, "The population has to be of size " + populationSize);
         
         do {
 
-            config.getPopulationEvaluator().evaluate(population, config);
-            population = config.getEvolutionStrategy().evolve(population, config);
+            config.getThreadingStrategy().evaluate(population, config);
+            population = config.getEvolutionStrategy().evolvePopulation(population, config);
 
             Preconditions.checkNotNull(population, "The population must not be null");
-            Preconditions.checkState(population.getNumberOfObjectives() == config.getNumberOfObjectives(), "The population's number of objectives has to be equal to " + config.getNumberOfObjectives());
-            Preconditions.checkState(population.size() == config.getPopulationSize(), "The population has to be of size " + config.getPopulationSize());
+            Preconditions.checkState(population.getNumberOfObjectives() == numberOfObjectives, "The population's number of objectives has to be equal to " + numberOfObjectives);
+            Preconditions.checkState(population.getIndividuals().size() == populationSize, "The population has to be of size " + populationSize);
 
         } while (!config.getStopCondition().isSatisfied());
         
