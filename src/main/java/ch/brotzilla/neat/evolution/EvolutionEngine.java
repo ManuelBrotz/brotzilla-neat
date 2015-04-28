@@ -24,7 +24,7 @@ public class EvolutionEngine {
 
         Preconditions.checkNotNull(population, "The population must not be null");
         Preconditions.checkState(population.getNumberOfObjectives() == numberOfObjectives, "The population's number of objectives has to be equal to " + numberOfObjectives);
-        Preconditions.checkState(population.getIndividuals().size() == populationSize, "The population has to be of size " + populationSize);
+        Preconditions.checkState(population.getSpecimens().size() == populationSize, "The population has to be of size " + populationSize);
         
         do {
 
@@ -33,7 +33,7 @@ public class EvolutionEngine {
 
             Preconditions.checkNotNull(population, "The population must not be null");
             Preconditions.checkState(population.getNumberOfObjectives() == numberOfObjectives, "The population's number of objectives has to be equal to " + numberOfObjectives);
-            Preconditions.checkState(population.getIndividuals().size() == populationSize, "The population has to be of size " + populationSize);
+            Preconditions.checkState(population.getSpecimens().size() == populationSize, "The population has to be of size " + populationSize);
 
         } while (!config.getStopCondition().isSatisfied());
         

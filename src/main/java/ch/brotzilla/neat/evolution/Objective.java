@@ -27,11 +27,11 @@ public enum Objective {
         }
 
         @Override
-        public double normalize(double individual, double total) {
-            Preconditions.checkArgument(individual > 0, "The parameter 'individual' has to be greater than zero");
+        public double normalize(double value, double total) {
+            Preconditions.checkArgument(value > 0, "The parameter 'value' has to be greater than zero");
             Preconditions.checkArgument(total > 0, "The parameter 'total' has to be greater than zero");
-            Preconditions.checkArgument(total > individual, "The parameter 'total' has to be greater than the parameter 'individual'");
-            return 1.0 - (individual / total);
+            Preconditions.checkArgument(total > value, "The parameter 'total' has to be greater than the parameter 'value'");
+            return 1.0 - (value / total);
         }
         
     }, 
@@ -59,11 +59,11 @@ public enum Objective {
         }
 
         @Override
-        public double normalize(double individual, double total) {
-            Preconditions.checkArgument(individual > 0, "The parameter 'individual' has to be greater than zero");
+        public double normalize(double value, double total) {
+            Preconditions.checkArgument(value > 0, "The parameter 'value' has to be greater than zero");
             Preconditions.checkArgument(total > 0, "The parameter 'total' has to be greater than zero");
-            Preconditions.checkArgument(total > individual, "The parameter 'total' has to be greater than the parameter 'individual'");
-            return individual / total;
+            Preconditions.checkArgument(total > value, "The parameter 'total' has to be greater than the parameter 'value'");
+            return value / total;
         }
         
     };
@@ -74,6 +74,6 @@ public enum Objective {
     
     public abstract boolean isBetter(double a, double b);
 
-    public abstract double normalize(double individual, double total);
+    public abstract double normalize(double value, double total);
     
 }

@@ -6,15 +6,15 @@ import com.google.common.base.Preconditions;
 
 import ch.brotzilla.neat.genome.Genome;
 
-public class Individual {
+public class Specimen {
 
 	private int species;
     private double[] objectives;
     private Genome genome;
     
-    private Individual() {}
+    private Specimen() {}
         
-    public Individual(Individual source) {
+    public Specimen(Specimen source) {
         Preconditions.checkNotNull(source, "The parameter 'source' must not be null");
         species = source.species;
         objectives = Arrays.copyOf(source.objectives, source.objectives.length);
@@ -51,8 +51,8 @@ public class Individual {
     }
 
     @Override
-    public Individual clone() {
-        return new Individual(this);
+    public Specimen clone() {
+        return new Specimen(this);
     }
     
     @Override
@@ -60,12 +60,12 @@ public class Individual {
         if (this == other) {
             return true;
         }
-        if (other instanceof Individual) {
-            final Individual individual = (Individual) other;
-            if (!Arrays.equals(objectives, individual.objectives)) {
+        if (other instanceof Specimen) {
+            final Specimen specimen = (Specimen) other;
+            if (!Arrays.equals(objectives, specimen.objectives)) {
                 return false;
             }
-            if (!genome.equals(individual.genome)) {
+            if (!genome.equals(specimen.genome)) {
                 return false;
             }
             return true;
@@ -75,43 +75,43 @@ public class Individual {
     
     public static class Builder {
     	
-    	private final Individual individual;
+    	private final Specimen specimen;
     	
     	public Builder() {
-    		individual = new Individual();
+    		specimen = new Specimen();
     	}
     	
     	public Builder setSpecies(int species) {
     		Preconditions.checkArgument(species > 0, "The parameter 'species' has to be greater than zero");
-    		individual.species = species;
+    		specimen.species = species;
     		return this;
     	}
     	
     	public Builder setNumberOfObjectives(int numberOfObjectives) {
     		Preconditions.checkArgument(numberOfObjectives > 0, "The parameter 'numberOfObjectives' has to be greater than zero");
-    		individual.objectives = new double[numberOfObjectives];
+    		specimen.objectives = new double[numberOfObjectives];
     		return this;
     	}
     	
     	public Builder setObjectives(double[] objectives) {
     		Preconditions.checkNotNull(objectives, "The parameter 'objectives' must not be null");
     		Preconditions.checkArgument(objectives.length > 0, "The length of the parameter 'objectives' has to be greater than zero");
-    		individual.objectives = Arrays.copyOf(objectives, objectives.length);
+    		specimen.objectives = Arrays.copyOf(objectives, objectives.length);
     		return this;
     	}
     	
     	public Builder setGenome(Genome genome) {
     		Preconditions.checkNotNull(genome, "The parameter 'genome' must not be null");
-    		individual.genome = genome;
+    		specimen.genome = genome;
     		return this;
     	}
     	
-    	public Individual build() {
-    		Preconditions.checkArgument(individual.species >= 0, "The property 'species' has to be greater than or equal to zero");
-    		Preconditions.checkNotNull(individual.objectives, "The property 'objectives' must not be null");
-    		Preconditions.checkArgument(individual.objectives.length > 0, "The length of the property 'objectives' has to be greater than zero");
-    		Preconditions.checkNotNull(individual.genome, "The property 'genome' must not be null");
-    		return new Individual(individual);
+    	public Specimen build() {
+    		Preconditions.checkArgument(specimen.species >= 0, "The property 'species' has to be greater than or equal to zero");
+    		Preconditions.checkNotNull(specimen.objectives, "The property 'objectives' must not be null");
+    		Preconditions.checkArgument(specimen.objectives.length > 0, "The length of the property 'objectives' has to be greater than zero");
+    		Preconditions.checkNotNull(specimen.genome, "The property 'genome' must not be null");
+    		return new Specimen(specimen);
     	}
     	
     }
