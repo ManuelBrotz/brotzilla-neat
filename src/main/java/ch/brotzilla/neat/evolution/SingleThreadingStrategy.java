@@ -1,11 +1,6 @@
-package ch.brotzilla.neat.evolution.engine;
+package ch.brotzilla.neat.evolution;
 
 import java.util.List;
-
-import ch.brotzilla.neat.evolution.EvolutionConfig;
-import ch.brotzilla.neat.evolution.EvaluationStrategy;
-import ch.brotzilla.neat.evolution.Specimen;
-import ch.brotzilla.neat.evolution.ThreadingStrategy;
 
 public class SingleThreadingStrategy implements ThreadingStrategy {
 
