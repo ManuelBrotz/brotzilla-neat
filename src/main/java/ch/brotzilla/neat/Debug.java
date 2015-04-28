@@ -1,10 +1,5 @@
 package ch.brotzilla.neat;
 
-import ch.brotzilla.neat.evolution.EvolutionConfig;
-import ch.brotzilla.neat.evolution.Population;
-
-import com.google.common.base.Preconditions;
-
 public class Debug {
 
     private Debug() {}
