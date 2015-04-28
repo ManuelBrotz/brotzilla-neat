@@ -97,9 +97,9 @@ public class EvolutionConfig {
             return this;
         }
         
-        public Builder setThreadingStrategy(ThreadingStrategy populationEvaluator) {
-            Preconditions.checkNotNull(populationEvaluator, "The parameter 'populationEvaluator' must not be null");
-            config.threadingStrategy = populationEvaluator;
+        public Builder setThreadingStrategy(ThreadingStrategy threadingStrategy) {
+            Preconditions.checkNotNull(threadingStrategy, "The parameter 'threadingStrategy' must not be null");
+            config.threadingStrategy = threadingStrategy;
             return this;
         }
         

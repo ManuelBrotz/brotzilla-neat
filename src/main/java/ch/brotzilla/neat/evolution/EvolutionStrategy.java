@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface EvolutionStrategy {
 
-    List<Specimen> evolve(List<Specimen> population, Speciation speciation, EvolutionConfig config);
+    List<Specimen> evolve(Speciation speciation, EvolutionConfig config);
     
 }
