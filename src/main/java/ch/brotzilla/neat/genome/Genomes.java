@@ -1,7 +1,5 @@
 package ch.brotzilla.neat.genome;
 
-import java.util.Random;
-
 import com.google.common.base.Preconditions;
 
 import ch.brotzilla.neat.evolution.Rng;
