@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.google.common.base.Preconditions;
 
+import ch.brotzilla.neat.evolution.Rng;
 import ch.brotzilla.neat.history.HistoryList;
 import ch.brotzilla.neat.math.ActivationFunction;
 
@@ -11,7 +12,7 @@ public final class Genomes {
 
     private Genomes() {}
     
-    public Genome createMinimalGenome(boolean biasNeuron, int inputNeurons, int outputNeurons, ActivationFunction outputActivationFunction, Random rng, HistoryList historyList) {
+    public Genome createMinimalGenome(boolean biasNeuron, int inputNeurons, int outputNeurons, ActivationFunction outputActivationFunction, Rng rng, HistoryList historyList) {
         Preconditions.checkArgument(inputNeurons > 0, "The parameter 'inputNeurons' has to be greater than zero");
         Preconditions.checkArgument(outputNeurons > 0, "The parameter 'outputNeurons' has to be greater than zero");
         Preconditions.checkNotNull(outputActivationFunction, "The parameter 'outputActivationFunction' must not be null");
