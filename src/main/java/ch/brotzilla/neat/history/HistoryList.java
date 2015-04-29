@@ -85,6 +85,14 @@ public class HistoryList {
         return result;
     }
     
+    public LinkInnovation getLinkInnovation(int sourceNode, int targetNode, int targetSynapse) {
+        return getLinkInnovation(new LinkHistoryKey(sourceNode, targetNode, targetSynapse));
+    }
+    
+    public LinkInnovation getInputOutputLinkInnovation(int inputNeuronIndex, int outputNeuronIndex, int outputNeuronSynapse) {
+        return getLinkInnovation(getInputNeuronInnovationNumber(inputNeuronIndex), getOutputNeuronInnovationNumber(outputNeuronIndex), outputNeuronSynapse);
+    }
+    
     public Collection<NodeInnovation> getNodeInnovations(NodeHistoryKey key) {
         return Collections.unmodifiableCollection(nodeHistory.get(key));
     }
