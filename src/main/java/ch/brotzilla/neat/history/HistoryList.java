@@ -51,8 +51,12 @@ public class HistoryList {
         return nextInnovationNumber++;
     }
 
+    public int getBiasNeuronInnovationNumber() {
+        return getInputNeuronInnovationNumber(-1);
+    }
+    
     public int getInputNeuronInnovationNumber(int neuronIndex) {
-        Preconditions.checkArgument(neuronIndex >= 0, "The parameter 'neuronIndex' has to be greater than or equal to zero");
+        Preconditions.checkArgument(neuronIndex >= -1, "The parameter 'neuronIndex' has to be greater than or equal to -1");
         int result = inputHistory.get(neuronIndex);
         if (result == inputHistory.getNoEntryValue()) {
             result = newInnovationNumber();
