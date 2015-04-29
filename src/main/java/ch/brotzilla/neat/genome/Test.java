@@ -24,14 +24,14 @@ public class Test {
         
         // add input nodes
         for (int i = 0; i < inputNodes; i++) {
-            final Node node = new Node(NodeType.Input, history.newInnovationNumber());
+            final Node node = new Node(NodeType.Input, history.getInputNeuronInnovationNumber(i));
             genome.add(node);
             System.out.println("New Input-Node: " + node.getInnovationNumber());
         }
         
         // add output nodes
         for (int i = 0; i < outputNodes; i++) {
-            final Node node = new Node(NodeType.Output, history.newInnovationNumber(), testFunction);
+            final Node node = new Node(NodeType.Output, history.getOutputNeuronInnovationNumber(i), testFunction);
             genome.add(node);
             System.out.println("New Output-Node: " + node.getInnovationNumber());
         }
@@ -42,7 +42,7 @@ public class Test {
                 final Node sourceNode = genome.getInputNodes().get(i);
                 final Node targetNode = genome.getOutputNodes().get(j);
                 final LinkHistoryKey key = new LinkHistoryKey(sourceNode.getInnovationNumber(), targetNode.getInnovationNumber(), 0);
-                final LinkInnovation innovation = history.newLinkInnovation(key);
+                final LinkInnovation innovation = history.getLinkInnovation(key);
                 final Link link = new Link(innovation.getLinkInnovationNumber(), sourceNode.getInnovationNumber(), targetNode.getInnovationNumber(), 0);
                 genome.add(link);
                 System.out.println("New Link from Input" + sourceNode.getInnovationNumber() + " to Output" + targetNode.getInnovationNumber() + ": " + link.getInnovationNumber());
@@ -91,7 +91,7 @@ public class Test {
         System.out.println("Add new links from bias node to hidden nodes:");
         for (final Node targetNode : genome.getHiddenNodes()) {
             final LinkHistoryKey key = new LinkHistoryKey(biasNode.getInnovationNumber(), targetNode.getInnovationNumber(), 0);
-            final LinkInnovation innovation = history.newLinkInnovation(key);
+            final LinkInnovation innovation = history.getLinkInnovation(key);
             genome.add(new Link(innovation));
             System.out.println("New Link " + innovation.getLinkInnovationNumber() + " from Bias-Node to " + targetNode.getType() + "" + targetNode.getInnovationNumber());
         }
@@ -100,7 +100,7 @@ public class Test {
         System.out.println("Add new links from bias node to output nodes:");
         for (final Node targetNode : genome.getOutputNodes()) {
             final LinkHistoryKey key = new LinkHistoryKey(biasNode.getInnovationNumber(), targetNode.getInnovationNumber(), 0);
-            final LinkInnovation innovation = history.newLinkInnovation(key);
+            final LinkInnovation innovation = history.getLinkInnovation(key);
             genome.add(new Link(innovation));
             System.out.println("New Link " + innovation.getLinkInnovationNumber() + " from Bias-Node to " + targetNode.getType() + "" + targetNode.getInnovationNumber());
         }
