@@ -23,7 +23,7 @@ public class EvolutionEngine {
         Preconditions.checkNotNull(population, "The population provider must not return null");
         Preconditions.checkArgument(population.size() == config.getPopulationSize(), "The population provider has to return " + config.getPopulationSize() + " specimens");
         
-        Speciation speciation = config.getPopulationProvider().provideSpeciation(config);
+        Speciation speciation = null;
         
         do {
             config.getThreadingStrategy().run(population, config);

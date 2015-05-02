@@ -2,8 +2,6 @@ package ch.brotzilla.neat.evolution;
 
 public interface Rng {
     
-    String getName();
-
     int nextInt();
     
     int nextInt(int n);

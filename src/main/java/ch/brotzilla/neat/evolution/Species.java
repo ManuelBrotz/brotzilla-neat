@@ -21,7 +21,7 @@ public class Species implements Iterable<Specimen> {
         this.specimensWrapper = Collections.unmodifiableList(specimens);
         for (final Specimen specimen : specimens) {
             Preconditions.checkArgument(specimen.getSpecies() == id, "The parameter 'specimens' may only contain specimens with species id " + id);
-            specimens.add(copy ? specimen.clone() : specimen);
+            this.specimens.add(copy ? specimen.clone() : specimen);
         }
     }
     

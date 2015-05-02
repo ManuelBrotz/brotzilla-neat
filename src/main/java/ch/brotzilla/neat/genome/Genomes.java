@@ -12,7 +12,7 @@ public final class Genomes {
 
     private Genomes() {}
     
-    public Genome createMinimalGenome(boolean biasNeuron, int inputNeurons, int outputNeurons, ActivationFunction outputActivationFunction, Rng rng, HistoryList historyList) {
+    public static Genome createMinimalGenome(boolean biasNeuron, int inputNeurons, int outputNeurons, ActivationFunction outputActivationFunction, Rng rng, HistoryList historyList) {
         Preconditions.checkArgument(inputNeurons > 0, "The parameter 'inputNeurons' has to be greater than zero");
         Preconditions.checkArgument(outputNeurons > 0, "The parameter 'outputNeurons' has to be greater than zero");
         Preconditions.checkNotNull(outputActivationFunction, "The parameter 'outputActivationFunction' must not be null");
@@ -33,7 +33,7 @@ public final class Genomes {
         }
         for (int o = 0; o < outputNeurons; o++) {
             if (biasNeuron) {
-                final Link link = new Link(historyList.getLinkInnovation(-1, o, 0));
+                final Link link = new Link(historyList.getInputOutputLinkInnovation(-1, o, 0));
                 link.setWeight(rng.nextDouble() * 3.0 - 1.5);
                 genome.add(link);
             }
@@ -46,7 +46,7 @@ public final class Genomes {
         return genome;
     }
 
-    public Genome createFeatureSelectiveGenome(boolean biasNeuron, int inputNeurons, int outputNeurons, ActivationFunction outputActivationFunction, Rng rng, HistoryList historyList) {
+    public static Genome createFeatureSelectiveGenome(boolean biasNeuron, int inputNeurons, int outputNeurons, ActivationFunction outputActivationFunction, Rng rng, HistoryList historyList) {
         Preconditions.checkArgument(inputNeurons > 0, "The parameter 'inputNeurons' has to be greater than zero");
         Preconditions.checkArgument(outputNeurons > 0, "The parameter 'outputNeurons' has to be greater than zero");
         Preconditions.checkNotNull(outputActivationFunction, "The parameter 'outputActivationFunction' must not be null");
@@ -67,7 +67,7 @@ public final class Genomes {
         }
         for (int o = 0; o < outputNeurons; o++) {
             if (biasNeuron) {
-                final Link link = new Link(historyList.getLinkInnovation(-1, o, 0));
+                final Link link = new Link(historyList.getInputOutputLinkInnovation(-1, o, 0));
                 link.setWeight(rng.nextDouble() * 3.0 - 1.5);
                 genome.add(link);
             }

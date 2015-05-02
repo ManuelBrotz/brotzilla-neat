@@ -19,6 +19,13 @@ public class Specimen {
         this.genome = genome;
     }
     
+    public Specimen(Objectives objectives, Genome genome) {
+        Preconditions.checkNotNull(objectives, "The parameter 'objectives' must not be null");
+        Preconditions.checkNotNull(genome, "The parameter 'genome' must not be null");
+        this.objectives = new double[objectives.getNumberOfObjectives()];
+        this.genome = genome;
+    }
+    
     public Specimen(double[] objectives, Genome genome) {
         Preconditions.checkNotNull(objectives, "The parameter 'objectives' must not be null");
         Preconditions.checkArgument(objectives.length > 0, "The length of the parameter 'objectives' has to be greater than zero");

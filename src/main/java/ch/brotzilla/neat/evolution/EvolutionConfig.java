@@ -1,11 +1,13 @@
 package ch.brotzilla.neat.evolution;
 
+import ch.brotzilla.neat.history.HistoryList;
+
 import com.google.common.base.Preconditions;
 
 public class EvolutionConfig {
 
+    private HistoryList historyList;
     private Objectives objectives;
-    private RngProvider rngProvider;
     private int populationSize;
     private ThreadingStrategy threadingStrategy;
     private PopulationProvider populationProvider;
@@ -18,8 +20,8 @@ public class EvolutionConfig {
     
     private EvolutionConfig(EvolutionConfig source) {
         Preconditions.checkNotNull(source, "The parameter 'source' must not be null");
+        historyList = source.historyList;
         objectives = source.objectives;
-        rngProvider = source.rngProvider;
         populationSize = source.populationSize;
         threadingStrategy = source.threadingStrategy;
         populationProvider = source.populationProvider;
@@ -29,12 +31,12 @@ public class EvolutionConfig {
         stopCondition = source.stopCondition;
     }
     
-    public Objectives getObjectives() {
-        return objectives;
+    public HistoryList getHistoryList() {
+        return historyList;
     }
     
-    public RngProvider getRngProvider() {
-    	return rngProvider;
+    public Objectives getObjectives() {
+        return objectives;
     }
     
     public int getPopulationSize() {
@@ -73,6 +75,12 @@ public class EvolutionConfig {
             config = new EvolutionConfig();
         }
         
+        public Builder setHistoryList(HistoryList historyList) {
+            Preconditions.checkNotNull(historyList, "The parameter 'historyList' must not be null");
+            config.historyList = historyList;
+            return this;
+        }
+        
         public Builder setObjectives(Objectives objectives) {
             Preconditions.checkNotNull(objectives, "The parameter 'objectives' must not be null");
             config.objectives = objectives;
@@ -83,12 +91,6 @@ public class EvolutionConfig {
             Preconditions.checkNotNull(objectives, "The parameter 'objectives' must not be null");
             config.objectives = new Objectives(objectives);
             return this;
-        }
-        
-        public Builder setRngProvider(RngProvider rngProvider) {
-        	Preconditions.checkNotNull(rngProvider, "The parameter 'rngProvider' must not be zero");
-        	config.rngProvider = rngProvider;
-        	return this;
         }
         
         public Builder setPopulationSize(int populationSize) {
@@ -134,8 +136,8 @@ public class EvolutionConfig {
         }
         
         public EvolutionConfig build() {
+            Preconditions.checkNotNull(config.historyList, "The property 'historyList' must not be null");
             Preconditions.checkNotNull(config.objectives, "The property 'objectives' must not be null");
-        	Preconditions.checkNotNull(config.rngProvider, "The property 'rngProvider' must not be zero");
             Preconditions.checkArgument(config.populationSize > 0, "The property 'populationSize' has to be greater than zero");
             Preconditions.checkNotNull(config.threadingStrategy, "The property 'threadingStrategy' must not be null");
             Preconditions.checkNotNull(config.populationProvider, "The property 'populationProvider' must not be null");

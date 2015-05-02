@@ -9,7 +9,7 @@ import ch.brotzilla.neat.evolution.Specimen;
 public class KMeansSpeciationStrategy implements SpeciationStrategy {
 
     public KMeansSpeciationStrategy() {
-
+        
     }
 
     public Speciation speciate(Speciation previousPopulation, List<Specimen> population) {

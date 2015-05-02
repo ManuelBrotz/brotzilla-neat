@@ -6,6 +6,4 @@ public interface PopulationProvider {
 
     List<Specimen> providePopulation(EvolutionConfig config);
 
-    Speciation provideSpeciation(EvolutionConfig config);
-    
 }
