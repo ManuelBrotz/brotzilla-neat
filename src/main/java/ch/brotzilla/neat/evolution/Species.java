@@ -1,6 +1,7 @@
 package ch.brotzilla.neat.evolution;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class Species implements Iterable<Specimen> {
             specimens.add(specimen.clone());
         }
     }
-    
+
     public int getId() {
         return id;
     }
@@ -48,6 +49,11 @@ public class Species implements Iterable<Specimen> {
     
     public Specimen getSpecimen(int index) {
         return specimens.get(index);
+    }
+
+    public void sort(Comparator<Specimen> comparator) {
+        Preconditions.checkNotNull(comparator, "The parameter 'comparator' must not be null");
+        Collections.sort(specimens, comparator);
     }
 
     public Iterator<Specimen> iterator() {

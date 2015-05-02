@@ -12,7 +12,7 @@ public class KMeansSpeciationStrategy implements SpeciationStrategy {
 
     }
 
-    public Speciation speciate(Speciation previousPopulation, List<Specimen> specimen) {
+    public Speciation speciate(Speciation previousPopulation, List<Specimen> population) {
         return null;
     }
 
