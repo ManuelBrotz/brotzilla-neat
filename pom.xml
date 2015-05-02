@@ -39,11 +39,6 @@
         <artifactId>trove4j</artifactId>
         <version>3.0.3</version>
     </dependency>
-    <dependency>
-        <groupId>com.google.inject</groupId>
-        <artifactId>guice</artifactId>
-        <version>3.0</version>
-    </dependency>
   </dependencies>
   <description>Implementation of the NEAT (neuro evolution of augmenting topologies) method for evolving neural networks.</description>
 </project>
