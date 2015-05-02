@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface SpeciationStrategy {
 
-    Speciation speciate(Speciation previous, List<Specimen> population);
+    Speciation speciate(List<Specimen> population);
     
 }

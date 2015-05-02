@@ -120,6 +120,9 @@ public class Node implements Iterable<Integer> {
     }
     
     public double[] copySynapseDefaults() {
+        if (type.isInputNode()) {
+            return null;
+        }
         return Arrays.copyOf(synapseDefaults, synapseDefaults.length);
     }
 

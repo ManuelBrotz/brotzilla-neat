@@ -23,12 +23,10 @@ public class EvolutionEngine {
         Preconditions.checkNotNull(population, "The population provider must not return null");
         Preconditions.checkArgument(population.size() == config.getPopulationSize(), "The population provider has to return " + config.getPopulationSize() + " specimens");
         
-        Speciation speciation = null;
-        
         do {
             config.getThreadingStrategy().run(population, config);
 
-            speciation = config.getSpeciationStrategy().speciate(speciation, population);
+            final Speciation speciation = config.getSpeciationStrategy().speciate(population);
             Preconditions.checkNotNull(speciation, "The speciation strategy must not return null");
             Preconditions.checkState(speciation.getSpecies().size() > 0, "The speciation strategy has to return at least one species");
             
