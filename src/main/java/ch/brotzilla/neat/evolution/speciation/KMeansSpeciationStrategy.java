@@ -20,7 +20,6 @@ public class KMeansSpeciationStrategy implements SpeciationStrategy {
     private final int maxIterations;
     private final boolean reuseExistingSpecies;
     private final Entries entries;
-    private boolean initialized = false;
     
     public KMeansSpeciationStrategy(int numberOfSpecies, int minSpeciesSize, int maxIterations, boolean reuseExistingSpecies) {
         Preconditions.checkArgument(numberOfSpecies > 1, "The parameter 'numberOfSpecies' has to be greater than 1");
@@ -48,16 +47,11 @@ public class KMeansSpeciationStrategy implements SpeciationStrategy {
     }
 
     public Speciation speciate(List<Specimen> population) {
-        if (!initialized) {
-            entries.initializeSpeciation(population);
-            initialized = true;
-        } else {
-            entries.resumeSpeciation(population);
-        }
+        entries.beginSpeciation(population);
         int iterations = 0;
         do {
-            entries.performSpeciationIteration(population);
-            if (entries.minSpeciesSize > 0 && entries.handleEmptyEntries()) {
+            entries.performSpeciation(population);
+            if (entries.minSpeciesSize > 0 && entries.handleEmptySpecies()) {
                 iterations = 0;
             }
             ++iterations;
@@ -87,10 +81,6 @@ public class KMeansSpeciationStrategy implements SpeciationStrategy {
             this.minSpeciesSize = minSpeciesSize;
             this.reuseExistingSpecies = reuseExistingSpecies;
             entries = new TIntObjectHashMap<Entry>(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, 0);
-            for (int i = 0; i < numberOfSpecies; i++) {
-                final int nextId = nextId();
-                entries.put(nextId, new Entry(nextId));
-            }
         }
         
         public int nextId() {
@@ -130,11 +120,25 @@ public class KMeansSpeciationStrategy implements SpeciationStrategy {
                     max = size;
                 }
             }
-            return Preconditions.checkNotNull(result, "Internal Error: No largest species found");
+            return Preconditions.checkNotNull(result, "Internal Error: No largest entry found");
+        }
+        
+        public void beginSpeciation(List<Specimen> population) {
+            if (entries.isEmpty()) {
+                initializeSpeciation(population);
+            } else {
+                resumeSpeciation(population);
+            }
+            computeCentroids();
         }
         
         public void initializeSpeciation(List<Specimen> population) {
             Preconditions.checkNotNull(population, "The parameter 'population' must not be null");
+            Preconditions.checkState(entries.isEmpty(), "Internal Error: Speciation has already been initialized");
+            for (int i = 0; i < numberOfSpecies; i++) {
+                final int nextId = nextId();
+                entries.put(nextId, new Entry(nextId));
+            }
             int i = 0;
             while (i < population.size()) {
                 for (final Entry e : this) {
@@ -142,20 +146,19 @@ public class KMeansSpeciationStrategy implements SpeciationStrategy {
                     if (i >= population.size()) break;
                 }
             }
-            computeCentroids();
         }
 
         public void resumeSpeciation(List<Specimen> population) {
             Preconditions.checkNotNull(population, "The parameter 'population' must not be null");
+            Preconditions.checkState(entries.size() == numberOfSpecies, "Internal Error: " + entries.size() + " entries found (" + numberOfSpecies + " expected)");
             clear();
             for (final Specimen specimen : population) {
                 final int nearest = findNearest(specimen);
                 Preconditions.checkNotNull(entries.get(nearest), "Internal Error: Entry not found: " + nearest).add(specimen);
             }
-            computeCentroids();
         }
         
-        public void performSpeciationIteration(List<Specimen> population) {
+        public void performSpeciation(List<Specimen> population) {
             Preconditions.checkNotNull(population, "The parameter 'population' must not be null");
             clear();
             for (final Specimen specimen : population) {
@@ -168,7 +171,7 @@ public class KMeansSpeciationStrategy implements SpeciationStrategy {
             computeCentroids();
         }
         
-        public boolean handleEmptyEntries() {
+        public boolean handleEmptySpecies() {
             final int emptyId = findEmptyId();
             if (emptyId > 0) {
                 final Entry largestEntry = findLargestEntry();
@@ -192,7 +195,8 @@ public class KMeansSpeciationStrategy implements SpeciationStrategy {
                     entries.remove(emptyId);
                     entries.put(newEntry.id, newEntry);
                 }
-                handleEmptyEntries();
+                // call recursively to handle multiple empty entries
+                handleEmptySpecies();
                 return true;
             }
             return false;
