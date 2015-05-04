@@ -1,5 +1,10 @@
 package ch.brotzilla.neat.evolution.speciation;
 
+import gnu.trove.impl.Constants;
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.base.Preconditions;
@@ -12,20 +17,22 @@ import ch.brotzilla.neat.evolution.Specimen;
 
 public class KMeansSpeciationStrategy implements SpeciationStrategy {
 
-    private final int numberOfSpecies, maxIterations, minSpeciesSize;
-    private Entries entries;
+    private final int maxIterations;
+    private final boolean reuseExistingSpecies;
+    private final Entries entries;
+    private boolean initialized = false;
     
-    public KMeansSpeciationStrategy(int numberOfSpecies, int maxIterations, int minSpeciesSize) {
+    public KMeansSpeciationStrategy(int numberOfSpecies, int minSpeciesSize, int maxIterations, boolean reuseExistingSpecies) {
         Preconditions.checkArgument(numberOfSpecies > 1, "The parameter 'numberOfSpecies' has to be greater than 1");
-        Preconditions.checkArgument(maxIterations > 0, "The parameter 'maxIterations' has to be greater than zero");
         Preconditions.checkArgument(minSpeciesSize >= 0, "The parameter 'minSpeciesSize' has to be greater than or equal to zero");
-        this.numberOfSpecies = numberOfSpecies;
+        Preconditions.checkArgument(maxIterations > 0, "The parameter 'maxIterations' has to be greater than zero");
         this.maxIterations = maxIterations;
-        this.minSpeciesSize = minSpeciesSize;
+        this.reuseExistingSpecies = reuseExistingSpecies;
+        entries = new Entries(numberOfSpecies, minSpeciesSize, reuseExistingSpecies);
     }
     
     public int getNumberOfSpecies() {
-        return numberOfSpecies;
+        return entries.numberOfSpecies;
     }
     
     public int getMaxIterations() {
@@ -33,20 +40,24 @@ public class KMeansSpeciationStrategy implements SpeciationStrategy {
     }
     
     public int getMinSpeciesSize() {
-        return minSpeciesSize;
+        return entries.minSpeciesSize;
+    }
+    
+    public boolean getReuseExistingSpecies() {
+        return reuseExistingSpecies;
     }
 
     public Speciation speciate(List<Specimen> population) {
-        if (entries == null) {
-            entries = new Entries(numberOfSpecies, minSpeciesSize);
+        if (!initialized) {
             entries.initializeSpeciation(population);
+            initialized = true;
         } else {
-            entries = entries.resumeSpeciation(population);
+            entries.resumeSpeciation(population);
         }
         int iterations = 0;
         do {
-            entries = entries.performSpeciationIteration();
-            if (minSpeciesSize > 0 && entries.handleEmptySpecies()) {
+            entries.performSpeciationIteration(population);
+            if (entries.minSpeciesSize > 0 && entries.handleEmptyEntries()) {
                 iterations = 0;
             }
             ++iterations;
@@ -56,136 +67,154 @@ public class KMeansSpeciationStrategy implements SpeciationStrategy {
 
     private Speciation speciate() {
         final List<Species> speciation = Lists.newArrayList();
-        for (final Entry e : entries.entries) {
+        for (final Entry e : entries) {
             speciation.add(new Species(e.id, e.list, false));
         }
-        entries.clear();
         return new Speciation(speciation, false);
     }
     
-    private static class Entries {
+    private static class Entries implements Iterable<Entry> {
         
         public final int numberOfSpecies, minSpeciesSize;
-        public final Entry[] entries;
-        public int changes;
+        public final TIntObjectMap<Entry> entries;
+        public final boolean reuseExistingSpecies;
+        public int nextId = 1, changes;
         
-        public Entries(int numberOfSpecies, int minSpeciesSize) {
+        public Entries(int numberOfSpecies, int minSpeciesSize, boolean reuseExistingSpecies) {
             Preconditions.checkArgument(numberOfSpecies > 1, "The parameter 'numberOfSpecies' has to be greater than 1");
             Preconditions.checkArgument(minSpeciesSize >= 0, "The parameter 'minSpeciesSize' has to be greater than or equal to zero");
             this.numberOfSpecies = numberOfSpecies;
             this.minSpeciesSize = minSpeciesSize;
-            entries = new Entry[numberOfSpecies];
+            this.reuseExistingSpecies = reuseExistingSpecies;
+            entries = new TIntObjectHashMap<Entry>(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, 0);
             for (int i = 0; i < numberOfSpecies; i++) {
-                entries[i] = new Entry(i+1);
+                final int nextId = nextId();
+                entries.put(nextId, new Entry(nextId));
             }
         }
         
+        public int nextId() {
+            return nextId++;
+        }
+        
         public int findNearest(Specimen specimen) {
-            int result = 0;
-            double nearest = entries[0].centroid.distance(specimen.getGenome());
-            for (int i = 1; i < numberOfSpecies; i++) {
-                final double distance = entries[i].centroid.distance(specimen.getGenome());
-                if (distance < nearest) {
-                    result = i;
+            Preconditions.checkNotNull(specimen, "The parameter 'specimen' must not be null");
+            Entry result = null;
+            double nearest = 0;
+            for (final Entry e : this) {
+                final double distance = e.getCentroid().distance(specimen.getGenome());
+                if (result == null || distance < nearest) {
+                    result = e;
                     nearest = distance;
                 }
             }
-            return result;
+            return Preconditions.checkNotNull(result, "Internal Error: No nearest entry found").id;
+        }
+        
+        public int findEmptyId() {
+            for (final Entry e : this) {
+                if (e.list.size() < minSpeciesSize) {
+                    return e.id;
+                }
+            }
+            return 0;
+        }
+        
+        public Entry findLargestEntry() {
+            Entry result = null;
+            int max = 0;
+            for (final Entry e : this) {
+                final int size = e.list.size();
+                if (result == null || size > max) {
+                    result = e;
+                    max = size;
+                }
+            }
+            return Preconditions.checkNotNull(result, "Internal Error: No largest species found");
         }
         
         public void initializeSpeciation(List<Specimen> population) {
             Preconditions.checkNotNull(population, "The parameter 'population' must not be null");
-            for (int i = 0; i < population.size(); i++) {
-                entries[i % numberOfSpecies].add(population.get(i));
+            int i = 0;
+            while (i < population.size()) {
+                for (final Entry e : this) {
+                    e.add(population.get(i++));
+                    if (i >= population.size()) break;
+                }
             }
             computeCentroids();
         }
 
-        public Entries resumeSpeciation(List<Specimen> population) {
+        public void resumeSpeciation(List<Specimen> population) {
             Preconditions.checkNotNull(population, "The parameter 'population' must not be null");
-            final Entries result = new Entries(numberOfSpecies, minSpeciesSize);
-            for (int i = 0; i < population.size(); i++) {
-                final Specimen specimen = population.get(i);
+            clear();
+            for (final Specimen specimen : population) {
                 final int nearest = findNearest(specimen);
-                result.entries[nearest].add(specimen);
+                Preconditions.checkNotNull(entries.get(nearest), "Internal Error: Entry not found: " + nearest).add(specimen);
             }
-            result.computeCentroids();
-            return result;
+            computeCentroids();
         }
         
-        private Entries performSpeciationIteration() {
-            Preconditions.checkNotNull(entries, "The parameter 'entries' must not be null");
-            final Entries result = new Entries(numberOfSpecies, minSpeciesSize);
-            for (int iSource = 0; iSource < numberOfSpecies; iSource++) {
-                final Entry source = entries[iSource];
-                for (int iSpecimen = 0; iSpecimen < source.list.size(); iSpecimen++) {
-                    final Specimen specimen = source.list.get(iSpecimen);
-                    final int iNearest = findNearest(specimen);
-                    result.entries[iNearest].add(specimen);
-                    if (iNearest != iSource) {
-                        result.changes++;
-                    }
+        public void performSpeciationIteration(List<Specimen> population) {
+            Preconditions.checkNotNull(population, "The parameter 'population' must not be null");
+            clear();
+            for (final Specimen specimen : population) {
+                final int nearest = findNearest(specimen);
+                if (nearest != specimen.getSpecies()) {
+                    changes++;
                 }
+                Preconditions.checkNotNull(entries.get(nearest), "Internal Error: Entry not found: " + nearest).add(specimen);
             }
-            result.computeCentroids();
-            return result;
+            computeCentroids();
         }
         
-        private int findEmptySpecies() {
-            for (int i = 0; i < numberOfSpecies; i++) {
-                if (entries[i].list.size() < minSpeciesSize) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-        
-        private int findLargestSpecies() {
-            int max = entries[0].list.size(), index = 0;
-            for (int i = 1; i < numberOfSpecies; i++) {
-                if (entries[i].list.size() > max) {
-                    max = entries[i].list.size();
-                    index = i;
-                }
-            }
-            return index;
-        }
-        
-        private boolean handleEmptySpecies() {
-            final int emptyIndex = findEmptySpecies();
-            if (emptyIndex >= 0) {
-                final int largestIndex = findLargestSpecies();
-                final Entry largestSpecies = entries[largestIndex];
-                final Entry a = new Entry(emptyIndex + 1), b = new Entry(largestIndex + 1);
-                for (int i = 0; i < largestSpecies.list.size(); i++) {
-                    final Specimen specimen = largestSpecies.list.get(i);
+        public boolean handleEmptyEntries() {
+            final int emptyId = findEmptyId();
+            if (emptyId > 0) {
+                final Entry largestEntry = findLargestEntry();
+                final Entry largestEntryReplacement = new Entry(largestEntry.id);
+                final Entry newEntry = new Entry(reuseExistingSpecies ? emptyId : nextId());
+                for (int i = 0; i < largestEntry.list.size(); i++) {
+                    final Specimen specimen = largestEntry.list.get(i);
                     if (i % 2 == 0) {
-                        a.add(specimen);
+                        largestEntryReplacement.add(specimen);
                     } else {
-                        b.add(specimen);
+                        newEntry.add(specimen);
                     }
                 }
-                a.compute();
-                b.compute();
-                changes += largestSpecies.list.size();
-                entries[emptyIndex] = a;
-                entries[largestIndex] = b;
-                handleEmptySpecies();
+                largestEntryReplacement.compute();
+                newEntry.compute();
+                changes += newEntry.list.size();
+                entries.put(largestEntry.id, largestEntryReplacement);
+                if (reuseExistingSpecies) {
+                    entries.put(emptyId, newEntry);
+                } else {
+                    entries.remove(emptyId);
+                    entries.put(newEntry.id, newEntry);
+                }
+                handleEmptyEntries();
                 return true;
             }
             return false;
         }
         
         public void computeCentroids() {
-            for (final Entry e : entries) {
+            for (final Entry e : this) {
                 e.compute();
             }
         }
 
         public void clear() {
-            for (final Entry e : entries) {
+            changes = 0;
+            for (final Entry e : this) {
                 e.clear();
             }
+        }
+
+        public Iterator<Entry> iterator() {
+            Preconditions.checkState(entries != null, "Internal Error: No entries available");
+            Preconditions.checkState(entries.size() == numberOfSpecies, "Internal Error: " + entries.size() + " entries found (" + numberOfSpecies + " expected)");
+            return entries.valueCollection().iterator();
         }
         
     }
@@ -195,13 +224,17 @@ public class KMeansSpeciationStrategy implements SpeciationStrategy {
         public final int id;
         public final List<Specimen> list;
         public final CentroidCalculator calculator;
-        public Centroid centroid;
+        public Centroid centroid_;
         
         public Entry(int id) {
             Preconditions.checkArgument(id > 0, "The parameter 'id' has to be greater than zero");
             this.id = id;
             list = Lists.newArrayList();
             calculator = new CentroidCalculator();
+        }
+        
+        public Centroid getCentroid() {
+            return Preconditions.checkNotNull(centroid_, "Internal Error: Centroid not available");
         }
         
         public void add(Specimen specimen) {
@@ -212,7 +245,7 @@ public class KMeansSpeciationStrategy implements SpeciationStrategy {
         }
         
         public void compute() {
-            centroid = calculator.compute();
+            centroid_ = calculator.compute();
         }
         
         public void clear() {
