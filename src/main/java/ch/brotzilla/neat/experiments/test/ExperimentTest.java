@@ -31,10 +31,10 @@ public class ExperimentTest {
         return new EvolutionConfig.Builder()
             .setHistoryList(new HistoryList())
             .setObjectives(Objective.Minimize)
-            .setPopulationSize(100)
+            .setPopulationSize(250)
             .setThreadingStrategy(new SingleThreadingStrategy())
             .setPopulationProvider(new TestPopulationProvider(new TestRng("test".hashCode())))
-            .setSpeciationStrategy(new KMeansSpeciationStrategy())
+            .setSpeciationStrategy(new KMeansSpeciationStrategy(10, 100, 10))
             .setEvaluationStrategyProvider(new TestEvaluationStrategyProvider())
             .setEvolutionStrategy(new TestEvolutionStrategy())
             .setStopCondition(new TestStopCondition())
@@ -92,7 +92,7 @@ public class ExperimentTest {
         public List<Specimen> providePopulation(EvolutionConfig config) {
             final List<Specimen> population = Lists.newArrayList();
             for (int i = 0; i < config.getPopulationSize(); i++) {
-                population.add(new Specimen(config.getObjectives(), Genomes.createFeatureSelectiveGenome(true, 4, 2, new ExtendedElliottFunction(), rng, config.getHistoryList())));
+                population.add(new Specimen(config.getObjectives(), Genomes.createMinimalGenome(true, 20, 5, new ExtendedElliottFunction(), rng, config.getHistoryList())));
             }
             return population;
         }
@@ -118,7 +118,7 @@ public class ExperimentTest {
     private static class TestEvolutionStrategy implements EvolutionStrategy {
 
         public List<Specimen> evolve(Speciation speciation, EvolutionConfig config) {
-            return speciation.getSpecies(0).getSpecimens();
+            return config.getPopulationProvider().providePopulation(config);
         }
 
     }

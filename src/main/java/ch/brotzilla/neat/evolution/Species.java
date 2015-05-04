@@ -18,7 +18,7 @@ public class Species implements Iterable<Specimen> {
         Preconditions.checkNotNull(specimens, "The parameter 'specimens' must not be null");
         this.id = id;
         this.specimens = Lists.newArrayListWithCapacity(specimens.size());
-        this.specimensWrapper = Collections.unmodifiableList(specimens);
+        this.specimensWrapper = Collections.unmodifiableList(this.specimens);
         for (final Specimen specimen : specimens) {
             Preconditions.checkArgument(specimen.getSpecies() == id, "The parameter 'specimens' may only contain specimens with species id " + id);
             this.specimens.add(copy ? specimen.clone() : specimen);

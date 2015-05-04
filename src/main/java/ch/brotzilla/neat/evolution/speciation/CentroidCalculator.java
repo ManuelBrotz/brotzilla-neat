@@ -1,5 +1,6 @@
 package ch.brotzilla.neat.evolution.speciation;
 
+import gnu.trove.impl.Constants;
 import gnu.trove.map.TIntDoubleMap;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntDoubleHashMap;
@@ -24,6 +25,7 @@ public class CentroidCalculator {
     public void add(Genome genome) {
         Preconditions.checkNotNull(genome, "The parameter 'genome' must not be null");
         for (final Node node : genome) {
+            if (node.getType().isInputNode()) continue;
             NodeEntry entry = nodes.get(node.getInnovationNumber());
             if (entry == null) {
                 entry = new NodeEntry(node);
@@ -44,8 +46,8 @@ public class CentroidCalculator {
     }
     
     public Centroid compute() {
-        final TIntObjectMap<double[]> nc = new TIntObjectHashMap<double[]>();
-        final TIntDoubleMap lc = new TIntDoubleHashMap();
+        final TIntObjectMap<double[]> nc = new TIntObjectHashMap<double[]>(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, 0);
+        final TIntDoubleMap lc = new TIntDoubleHashMap(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, 0, Double.NaN);
         for (final NodeEntry entry : nodes.valueCollection()) {
             if (Debug.EnableIntegrityChecks) {
                 Preconditions.checkState(!nc.containsKey(entry.id), "Node entries have to be unique");
