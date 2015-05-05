@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 public class NeuralNet {
 
@@ -43,6 +44,7 @@ public class NeuralNet {
                 final Neuron n = hiddenNeurons[i];
                 Preconditions.checkNotNull(n, "The parameter 'hiddenNeurons[" + i + "]' must not be null");
                 Preconditions.checkElementIndex(n.getNeuronIndex(), numberOfHiddenNeurons, "The neuron index of the parameter 'hiddenNeurons[" + i + "]'");
+                Preconditions.checkArgument(n instanceof HiddenNeuron, "The parameter 'hiddenNeurons[" + i + "]' has to be of type HiddenNeuron");
             }
         } else {
             Preconditions.checkArgument(hiddenNeurons == null, "The parameter 'hiddenNeurons' has to be null");
@@ -53,11 +55,12 @@ public class NeuralNet {
             final Neuron n = outputNeurons[i];
             Preconditions.checkNotNull(n, "The parameter 'outputNeurons[" + i + "]' must not be null");
             Preconditions.checkElementIndex(n.getNeuronIndex(), numberOfOutputNeurons, "The neuron index of the parameter 'outputNeurons[" + i + "]'");
+            Preconditions.checkArgument(n instanceof OutputNeuron, "The parameter 'outputNeurons[" + i + "]' has to be of type OutputNeuron");
         }
         this.numberOfInputNeurons = numberOfInputNeurons;
         this.numberOfHiddenNeurons = numberOfHiddenNeurons;
         this.numberOfOutputNeurons = numberOfOutputNeurons;
-        this.hiddenNeurons = Collections.unmodifiableList(Arrays.asList(hiddenNeurons));
+        this.hiddenNeurons = hiddenNeurons == null ? Collections.unmodifiableList(Lists.<Neuron>newArrayList()) : Collections.unmodifiableList(Arrays.asList(hiddenNeurons));
         this.outputNeurons = Collections.unmodifiableList(Arrays.asList(outputNeurons));
     }
 

@@ -19,6 +19,7 @@ import ch.brotzilla.neat.neuralnet.HiddenNeuronConnection;
 import ch.brotzilla.neat.neuralnet.InputNeuronConnection;
 import ch.brotzilla.neat.neuralnet.NeuralNet;
 import ch.brotzilla.neat.neuralnet.Neuron;
+import ch.brotzilla.neat.neuralnet.OutputNeuron;
 import ch.brotzilla.neat.neuralnet.OutputNeuronConnection;
 
 public class NEATGenomeExpressor implements GenomeExpressor {
@@ -57,7 +58,12 @@ public class NEATGenomeExpressor implements GenomeExpressor {
             Preconditions.checkArgument(link != null, "The parameter 'genome' does not contain a link with the innovation number " + linkInnovation);
             connections[ci++] = expressConnection(genome, index, biasInnovation, link);
         }
-        return new HiddenNeuron(targetNeuronIndex, node.getActivationFunction(), node.copySynapseDefaults(), connections);
+        if (node.getType() == NodeType.Hidden) {
+            return new HiddenNeuron(targetNeuronIndex, node.getActivationFunction(), node.copySynapseDefaults(), connections);
+        } else if (node.getType() == NodeType.Output) {
+            return new OutputNeuron(targetNeuronIndex, node.getActivationFunction(), node.copySynapseDefaults(), connections);
+        }
+        throw new IllegalArgumentException("The parameter 'node' has to be of type Hidden or Output");
     }
     
     private Neuron[] expressNeurons(Genome genome, NodeIndex index, int biasInnovation, List<Node> nodes) {

@@ -19,7 +19,7 @@ public class HistoryList {
     
     public static final HashFunction hashFunction = Hashing.goodFastHash(32);
     
-    private final TIntIntMap inputHistory, outputHistory;
+    private final TIntIntMap inputHistory, hiddenHistory, outputHistory;
     private final HashMap<LinkHistoryKey, LinkInnovation> linkHistory;
     private final Multimap<NodeHistoryKey, NodeInnovation> nodeHistory;
     
@@ -27,6 +27,7 @@ public class HistoryList {
     
     public HistoryList() {
         inputHistory = new TIntIntHashMap(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -2, 0);
+        hiddenHistory = new TIntIntHashMap(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1, 0);
         outputHistory = new TIntIntHashMap(Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, -1, 0);
         linkHistory = Maps.newHashMap();
         nodeHistory = HashMultimap.create();
@@ -65,6 +66,16 @@ public class HistoryList {
         return result;
     }
 
+    public int getHiddenNeuronInnovationNumber(int neuronIndex) {
+        Preconditions.checkArgument(neuronIndex >= 0, "The parameter 'neuronIndex' has to be greater than or equal to zero");
+        int result = hiddenHistory.get(neuronIndex);
+        if (result == hiddenHistory.getNoEntryValue()) {
+            result = newInnovationNumber();
+            hiddenHistory.put(neuronIndex, result);
+        }
+        return result;
+    }
+
     public int getOutputNeuronInnovationNumber(int neuronIndex) {
         Preconditions.checkArgument(neuronIndex >= 0, "The parameter 'neuronIndex' has to be greater than or equal to zero");
         int result = outputHistory.get(neuronIndex);
@@ -89,8 +100,20 @@ public class HistoryList {
         return getLinkInnovation(new LinkHistoryKey(sourceNode, targetNode, targetSynapse));
     }
     
-    public LinkInnovation getInputOutputLinkInnovation(int inputNeuronIndex, int outputNeuronIndex, int outputNeuronSynapse) {
-        return getLinkInnovation(getInputNeuronInnovationNumber(inputNeuronIndex), getOutputNeuronInnovationNumber(outputNeuronIndex), outputNeuronSynapse);
+    public LinkInnovation getInputOutputLinkInnovation(int sourceIndex, int targetIndex, int targetSynapse) {
+        return getLinkInnovation(getInputNeuronInnovationNumber(sourceIndex), getOutputNeuronInnovationNumber(targetIndex), targetSynapse);
+    }
+    
+    public LinkInnovation getInputHiddenLinkInnovation(int sourceIndex, int targetIndex, int targetSynapse) {
+        return getLinkInnovation(getInputNeuronInnovationNumber(sourceIndex), getHiddenNeuronInnovationNumber(targetIndex), targetSynapse);
+    }
+    
+    public LinkInnovation getHiddenHiddenLinkInnovation(int sourceIndex, int targetIndex, int targetSynapse) {
+        return getLinkInnovation(getHiddenNeuronInnovationNumber(sourceIndex), getHiddenNeuronInnovationNumber(targetIndex), targetSynapse);
+    }
+    
+    public LinkInnovation getHiddenOutputLinkInnovation(int sourceIndex, int targetIndex, int targetSynapse) {
+        return getLinkInnovation(getHiddenNeuronInnovationNumber(sourceIndex), getOutputNeuronInnovationNumber(targetIndex), targetSynapse);
     }
     
     public Collection<NodeInnovation> getNodeInnovations(NodeHistoryKey key) {

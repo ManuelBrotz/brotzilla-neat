@@ -24,6 +24,8 @@ public class Genome implements Iterable<Node> {
     
     private int inputSize, hiddenSize, outputSize, totalSize;
     
+    private double sigma = 0.2;
+    
     private void add(Link link, boolean updateTargetNode) {
         Preconditions.checkNotNull(link, "The parameter 'link' must not be null");
         Preconditions.checkArgument(!linksMap.containsKey(link.getInnovationNumber()), "The genome already contains a link with the innovation number " + link.getInnovationNumber());
@@ -158,6 +160,14 @@ public class Genome implements Iterable<Node> {
     
     public final List<Link> getLinks() {
         return linksWrapper;
+    }
+    
+    public final double getSigma() {
+        return sigma;
+    }
+    
+    public final void setSigma(double value) {
+        sigma = value;
     }
     
     public final Node getNodeByIndex(int index) {
