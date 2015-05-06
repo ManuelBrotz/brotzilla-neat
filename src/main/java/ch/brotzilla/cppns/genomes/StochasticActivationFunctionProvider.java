@@ -21,12 +21,12 @@ public class StochasticActivationFunctionProvider implements ActivationFunctionP
     }
     
     public double[] computeSlots(int count, double total) {
-        final double[] slots = new double[count];
-        int i = 0;
+        final double[] slots = new double[functions.size()];
+        int slot = 0;
         double sum = 0;
         for (final Entry e : functions) {
             sum += e.probability / total;
-            slots[i++] = sum;
+            slots[slot++] = sum;
         }
         return slots;
     }

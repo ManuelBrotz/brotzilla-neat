@@ -6,6 +6,10 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import ch.brotzilla.cppns.genomes.ActivationFunctionProvider;
+import ch.brotzilla.cppns.genomes.BasicGenomeGenerator;
+import ch.brotzilla.cppns.genomes.GenomeGenerator;
+import ch.brotzilla.cppns.genomes.StochasticActivationFunctionProvider;
 import ch.brotzilla.cppns.images.ImageGenerator;
 import ch.brotzilla.cppns.images.ImageType;
 import ch.brotzilla.cppns.patterns.PatternGenerator;
@@ -17,9 +21,19 @@ import ch.brotzilla.neat.genome.Genomes;
 import ch.brotzilla.neat.history.HistoryList;
 import ch.brotzilla.neat.math.ActivationFunction;
 import ch.brotzilla.neat.math.ExtendedDecliningCosFunction;
+import ch.brotzilla.neat.math.ExtendedDecliningSawtoothFunction;
+import ch.brotzilla.neat.math.ExtendedDecliningSquareFunction;
+import ch.brotzilla.neat.math.ExtendedDecliningTriangleFunction;
+import ch.brotzilla.neat.math.ExtendedGaussianFunction;
+import ch.brotzilla.neat.math.ExtendedLinearFunction;
+import ch.brotzilla.neat.math.ExtendedLogFunction;
+import ch.brotzilla.neat.math.ExtendedModifiedTanhFunction;
 import ch.brotzilla.neat.math.ExtendedPeriodicCosFunction;
 import ch.brotzilla.neat.math.ExtendedPeriodicSawtoothFunction;
+import ch.brotzilla.neat.math.ExtendedPeriodicSquareFunction;
 import ch.brotzilla.neat.math.ExtendedPeriodicTriangleFunction;
+import ch.brotzilla.neat.math.ExtendedSignumFunction;
+import ch.brotzilla.neat.math.ExtendedSqrtFunction;
 import ch.brotzilla.neat.math.ExtendedTanhFunction;
 import ch.brotzilla.util.MersenneTwister;
 
@@ -78,22 +92,43 @@ public class Test {
         }
     }
     
+    private static ActivationFunctionProvider getActivationFunctionProvider() {
+        final StochasticActivationFunctionProvider result = new StochasticActivationFunctionProvider();
+//        result.add(new ExtendedDecliningCosFunction(), 1);
+//        result.add(new ExtendedDecliningSawtoothFunction(), 1);
+//        result.add(new ExtendedDecliningSquareFunction(), 1);
+//        result.add(new ExtendedDecliningTriangleFunction(), 1);
+//        result.add(new ExtendedPeriodicCosFunction(), 1);
+        result.add(new ExtendedPeriodicSawtoothFunction(), 1);
+        result.add(new ExtendedPeriodicSquareFunction(), 1);
+        result.add(new ExtendedPeriodicTriangleFunction(), 1);
+//        result.add(new ExtendedTanhFunction(), 1);
+//        result.add(new ExtendedModifiedTanhFunction(), 1);
+//        result.add(new ExtendedGaussianFunction(), 1);
+//        result.add(new ExtendedLinearFunction(), 1);
+//        result.add(new ExtendedLogFunction(), 1);
+//        result.add(new ExtendedSignumFunction(), 1);
+//        result.add(new ExtendedSqrtFunction(), 1);
+        return result;
+    }
+    
     public static void main(String[] args) throws IOException {
         
-        final ImageType type = ImageType.Color;
+        final ImageType type = ImageType.Gray;
         final HistoryList historyList = new HistoryList();
         final TestRng rng = new TestRng(new Random().nextLong());
+        final ActivationFunctionProvider activationFunctionProvider = getActivationFunctionProvider();
+        final BasicGenomeGenerator genomeGenerator = new BasicGenomeGenerator(historyList, activationFunctionProvider);
+        genomeGenerator.setRecurrentLinkProbability(0.01);
+        genomeGenerator.setSynapseLinkProbability(0.1);
+        final NEATGenomeExpressor expressor = new NEATGenomeExpressor();
         
         for (int i = 0; i < 100; i++) {
-//            final Genome genome = Genomes.createDoublePerceptronGenome(false, 2, rng.nextInt(5) + 1, rng.nextInt(5) + 1, type.getPatternGeneratorOutputSize(), getRandomActivationFunction(rng), getRandomActivationFunction(rng), rng, historyList);
-            final Genome genome = Genomes.createPerceptronGenome(false, 2, rng.nextInt(5) + 1, type.getPatternGeneratorOutputSize(), getRandomActivationFunction(rng), getRandomActivationFunction(rng), rng, historyList);
-            final NEATGenomeExpressor expressor = new NEATGenomeExpressor();
-            final PatternGenerator pattern = new BasicPatternGenerator(expressor.express(genome));
-            final ImageGenerator generator = new ImageGenerator(600, 600, type, pattern);
-            generator.getSection().setBounds(-6, -6, 12, 12);
-
+            System.out.println("Generating image " + (i + 1) + " of 100...");
+            final PatternGenerator pattern = new BasicPatternGenerator(expressor.express(genomeGenerator.generate(type, rng)));
+            final ImageGenerator generator = new ImageGenerator(200, 200, type, pattern);
+            generator.getSection().setBounds(-1, -1, 2, 2);
             generator.generate();
-
             ImageIO.write(generator.getImage(), "PNG", new File("./pics/test" + format(i) + ".png"));
         }
         

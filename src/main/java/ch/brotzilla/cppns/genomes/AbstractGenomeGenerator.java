@@ -10,8 +10,9 @@ public abstract class AbstractGenomeGenerator implements GenomeGenerator {
 
     private final HistoryList historyList;
     private final ActivationFunctionProvider activationFunctionProvider;
+    private final ActivationFunction outputActivationFunction;
     
-    protected ActivationFunction[] provideActivationFunction(int count, Rng rng) {
+    protected ActivationFunction[] provideActivationFunctions(int count, Rng rng) {
         return activationFunctionProvider.provide(count, rng);
     }
     
@@ -19,11 +20,12 @@ public abstract class AbstractGenomeGenerator implements GenomeGenerator {
         return activationFunctionProvider.provide(rng);
     }
     
-    public AbstractGenomeGenerator(HistoryList historyList, ActivationFunctionProvider activationFunctionProvider) {
+    public AbstractGenomeGenerator(HistoryList historyList, ActivationFunctionProvider activationFunctionProvider, ActivationFunction outputActivationFunction) {
         Preconditions.checkNotNull(historyList, "The parameter 'historyList' must not be null");
         Preconditions.checkNotNull(activationFunctionProvider, "The parameter 'activationFunctionProvider' must not be null");
         this.historyList = historyList;
         this.activationFunctionProvider = activationFunctionProvider;
+        this.outputActivationFunction = outputActivationFunction;
     }
     
     public HistoryList getHistoryList() {
@@ -32,6 +34,10 @@ public abstract class AbstractGenomeGenerator implements GenomeGenerator {
     
     public ActivationFunctionProvider getActivationFunctionProvider() {
         return activationFunctionProvider;
+    }
+    
+    public ActivationFunction getOutputActivationFunction() {
+        return outputActivationFunction;
     }
 
 }
