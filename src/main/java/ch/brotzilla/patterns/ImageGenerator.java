@@ -1,4 +1,4 @@
-package ch.brotzilla.cppn;
+package ch.brotzilla.patterns;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;

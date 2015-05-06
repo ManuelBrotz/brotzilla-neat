@@ -1,4 +1,4 @@
-package ch.brotzilla.cppn;
+package ch.brotzilla.patterns;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,12 +47,13 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
         
+        final ImageType type = ImageType.GrayHighDefinition;
         final HistoryList historyList = new HistoryList();
-        final Genome genome = Genomes.createDoublePerceptronGenome(false, 2, 5, 4, 1, new ExtendedPeriodicCosFunction(), new ExtendedTanhFunction(), new TestRng(new Random().nextLong()), historyList);
+        final Genome genome = Genomes.createDoublePerceptronGenome(false, 2, 5, 4, type.getPatternGeneratorOutputSize(), new ExtendedPeriodicCosFunction(), new ExtendedTanhFunction(), new TestRng(new Random().nextLong()), historyList);
         final NEATGenomeExpressor expressor = new NEATGenomeExpressor();
         final PatternGenerator pattern = new SimplePatternGenerator(expressor.express(genome));
-        final ImageGenerator generator = new ImageGenerator(1500, 1500, ImageType.Gray, pattern);
-        generator.setSectorBounds(-1, -1, 2, 2);
+        final ImageGenerator generator = new ImageGenerator(1500, 1500, type, pattern);
+        generator.setSectorBounds(-2, -2, 4, 4);
 
         generator.generate();
         

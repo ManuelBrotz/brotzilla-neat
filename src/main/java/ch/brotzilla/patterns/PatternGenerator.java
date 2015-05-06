@@ -1,4 +1,4 @@
-package ch.brotzilla.cppn;
+package ch.brotzilla.patterns;
 
 public interface PatternGenerator {
 

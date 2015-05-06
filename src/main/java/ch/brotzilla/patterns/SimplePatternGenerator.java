@@ -1,4 +1,4 @@
-package ch.brotzilla.cppn;
+package ch.brotzilla.patterns;
 
 import ch.brotzilla.neat.neuralnet.NeuralNet;
 
