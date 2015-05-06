@@ -1,17 +1,19 @@
-package ch.brotzilla.patterns;
+package ch.brotzilla.cppns;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+
+import ch.brotzilla.cppns.patterns.PatternGenerator;
 
 import com.google.common.base.Preconditions;
 
 public class ImageGenerator {
 
     private final ImageType type;
-    private final PatternGenerator generator;
-
-    private double sectorX = -1, sectorY = -1, sectorWidth = 2, sectorHeight = 2;
+    private final Section section;
     
+    private PatternGenerator generator;
+
     private BufferedImage image;
     private WritableRaster raster;
     private int[] colorPixels;
@@ -74,11 +76,11 @@ public class ImageGenerator {
     private void generateColorAlphaImage() {
         final double[] output = new double[4];
         final int w = getWidth(), h = getHeight();
-        final double stepX = sectorWidth / w, stepY = sectorHeight / h;
+        final double stepX = section.getWidth() / w, stepY = section.getHeight() / h;
         for (int y = 0; y < h; y++) {
-            final double yy = sectorY + (stepY * y);
+            final double yy = section.getY() + (stepY * y);
             for (int x = 0; x < w; x++) {
-                final double xx = sectorX + (stepX * x);
+                final double xx = section.getX() + (stepX * x);
                 final int index = y * w + x;
                 generator.generate(xx, yy, output);
                 colorPixels[index] = encodeColorAlphaPixel(output[0], output[1], output[2], output[3]);
@@ -90,11 +92,11 @@ public class ImageGenerator {
     private void generateColorImage() {
         final double[] output = new double[3];
         final int w = getWidth(), h = getHeight();
-        final double stepX = sectorWidth / w, stepY = sectorHeight / h;
+        final double stepX = section.getWidth() / w, stepY = section.getHeight() / h;
         for (int y = 0; y < h; y++) {
-            final double yy = sectorY + (stepY * y);
+            final double yy = section.getY() + (stepY * y);
             for (int x = 0; x < w; x++) {
-                final double xx = sectorX + (stepX * x);
+                final double xx = section.getX() + (stepX * x);
                 final int index = y * w + x;
                 generator.generate(xx, yy, output);
                 colorPixels[index] = encodeColorPixel(output[0], output[1], output[2]);
@@ -106,11 +108,11 @@ public class ImageGenerator {
     private void generateHighDefinitionGrayImage() {
         final double[] output = new double[1];
         final int w = getWidth(), h = getHeight();
-        final double stepX = sectorWidth / w, stepY = sectorHeight / h;
+        final double stepX = section.getWidth() / w, stepY = section.getHeight() / h;
         for (int y = 0; y < h; y++) {
-            final double yy = sectorY + (stepY * y);
+            final double yy = section.getY() + (stepY * y);
             for (int x = 0; x < w; x++) {
-                final double xx = sectorX + (stepX * x);
+                final double xx = section.getX() + (stepX * x);
                 final int index = y * w + x;
                 generator.generate(xx, yy, output);
                 grayHDPixels[index] = encodeGrayHDPixel(output[0]);
@@ -122,11 +124,11 @@ public class ImageGenerator {
     private void generateGrayAlphaImage() {
         final double[] output = new double[2];
         final int w = getWidth(), h = getHeight();
-        final double stepX = sectorWidth / w, stepY = sectorHeight / h;
+        final double stepX = section.getWidth() / w, stepY = section.getHeight() / h;
         for (int y = 0; y < h; y++) {
-            final double yy = sectorY + (stepY * y);
+            final double yy = section.getY() + (stepY * y);
             for (int x = 0; x < w; x++) {
-                final double xx = sectorX + (stepX * x);
+                final double xx = section.getX() + (stepX * x);
                 final int index = y * w + x;
                 generator.generate(xx, yy, output);
                 colorPixels[index] = encodeGrayAlphaPixel(output[0], output[1]);
@@ -138,11 +140,11 @@ public class ImageGenerator {
     private void generateGrayImage() {
         final double[] output = new double[1];
         final int w = getWidth(), h = getHeight();
-        final double stepX = sectorWidth / w, stepY = sectorHeight / h;
+        final double stepX = section.getWidth() / w, stepY = section.getHeight() / h;
         for (int y = 0; y < h; y++) {
-            final double yy = sectorY + (stepY * y);
+            final double yy = section.getY() + (stepY * y);
             for (int x = 0; x < w; x++) {
-                final double xx = sectorX + (stepX * x);
+                final double xx = section.getX() + (stepX * x);
                 final int index = y * w + x;
                 generator.generate(xx, yy, output);
                 grayPixels[index] = encodeGrayPixel(output[0]);
@@ -156,12 +158,17 @@ public class ImageGenerator {
         Preconditions.checkNotNull(generator, "The parameter 'generator' must not be null");
         Preconditions.checkArgument(generator.getOutputSize() == type.getPatternGeneratorOutputSize(), "The output size of the parameter 'generator' has to be equal to " + type.getPatternGeneratorOutputSize());
         this.type = type;
+        this.section = new Section(-1, -1, 2, 2);
         this.generator = generator;
         allocateImage(width, height);
     }
     
     public ImageType getType() {
         return type;
+    }
+    
+    public Section getSection() {
+        return section;
     }
     
     public PatternGenerator getPatternGenerator() {
@@ -184,61 +191,6 @@ public class ImageGenerator {
         if (width != image.getWidth() || height != image.getHeight()) {
             allocateImage(width, height);
         }
-    }
-
-    public double getSectorX() {
-        return sectorX; 
-    }
-    
-    public void setSectorX(double value) {
-        sectorX = value;
-    }
-    
-    public double getSectorY() {
-        return sectorY;
-    }
-    
-    public void setSectorY(double value) {
-        sectorY = value;
-    }
-    
-    public void setSectorCoords(double x, double y) {
-        sectorX = x;
-        sectorY = y;
-    }
-    
-    public double getSectorWidth() {
-        return sectorWidth;
-    }
-    
-    public void setSectorWidth(double value) {
-        Preconditions.checkArgument(value > 0, "The parameter 'value' has to be greater than zero");
-        sectorWidth = value;
-    }
-    
-    public double getSectorHeight() {
-        return sectorHeight;
-    }
-    
-    public void setSectorHeight(double value) {
-        Preconditions.checkArgument(value > 0, "The parameter 'value' has to be greater than zero");
-        sectorHeight = value;
-    }
-    
-    public void setSectorSize(double width, double height) {
-        Preconditions.checkArgument(width > 0, "The parameter 'width' has to be greater than zero");
-        Preconditions.checkArgument(height > 0, "The parameter 'height' has to be greater than zero");
-        sectorWidth = width;
-        sectorHeight = height;
-    }
-    
-    public void setSectorBounds(double x, double y, double width, double height) {
-        Preconditions.checkArgument(width > 0, "The parameter 'width' has to be greater than zero");
-        Preconditions.checkArgument(height > 0, "The parameter 'height' has to be greater than zero");
-        sectorX = x;
-        sectorY = y;
-        sectorWidth = width;
-        sectorHeight = height;
     }
     
     public void generate() {

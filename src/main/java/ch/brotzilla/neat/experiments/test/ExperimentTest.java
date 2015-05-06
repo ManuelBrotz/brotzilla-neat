@@ -99,7 +99,7 @@ public class ExperimentTest {
         public List<Specimen> providePopulation(EvolutionConfig config) {
             final List<Specimen> population = Lists.newArrayList();
             for (int i = 0; i < config.getPopulationSize(); i++) {
-                population.add(new Specimen(config.getObjectives(), Genomes.createDoublePerceptronGenome(true, 3, 4, 2, 1, new ExtendedTanhFunction(), new ExtendedTanhFunction(), rng, config.getHistoryList())));
+                population.add(new Specimen(config.getObjectives(), Genomes.createDoublePerceptronGenome(true, 8, 20, 20, 1, new ExtendedTanhFunction(), new ExtendedTanhFunction(), rng, config.getHistoryList())));
 //                population.add(new Specimen(config.getObjectives(), Genomes.createPerceptronGenome(true, 7, 10, 1, new ExtendedElliottFunction(), new ExtendedElliottFunction(), rng, config.getHistoryList())));
 //                population.add(new Specimen(config.getObjectives(), Genomes.createFeatureSelectiveGenome(true, 5, 1, new ExtendedElliottFunction(), rng, config.getHistoryList())));
             }
@@ -121,8 +121,8 @@ public class ExperimentTest {
     private static class TestEvaluationStrategy implements EvaluationStrategy {
 
         private static final GenomeExpressor exp = new NEATGenomeExpressor();
-        private static final String table = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü0123456789!?.,_\\/*-+&%<>'\" ";
-        private static final String target = "I Love Patrizia!";
+        private static final String table = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜabcdefghijklmnopqrstuvwxyzäöü0123456789!?:.,_\\/*-+&%<>'()\" ";
+        private static final String target = "I Love Patrizia! And tat's the truth! :)";
         private static final double[] targetOutput = computeTargetOutput(table, target);
         
         private double bestFitness = Double.MAX_VALUE;
@@ -157,18 +157,19 @@ public class ExperimentTest {
         
         public double[] compute(NeuralNet nn) {
             Preconditions.checkNotNull(nn, "The genome expressor must not return null");
-            Preconditions.checkState(nn.getNumberOfInputNeurons() == 3);
+            Preconditions.checkState(nn.getNumberOfInputNeurons() == 8);
             Preconditions.checkState(nn.getNumberOfOutputNeurons() == 1);
-            final double[] result = new double[target.length()], input = new double[3], hidden = new double[nn.getNumberOfHiddenNeurons()], output = new double[1];
+            final double[] result = new double[target.length()], input = new double[8], hidden = new double[nn.getNumberOfHiddenNeurons()], output = new double[1];
             for (int i = 0; i < target.length(); i++) {
                 final char c = target.charAt(i);
                 input[0] = (i + 1) / target.length();
-//                input[1] = Character.isUpperCase(c) ? 1 : -1;
-//                input[2] = Character.isLetter(c) ? 1 : -1;
-//                input[3] = Character.isDigit(c) ? 1 : -1;
-//                input[4] = isVovel(c) ? 1 : -1;
-                input[1] = i - 1 < 0 ? 0 : targetOutput[i] - targetOutput[i-1];
-                input[2] = i + 1 == target.length() ? 0 : targetOutput[i] - targetOutput[i+1];
+                input[1] = (target.length() - i) / target.length();
+                input[2] = Character.isUpperCase(c) ? 1 : -1;
+                input[3] = Character.isLetter(c) ? 1 : -1;
+                input[4] = Character.isDigit(c) ? 1 : -1;
+                input[5] = isVovel(c) ? 1 : -1;
+                input[6] = i - 1 < 0 ? 0 : targetOutput[i] - targetOutput[i-1];
+                input[7] = i + 1 == target.length() ? 0 : targetOutput[i] - targetOutput[i+1];
                 nn.compute(input, hidden, output);
                 result[i] = scale(output[0]);
             }
@@ -234,7 +235,7 @@ public class ExperimentTest {
             Preconditions.checkNotNull(parents, "The parameter 'parents' must not be null");
             double result = 0;
             for (final Specimen specimen : parents) {
-                result += specimen.getFitness();
+                result += 1.0 / specimen.getFitness();
             }
             return result;
         }
@@ -244,7 +245,7 @@ public class ExperimentTest {
             final double[] result = new double[parents.size()];
             double sum = 0;
             for (int i = 0; i < result.length; i++) {
-                sum += parents.get(i).getFitness() / total;
+                sum += (1.0 / parents.get(i).getFitness()) / total;
                 result[i] = sum;
             }
             return result;
