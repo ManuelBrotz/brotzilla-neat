@@ -4,13 +4,13 @@ import ch.brotzilla.neat.neuralnet.NeuralNet;
 
 import com.google.common.base.Preconditions;
 
-public class SimplePatternGenerator implements PatternGenerator {
+public class BasicPatternGenerator implements PatternGenerator {
 
     private final NeuralNet nn;
     private final double[] input, hidden;
     private final int outputSize;
     
-    public SimplePatternGenerator(NeuralNet nn) {
+    public BasicPatternGenerator(NeuralNet nn) {
         Preconditions.checkNotNull(nn, "The parameter 'nn' must not be null");
         Preconditions.checkArgument(nn.getNumberOfInputNeurons() == 2, "The number of input neurons has to be equal to 2");
         Preconditions.checkArgument(nn.getNumberOfOutputNeurons() >= 1 && nn.getNumberOfOutputNeurons() <= 4, "The number of output neurons has to be in the range from 1 to 4");

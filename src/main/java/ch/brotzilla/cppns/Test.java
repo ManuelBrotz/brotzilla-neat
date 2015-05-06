@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 import ch.brotzilla.cppns.images.ImageGenerator;
 import ch.brotzilla.cppns.images.ImageType;
 import ch.brotzilla.cppns.patterns.PatternGenerator;
-import ch.brotzilla.cppns.patterns.SimplePatternGenerator;
+import ch.brotzilla.cppns.patterns.BasicPatternGenerator;
 import ch.brotzilla.neat.evolution.Rng;
 import ch.brotzilla.neat.expression.NEATGenomeExpressor;
 import ch.brotzilla.neat.genome.Genome;
@@ -88,7 +88,7 @@ public class Test {
 //            final Genome genome = Genomes.createDoublePerceptronGenome(false, 2, rng.nextInt(5) + 1, rng.nextInt(5) + 1, type.getPatternGeneratorOutputSize(), getRandomActivationFunction(rng), getRandomActivationFunction(rng), rng, historyList);
             final Genome genome = Genomes.createPerceptronGenome(false, 2, rng.nextInt(5) + 1, type.getPatternGeneratorOutputSize(), getRandomActivationFunction(rng), getRandomActivationFunction(rng), rng, historyList);
             final NEATGenomeExpressor expressor = new NEATGenomeExpressor();
-            final PatternGenerator pattern = new SimplePatternGenerator(expressor.express(genome));
+            final PatternGenerator pattern = new BasicPatternGenerator(expressor.express(genome));
             final ImageGenerator generator = new ImageGenerator(600, 600, type, pattern);
             generator.getSection().setBounds(-6, -6, 12, 12);
 
