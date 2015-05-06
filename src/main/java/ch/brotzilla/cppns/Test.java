@@ -6,6 +6,8 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import ch.brotzilla.cppns.images.ImageGenerator;
+import ch.brotzilla.cppns.images.ImageType;
 import ch.brotzilla.cppns.patterns.PatternGenerator;
 import ch.brotzilla.cppns.patterns.SimplePatternGenerator;
 import ch.brotzilla.neat.evolution.Rng;

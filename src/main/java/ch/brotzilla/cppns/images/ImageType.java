@@ -1,4 +1,4 @@
-package ch.brotzilla.cppns;
+package ch.brotzilla.cppns.images;
 
 import java.awt.image.BufferedImage;
 

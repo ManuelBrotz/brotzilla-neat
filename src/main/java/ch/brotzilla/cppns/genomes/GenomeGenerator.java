@@ -1,6 +1,6 @@
 package ch.brotzilla.cppns.genomes;
 
-import ch.brotzilla.cppns.ImageType;
+import ch.brotzilla.cppns.images.ImageType;
 import ch.brotzilla.neat.evolution.Rng;
 import ch.brotzilla.neat.genome.Genome;
 
