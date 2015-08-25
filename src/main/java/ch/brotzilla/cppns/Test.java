@@ -80,13 +80,14 @@ public class Test {
     
     public static void main(String[] args) throws IOException {
         
-        final ImageType type = ImageType.Color;
+        final ImageType type = ImageType.ColorAlpha;
         final HistoryList historyList = new HistoryList();
         final TestRng rng = new TestRng(new Random().nextLong());
         
         for (int i = 0; i < 100; i++) {
-//            final Genome genome = Genomes.createDoublePerceptronGenome(false, 2, rng.nextInt(5) + 1, rng.nextInt(5) + 1, type.getPatternGeneratorOutputSize(), getRandomActivationFunction(rng), getRandomActivationFunction(rng), rng, historyList);
-            final Genome genome = Genomes.createPerceptronGenome(false, 2, rng.nextInt(5) + 1, type.getPatternGeneratorOutputSize(), getRandomActivationFunction(rng), getRandomActivationFunction(rng), rng, historyList);
+            final Genome genome = Genomes.createMinimalGenome(false, 2, type.getPatternGeneratorOutputSize(), getRandomActivationFunction(rng), rng, historyList);
+//          final Genome genome = Genomes.createDoublePerceptronGenome(false, 2, rng.nextInt(5) + 1, rng.nextInt(5) + 1, type.getPatternGeneratorOutputSize(), getRandomActivationFunction(rng), getRandomActivationFunction(rng), rng, historyList);
+//            final Genome genome = Genomes.createPerceptronGenome(false, 2, rng.nextInt(5) + 1, type.getPatternGeneratorOutputSize(), getRandomActivationFunction(rng), getRandomActivationFunction(rng), rng, historyList);
             final NEATGenomeExpressor expressor = new NEATGenomeExpressor();
             final PatternGenerator pattern = new BasicPatternGenerator(expressor.express(genome));
             final ImageGenerator generator = new ImageGenerator(600, 600, type, pattern);

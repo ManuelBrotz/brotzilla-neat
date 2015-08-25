@@ -99,7 +99,7 @@ public class ExperimentTest {
         public List<Specimen> providePopulation(EvolutionConfig config) {
             final List<Specimen> population = Lists.newArrayList();
             for (int i = 0; i < config.getPopulationSize(); i++) {
-                population.add(new Specimen(config.getObjectives(), Genomes.createDoublePerceptronGenome(true, 8, 20, 20, 1, new ExtendedTanhFunction(), new ExtendedTanhFunction(), rng, config.getHistoryList())));
+//                population.add(new Specimen(config.getObjectives(), Genomes.createDoublePerceptronGenome(true, 8, 20, 20, 1, new ExtendedTanhFunction(), new ExtendedTanhFunction(), rng, config.getHistoryList())));
 //                population.add(new Specimen(config.getObjectives(), Genomes.createPerceptronGenome(true, 7, 10, 1, new ExtendedElliottFunction(), new ExtendedElliottFunction(), rng, config.getHistoryList())));
 //                population.add(new Specimen(config.getObjectives(), Genomes.createFeatureSelectiveGenome(true, 5, 1, new ExtendedElliottFunction(), rng, config.getHistoryList())));
             }
